@@ -4,7 +4,7 @@
  * The admin-specific functionality of the plugin.
  *
  * @class      Ssbhesabfa_Admin
- * @version    1.1.6
+ * @version    1.1.7
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin
@@ -505,13 +505,25 @@ class Ssbhesabfa_Admin {
                 echo '<div class="error"><p>' . __('The new Item code already used for another Item', 'ssbhesabfa') . '</p></div>';
                 Ssbhesabfa_Admin_Functions::log(array("The new Item code already used for another Item. Product ID: $post_id"));
             } else {
-                $wpdb->update($wpdb->prefix . 'ssbhesabfa', array(
-                    'id_hesabfa' => (int)$_POST['ssbhesabfa_hesabfa_item_code_0'],
-                ), array(
-                    'id_ps' => $post_id,
-                    'id_ps_attribute' => 0,
-                    'obj_type' => 'product',
-                ));
+                $row2 = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id_ps` = $post_id AND `obj_type` = 'product' AND `id_ps_attribute` = 0");
+                if(is_object($row2))
+                {
+                    $wpdb->update($wpdb->prefix . 'ssbhesabfa', array(
+                        'id_hesabfa' => (int)$itemCode,
+                    ), array(
+                        'id_ps' => $post_id,
+                        'id_ps_attribute' => 0,
+                        'obj_type' => 'product',
+                    ));
+                } else {
+                    $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
+                        'id_hesabfa' => (int)$itemCode,
+                        'id_ps' => (int)$post_id,
+                        'id_ps_attribute' => 0,
+                        'obj_type' => 'product',
+                    ));
+                }
+
             }
         }
     }
