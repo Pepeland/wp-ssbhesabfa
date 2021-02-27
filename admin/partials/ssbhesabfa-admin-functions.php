@@ -384,7 +384,6 @@ class Ssbhesabfa_Admin_Functions
         }
         $data = array (
             array(
-
                 'Code' => $code,
                 'Name' => $name,
                 'FirstName' => Ssbhesabfa_Validation::contactFirstNameValidation($order->get_billing_first_name()),

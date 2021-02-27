@@ -133,7 +133,7 @@ class Ssbhesabfa_Validation
 
     public static function contactPostalCodeValidation($postalCode) {
         $postalCode = preg_replace('/[^0-9]/', '', $postalCode);
-        return mb_substr($postalCode, 0, 9);
+        return mb_substr($postalCode, 0, 10);
     }
 
     public static function contactPhoneValidation($phone) {
