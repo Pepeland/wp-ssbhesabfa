@@ -515,7 +515,7 @@ class Ssbhesabfa_Admin {
                         'id_ps_attribute' => 0,
                         'obj_type' => 'product',
                     ));
-                } else {
+                } else if((int)$itemCode !== 0) {
                     $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
                         'id_hesabfa' => (int)$itemCode,
                         'id_ps' => (int)$post_id,
