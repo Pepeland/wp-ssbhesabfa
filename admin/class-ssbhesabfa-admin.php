@@ -401,6 +401,9 @@ class Ssbhesabfa_Admin {
         $code = $_POST[$variable_field_id];
         $id_product = $_POST['product_id'];
 
+        if($code === "")
+            return;
+
         if (isset($code)) {
             global $wpdb;
             $row = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id_hesabfa` = ".$code." AND `obj_type` = 'product'");
@@ -413,13 +416,25 @@ class Ssbhesabfa_Admin {
                 echo '<div class="error"><p>' . __('The new Item code already used for another Item', 'ssbhesabfa') . '</p></div>';
                 Ssbhesabfa_Admin_Functions::log(array("The new Item code already used for another Item. Product ID: $id_product"));
             } else {
-                $wpdb->update($wpdb->prefix . 'ssbhesabfa', array(
-                    'id_hesabfa' => (int)$code,
-                ), array(
-                    'id_ps' => $id_product,
-                    'id_ps_attribute' => $id_attribute,
-                    'obj_type' => 'product',
-                ));
+                $row2 = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id_ps` = $id_product AND `obj_type` = 'product' AND `id_ps_attribute` = $id_attribute");
+
+                if(is_object($row2))
+                {
+                    $wpdb->update($wpdb->prefix . 'ssbhesabfa', array(
+                        'id_hesabfa' => (int)$code,
+                    ), array(
+                        'id_ps' => $id_product,
+                        'id_ps_attribute' => $id_attribute,
+                        'obj_type' => 'product',
+                    ));
+                } else if((int)$code !== 0) {
+                    $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
+                        'id_hesabfa' => (int)$code,
+                        'id_ps' => (int)$id_product,
+                        'id_ps_attribute' => $id_attribute,
+                        'obj_type' => 'product',
+                    ));
+                }
             }
         }
 
@@ -496,6 +511,9 @@ class Ssbhesabfa_Admin {
     {
         $itemCode = $_POST['ssbhesabfa_hesabfa_item_code_0'];
 
+        if($itemCode === "")
+            return;
+
         if (isset($itemCode)) {
             global $wpdb;
             $row = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id_hesabfa` = ".$itemCode." AND `obj_type` = 'product'");
@@ -523,7 +541,6 @@ class Ssbhesabfa_Admin {
                         'obj_type' => 'product',
                     ));
                 }
-
             }
         }
     }

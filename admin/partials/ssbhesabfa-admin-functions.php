@@ -127,57 +127,63 @@ class Ssbhesabfa_Admin_Functions
 		    $product    = new WC_Product( $id_product );
 		    $categories = $product->get_category_ids();
 
-		    $code = $this->getItemCodeByProductId( $id_product );
+		    if($product->get_status() === "draft")
+		        continue;
 
-            $hesabfaItem = array(
-			    'Code'        => $code,
-			    'Name'        => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-			    'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-			    'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-			    'ItemType'    => $product->is_virtual() == 1 ? 1 : 0,
-			    'Barcode'     => Ssbhesabfa_Validation::itemBarcodeValidation($product->get_sku()),
-			    'Tag'         => json_encode( array( 'id_product' => $id_product, 'id_attribute' => 0 ) ),
+            $variations = $this->getProductVariations($id_product);
+            if(!$variations) {
+                $code = $this->getItemCodeByProductId( $id_product );
+
+                $hesabfaItem = array(
+                    'Code'        => $code,
+                    'Name'        => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
+                    'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
+                    'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
+                    'ItemType'    => $product->is_virtual() == 1 ? 1 : 0,
+                    'Barcode'     => Ssbhesabfa_Validation::itemBarcodeValidation($product->get_sku()),
+                    'Tag'         => json_encode( array( 'id_product' => $id_product, 'id_attribute' => 0 ) ),
 //			    'Active' => $product->active ? true : false,
-			    'NodeFamily'  => $this->getCategoryPath( $categories[0] ),
-			    'ProductCode' => $id_product,
-		    );
+                    'NodeFamily'  => $this->getCategoryPath( $categories[0] ),
+                    'ProductCode' => $id_product,
+                );
 
-            if ( ! get_option( 'ssbhesabfa_item_update_price' ) ) {
-			    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency( $product->get_price() );
-		    }
+                if ( ! get_option( 'ssbhesabfa_item_update_price' ) ) {
+                    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency( $product->get_price() );
+                }
 
-		    $items[] = $hesabfaItem;
+                $items[] = $hesabfaItem;
+            } else {
+                foreach ($variations as $variation) {
+                    $id_attribute = $variation->get_id();
+                    $code = $this->getItemCodeByProductId($id_product, $id_attribute);
 
-		    $variations = $this->getProductVariations($id_product);
-            if ($variations != false) {
-			    foreach ($variations as $variation) {
-				    $id_attribute = $variation->get_id();
-				    $code = $this->getItemCodeByProductId($id_product, $id_attribute);
-
-				    $hesabfaItem = array(
-					    'Code' => $code,
-					    'Name' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-					    'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-					    'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-					    'ItemType' => $variation->is_virtual() == 1 ? 1 : 0,
-					    'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($variation->get_sku()),
-					    'Tag' => json_encode(array(
-						    'id_product'   => $id_product,
-						    'id_attribute' => $id_attribute
-					    )),
+                    $hesabfaItem = array(
+                        'Code' => $code,
+                        'Name' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
+                        'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
+                        'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
+                        'ItemType' => $variation->is_virtual() == 1 ? 1 : 0,
+                        'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($variation->get_sku()),
+                        'Tag' => json_encode(array(
+                            'id_product'   => $id_product,
+                            'id_attribute' => $id_attribute
+                        )),
 //					    'Active' => $variation->variation_is_active ? true : false,
-					    'NodeFamily'  => $this->getCategoryPath($categories[0]),
-					    'ProductCode' => $id_product,
-				    );
+                        'NodeFamily'  => $this->getCategoryPath($categories[0]),
+                        'ProductCode' => $id_product,
+                    );
 
-				    if ( ! get_option( 'ssbhesabfa_item_update_price' ) ) {
-					    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency( $variation->get_price() );
-				    }
+                    if ( ! get_option( 'ssbhesabfa_item_update_price' ) ) {
+                        $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency( $variation->get_price() );
+                    }
 
-				    $items[] = $hesabfaItem;
-			    }
-		    }
+                    $items[] = $hesabfaItem;
+                }
+            }
 	    }
+
+	    if(count($items) === 0)
+	        return false;
 
 	    if (!$this->saveItems($items)) {
 	        return false;
