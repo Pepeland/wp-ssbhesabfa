@@ -244,6 +244,24 @@ class Ssbhesabfa_Admin_Functions
         return substr('products: ' . $path, 0, -1);
     }
 
+    public function isHesabfaContainItems()
+    {
+        $hesabfa = new Ssbhesabfa_Api();
+        $response = $hesabfa->itemGetItems(array('Take' => 1));
+
+        if ($response->Success) {
+            $products = $response->Result->List;
+            if(isset($products) && count($products) === 1)
+                return true;
+            else
+                return false;
+        } else
+        {
+            Ssbhesabfa_Admin_Functions::log(array("Cannot get Item list. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
+            return true;
+        }
+    }
+
     //Contact
     public function getContactCodeByCustomerId($id_customer)
     {
@@ -773,6 +791,9 @@ class Ssbhesabfa_Admin_Functions
     //Export
     public function exportProducts()
     {
+        if($this->isHesabfaContainItems())
+            return -1;
+
         $args = array(
             'post_type' => 'product',
             'post_status' => array('publish', 'private'),

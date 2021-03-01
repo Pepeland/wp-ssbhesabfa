@@ -316,6 +316,8 @@ class Ssbhesabfa_Setting {
     public static function ssbhesabfa_export_setting() {
         // Export - Bulk product export offers
         $productExportResult = (isset($_GET['productExportResult'])) ? wc_clean($_GET['productExportResult']) : null;
+        $error = (isset($_GET['error'])) ? wc_clean($_GET['error']) : null;
+
         if (!is_null($productExportResult) && $productExportResult === 'true') {
             $processed = (isset($_GET['processed'])) ? wc_clean($_GET['processed']) : null;
             if ($processed == 0) {
@@ -328,9 +330,15 @@ class Ssbhesabfa_Setting {
                 echo '</div>';
             }
         } elseif ($productExportResult === 'false') {
-            echo '<div class="updated">';
-            echo '<p>' . __('Export products fail. Please check the log file.', 'ssbhesabfa');
-            echo '</div>';
+            if(!is_null($error) && $error === '-1') {
+                echo '<div class="updated">';
+                echo '<p>' . __('Export products fail. Hesabfa has already contained products.', 'ssbhesabfa');
+                echo '</div>';
+            } else {
+                echo '<div class="updated">';
+                echo '<p>' . __('Export products fail. Please check the log file.', 'ssbhesabfa');
+                echo '</div>';
+            }
         }
 
         // Export - Product opening quantity export offers

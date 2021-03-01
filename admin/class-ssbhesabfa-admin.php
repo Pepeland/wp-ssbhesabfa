@@ -167,7 +167,10 @@ class Ssbhesabfa_Admin {
             $func = new Ssbhesabfa_Admin_Functions();
             $update_count = $func->exportProducts();
 
-            if ($update_count === false) {
+            if ($update_count === -1){
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false&error=-1');
+            }
+            else if ($update_count === false) {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false');
             } else {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=true&processed=' . $update_count);
@@ -388,14 +391,24 @@ class Ssbhesabfa_Admin {
     }
 
     //Item
+    private $call_time = 1;
     public function ssbhesabfa_hook_new_product($id_product)
     {
+        if($this->call_time === 1) {
+            $this->call_time++;
+            return;
+        } else {
+            $this->call_time = 1;
+        }
+
         $function = new Ssbhesabfa_Admin_Functions();
         $function->setItems(array($id_product));
     }
 
     public function ssbhesabfa_hook_save_product_variation($id_attribute)
     {
+        Ssbhesabfa_Admin_Functions::logDebugStr('ssbhesabfa_hook_save_product_variation');
+
         //change hesabfa item code
         $variable_field_id = "ssbhesabfa_hesabfa_item_code_" . $id_attribute;
         $code = $_POST[$variable_field_id];

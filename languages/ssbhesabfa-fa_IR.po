@@ -343,7 +343,11 @@ msgstr ""
 msgid "Export products completed. %s products added/updated."
 msgstr "استخراج محصولات به اتمام رسید. ‪‬%s محصول استخراج شد."
 
-#: admin/partials/ssbhesabfa-admin-setting.php:332
+#: admin/partials/ssbhesabfa-admin-setting.php:335
+msgid "Export products fail. Hesabfa has already contained products."
+msgstr "خروجی محصولات با خطا مواجه شد. حسابفا از قبل حاوی محصولاتی است."
+
+#: admin/partials/ssbhesabfa-admin-setting.php:339
 msgid "Export products fail. Please check the log file."
 msgstr "خروجی محصولات با خطا مواجه شد. لطفا لاگ را بررسی کنید."
 
