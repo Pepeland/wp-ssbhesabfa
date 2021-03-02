@@ -376,7 +376,7 @@ class Ssbhesabfa_Html_output {
         foreach ($update_options as $name => $value) {
             update_option($name, wc_clean($value));
         }
-        echo '<div class="updated"><p>' . __( 'Settings were saved successfully.' ) . '</p></div>';
+        echo '<div class="updated"><p>' . __( 'Settings were saved successfully.', 'ssbhesabfa' ) . '</p></div>';
         return true;
     }
 }

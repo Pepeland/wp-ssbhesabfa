@@ -485,6 +485,24 @@ class Ssbhesabfa_Admin_Functions
         return false;
     }
 
+    public function isHesabfaContainContacts()
+    {
+        $hesabfa = new Ssbhesabfa_Api();
+        $response = $hesabfa->contactGetContacts(array('Take' => 1));
+
+        if ($response->Success) {
+            $contacts = $response->Result->List;
+            if(isset($contacts) && count($contacts) === 1)
+                return true;
+            else
+                return false;
+        } else
+        {
+            Ssbhesabfa_Admin_Functions::log(array("Cannot get Contact list. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
+            return true;
+        }
+    }
+
     //Invoice
     public function setOrder($id_order, $orderType = 0, $reference = null)
     {
@@ -965,6 +983,9 @@ class Ssbhesabfa_Admin_Functions
 
     public function exportCustomers()
     {
+        if($this->isHesabfaContainContacts())
+            return -1;
+
         $customers = get_users(array('fields' => array('ID')));
 
         $items = array();

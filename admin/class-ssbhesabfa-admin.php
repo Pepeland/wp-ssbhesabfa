@@ -217,7 +217,11 @@ class Ssbhesabfa_Admin {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
             $func = new Ssbhesabfa_Admin_Functions();
             $update_count = $func->exportCustomers();
-            if ($update_count === false) {
+
+            if ($update_count === -1){
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=false&error=-1');
+            }
+            else if ($update_count === false) {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=false');
             } else {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=true&processed=' . $update_count);

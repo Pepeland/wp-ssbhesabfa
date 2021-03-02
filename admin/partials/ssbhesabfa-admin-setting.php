@@ -345,7 +345,7 @@ class Ssbhesabfa_Setting {
         $productOpeningQuantityExportResult = (isset($_GET['productOpeningQuantityExportResult'])) ? wc_clean($_GET['productOpeningQuantityExportResult']) : null;
         if (!is_null($productOpeningQuantityExportResult) && $productOpeningQuantityExportResult === 'true') {
             echo '<div class="updated">';
-            echo '<p>' . __('Export product opening quantity completed.');
+            echo '<p>' . __('Export product opening quantity completed.', 'ssbhesabfa');
             echo '</div>';
         } elseif (!is_null($productOpeningQuantityExportResult) && $productOpeningQuantityExportResult === 'false') {
             $shareholderError = (isset($_GET['shareholderError'])) ? wc_clean($_GET['shareholderError']) : null;
@@ -367,6 +367,7 @@ class Ssbhesabfa_Setting {
 
         // Export - Bulk customer export offers
         $customerExportResult = (isset($_GET['customerExportResult'])) ? wc_clean($_GET['customerExportResult']) : null;
+
         if (!is_null($customerExportResult) && $customerExportResult === 'true') {
             $processed = (isset($_GET['processed'])) ? wc_clean($_GET['processed']) : null;
             if ($processed == 0) {
@@ -379,9 +380,15 @@ class Ssbhesabfa_Setting {
                 echo '</div>';
             }
         } elseif (!is_null($customerExportResult) && $customerExportResult === 'false') {
-            echo '<div class="updated">';
-            echo '<p>' . __('Export customers fail. Please check the log file.', 'ssbhesabfa');
-            echo '</div>';
+            if(!is_null($error) && $error === '-1') {
+                echo '<div class="updated">';
+                echo '<p>' . __('Export customers fail. Hesabfa has already contained customers.', 'ssbhesabfa');
+                echo '</div>';
+            } else {
+                echo '<div class="updated">';
+                echo '<p>' . __('Export customers fail. Please check the log file.', 'ssbhesabfa');
+                echo '</div>';
+            }
         }
 
         ?>

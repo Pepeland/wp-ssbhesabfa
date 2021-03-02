@@ -391,6 +391,9 @@ msgstr "استخراج مشتریان با خطا مواجه شد. لطفا لا
 msgid "Export can take several minutes."
 msgstr "استخراج ممکن است چند دقیقه زمان ببرد."
 
+msgid "Export customers fail. Hesabfa has already contained customers."
+msgstr "خروجی مشتریان با خطا مواجه شد. حسابفا از قبل حاوی مشتریان است."
+
 #: admin/partials/ssbhesabfa-admin-setting.php:392
 msgid "Export Products"
 msgstr "خروجی محصولات"
