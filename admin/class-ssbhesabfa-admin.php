@@ -574,4 +574,25 @@ class Ssbhesabfa_Admin {
         );
         woocommerce_wp_text_input($args);
     }
+
+    /*
+    * Action - Ajax 'clean log file' from Hesabfa/Log tab
+    * @since	1.0.0
+    */
+    public function adminCleanLogFileCallback() {
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->cleanLogFile();
+
+            if ($result) {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=log&cleanLogResult=true');
+            } else {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=log&cleanLogResult=false');
+            }
+            echo $redirect_url;
+
+            die(); // this is required to return a proper result
+        }
+    }
+
 }

@@ -543,6 +543,24 @@ msgstr "\tاتصال نرم‌افزار حسابداری ابری حسابفا 
 msgid "Saeed Sattar Beglou"
 msgstr "سعید ستاربگلو"
 
+msgid "Log"
+msgstr "لاگ"
+
+msgid "Events and bugs log"
+msgstr "لاگ رویدادها و خطاها"
+
+msgid "Clean log"
+msgstr "پاک کردن لاگ"
+
+msgid "Download log file"
+msgstr "دانلود فایل لاگ"
+
+msgid "The log file was cleared."
+msgstr "فایل لاگ پاک شد."
+
+msgid "Log file not found."
+msgstr "فایل لاگ پیدا نشد."
+
 #~ msgid "Sync completed, All products added/updated."
 #~ msgstr "همسان‌سازی پایان یافت. تمامی محصولات به‌روزرسانی/افزوده شدند."
 

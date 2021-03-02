@@ -212,4 +212,40 @@ jQuery(function ($) {
 			return false;
 		});
     });
+
+	$(function () {
+		// AJAX - Clean log
+		$('#ssbhesabfa_clean_log').submit(function () {
+			// show processing status
+			$('#ssbhesabfa-log-clean-submit').attr('disabled', 'disabled');
+			$('#ssbhesabfa-log-clean-submit').removeClass('button-primary');
+			$('#ssbhesabfa-log-clean-submit').html('<i class="ofwc-spinner"></i> پاک کردن فایل لاگ، لطفاً صبر کنید...');
+			$('#ssbhesabfa-log-clean-submit i.spinner').show();
+
+			var data = {
+				'action': 'adminCleanLogFile'
+			};
+
+			// post it
+			$.post(ajaxurl, data, function (response) {
+				if ('failed' !== response) {
+					var redirectUrl = response;
+
+					/** Debug **/
+					// console.log(redirectUrl);
+					// return false;
+
+					top.location.replace(redirectUrl);
+					return false;
+				}
+				else {
+					alert('Error cleaning log file.');
+					return false;
+				}
+			});
+			/*End Post*/
+			return false;
+		});
+	});
+
 });

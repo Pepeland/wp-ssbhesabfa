@@ -1130,6 +1130,14 @@ class Ssbhesabfa_Admin_Functions
         return false;
     }
 
+    public function cleanLogFile() {
+        $filePath = WP_CONTENT_DIR . '/ssbhesabfa.log';
+        if (file_exists($filePath)) {
+            file_put_contents($filePath, "");
+            return true;
+        } else return false;
+    }
+
     public static function log($params) {
         $log = '';
 

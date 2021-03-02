@@ -224,6 +224,12 @@ class Ssbhesabfa {
             $this->loader->add_filter('wp_ajax_adminSyncProducts', $plugin_admin, 'adminSyncProductsCallback');
             $this->loader->add_filter('wp_ajax_adminSyncOrders', $plugin_admin, 'adminSyncOrdersCallback');
 
+            /*
+             * Action - Ajax 'Log Tab' from Hesabfa/Log
+             * @since	1.0.0
+             */
+            $this->loader->add_filter('wp_ajax_adminCleanLogFile', $plugin_admin, 'adminCleanLogFileCallback');
+
         } else {
             $this->loader->add_action('admin_notices', $plugin_admin, 'ssbhesabfa_missing_notice');
         }

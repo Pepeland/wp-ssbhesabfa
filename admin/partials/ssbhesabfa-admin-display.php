@@ -42,7 +42,8 @@ class Ssbhesabfa_Admin_Display {
                 'invoice' => __('Invoice', 'ssbhesabfa'),
                 'payment' => __('Payment Methods', 'ssbhesabfa'),
                 'export' => __('Export', 'ssbhesabfa'),
-                'sync' => __('Sync', 'ssbhesabfa')
+                'sync' => __('Sync', 'ssbhesabfa'),
+                'log' => __('Log', 'ssbhesabfa')
             ));
             $current_tab = (isset($_GET['tab'])) ? wc_clean($_GET['tab']) : 'home';
             ?>

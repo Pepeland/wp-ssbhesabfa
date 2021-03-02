@@ -9,14 +9,16 @@
  * @author     Saeed Sattar Beglou <saeed.sb@gmail.com>
  */
 
-class Ssbhesabfa_Setting {
+class Ssbhesabfa_Setting
+{
 
     /**
      * Hook in methods
      * @since    1.0.0
      * @access   static
      */
-    public static function init() {
+    public static function init()
+    {
         add_action('ssbhesabfa_home_setting', array(__CLASS__, 'ssbhesabfa_home_setting'));
 
         add_action('ssbhesabfa_catalog_setting', array(__CLASS__, 'ssbhesabfa_catalog_setting'));
@@ -37,9 +39,12 @@ class Ssbhesabfa_Setting {
         add_action('ssbhesabfa_export_setting', array(__CLASS__, 'ssbhesabfa_export_setting'));
 
         add_action('ssbhesabfa_sync_setting', array(__CLASS__, 'ssbhesabfa_sync_setting'));
+
+        add_action('ssbhesabfa_log_setting', array(__CLASS__, 'ssbhesabfa_log_setting'));
     }
 
-    public static function ssbhesabfa_home_setting() {
+    public static function ssbhesabfa_home_setting()
+    {
         ?>
         <h1><?php esc_attr_e('Hesabfa Accounting', 'ssbhesabfa'); ?></h1>
         <p><?php esc_attr_e('This module helps connect your (online) store to Hesabfa online accounting software. By using this module, saving products, contacts, and orders in your store will also save them automatically in your Hesabfa account. Besides that, just after a client pays a bill, the receipt document will be stored in Hesabfa as well. Of course, you have to register your account in Hesabfa first. To do so, visit Hesabfa at the link here www.hesabfa.com and sign up for free. After you signed up and entered your account, choose your business, then in the settings menu/API, you can find the API keys for the business and import them to the plugin’s settings. Now your module is ready to use.', 'ssbhesabfa'); ?></p>
@@ -48,7 +53,8 @@ class Ssbhesabfa_Setting {
     }
 
 
-    public static function ssbhesabfa_catalog_setting_fields() {
+    public static function ssbhesabfa_catalog_setting_fields()
+    {
 
         $fields[] = array('title' => __('Catalog Settings', 'ssbhesabfa'), 'type' => 'title', 'desc' => '', 'id' => 'catalog_options');
 
@@ -73,7 +79,8 @@ class Ssbhesabfa_Setting {
         return $fields;
     }
 
-    public static function ssbhesabfa_catalog_setting() {
+    public static function ssbhesabfa_catalog_setting()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_catalog_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
@@ -87,14 +94,16 @@ class Ssbhesabfa_Setting {
         <?php
     }
 
-    public static function ssbhesabfa_catalog_setting_save_field() {
+    public static function ssbhesabfa_catalog_setting_save_field()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_catalog_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         $Html_output->save_fields($ssbhesabf_setting_fields);
     }
 
 
-    public static function ssbhesabfa_customers_setting_fields() {
+    public static function ssbhesabfa_customers_setting_fields()
+    {
 
         $fields[] = array('title' => __('Customers Settings', 'ssbhesabfa'), 'type' => 'title', 'desc' => '', 'id' => 'customer_options');
 
@@ -119,7 +128,8 @@ class Ssbhesabfa_Setting {
         return $fields;
     }
 
-    public static function ssbhesabfa_customers_setting() {
+    public static function ssbhesabfa_customers_setting()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_customers_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
@@ -133,14 +143,16 @@ class Ssbhesabfa_Setting {
         <?php
     }
 
-    public static function ssbhesabfa_customers_setting_save_field() {
+    public static function ssbhesabfa_customers_setting_save_field()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_customers_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         $Html_output->save_fields($ssbhesabf_setting_fields);
     }
 
 
-    public static function ssbhesabfa_invoice_setting_fields() {
+    public static function ssbhesabfa_invoice_setting_fields()
+    {
         $fields[] = array('title' => __('Invoice Settings', 'ssbhesabfa'), 'type' => 'title', 'desc' => '', 'id' => 'invoice_options');
 
         $fields[] = array(
@@ -180,7 +192,8 @@ class Ssbhesabfa_Setting {
         return $fields;
     }
 
-    public static function ssbhesabfa_invoice_setting() {
+    public static function ssbhesabfa_invoice_setting()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_invoice_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
@@ -194,14 +207,16 @@ class Ssbhesabfa_Setting {
         <?php
     }
 
-    public static function ssbhesabfa_invoice_setting_save_field() {
+    public static function ssbhesabfa_invoice_setting_save_field()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_invoice_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         $Html_output->save_fields($ssbhesabf_setting_fields);
     }
 
 
-    public static function ssbhesabfa_payment_setting_fields() {
+    public static function ssbhesabfa_payment_setting_fields()
+    {
         $banks = Ssbhesabfa_Setting::ssbhesabfa_get_banks();
 
         $payment_gateways = new WC_Payment_Gateways;
@@ -239,7 +254,8 @@ class Ssbhesabfa_Setting {
         return $fields;
     }
 
-    public static function ssbhesabfa_payment_setting() {
+    public static function ssbhesabfa_payment_setting()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_payment_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
@@ -253,14 +269,16 @@ class Ssbhesabfa_Setting {
         <?php
     }
 
-    public static function ssbhesabfa_payment_setting_save_field() {
+    public static function ssbhesabfa_payment_setting_save_field()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_payment_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         $Html_output->save_fields($ssbhesabf_setting_fields);
     }
 
 
-    public static function ssbhesabfa_api_setting_fields() {
+    public static function ssbhesabfa_api_setting_fields()
+    {
 
         $fields[] = array('title' => __('API Settings', 'ssbhesabfa'), 'type' => 'title', 'desc' => '', 'id' => 'api_options');
 
@@ -290,7 +308,8 @@ class Ssbhesabfa_Setting {
         return $fields;
     }
 
-    public static function ssbhesabfa_api_setting() {
+    public static function ssbhesabfa_api_setting()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_api_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
@@ -304,7 +323,8 @@ class Ssbhesabfa_Setting {
         <?php
     }
 
-    public static function ssbhesabfa_api_setting_save_field() {
+    public static function ssbhesabfa_api_setting_save_field()
+    {
         $ssbhesabf_setting_fields = self::ssbhesabfa_api_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         $Html_output->save_fields($ssbhesabf_setting_fields);
@@ -313,7 +333,8 @@ class Ssbhesabfa_Setting {
     }
 
 
-    public static function ssbhesabfa_export_setting() {
+    public static function ssbhesabfa_export_setting()
+    {
         // Export - Bulk product export offers
         $productExportResult = (isset($_GET['productExportResult'])) ? wc_clean($_GET['productExportResult']) : null;
         $error = (isset($_GET['error'])) ? wc_clean($_GET['error']) : null;
@@ -330,7 +351,7 @@ class Ssbhesabfa_Setting {
                 echo '</div>';
             }
         } elseif ($productExportResult === 'false') {
-            if(!is_null($error) && $error === '-1') {
+            if (!is_null($error) && $error === '-1') {
                 echo '<div class="updated">';
                 echo '<p>' . __('Export products fail. Hesabfa has already contained products.', 'ssbhesabfa');
                 echo '</div>';
@@ -380,7 +401,7 @@ class Ssbhesabfa_Setting {
                 echo '</div>';
             }
         } elseif (!is_null($customerExportResult) && $customerExportResult === 'false') {
-            if(!is_null($error) && $error === '-1') {
+            if (!is_null($error) && $error === '-1') {
                 echo '<div class="updated">';
                 echo '<p>' . __('Export customers fail. Hesabfa has already contained customers.', 'ssbhesabfa');
                 echo '</div>';
@@ -444,7 +465,8 @@ class Ssbhesabfa_Setting {
     }
 
 
-    public static function ssbhesabfa_sync_setting() {
+    public static function ssbhesabfa_sync_setting()
+    {
         // Sync - Bulk changes sync offers
         $changesSyncResult = (isset($_GET['changesSyncResult'])) ? wc_clean($_GET['changesSyncResult']) : false;
         if (!is_null($changesSyncResult) && $changesSyncResult == 'true') {
@@ -535,7 +557,8 @@ class Ssbhesabfa_Setting {
                 <div>
                     <label for="ssbhesabfa-sync-orders-submit"></label>
                     <div>
-                        <input type="date" id="ssbhesabfa_sync_order_date" name="ssbhesabfa_sync_order_date" value="" class="datepicker" />
+                        <input type="date" id="ssbhesabfa_sync_order_date" name="ssbhesabfa_sync_order_date" value=""
+                               class="datepicker"/>
                         <button class="button button-primary" id="ssbhesabfa-sync-orders-submit"
                                 name="ssbhesabfa-sync-orders-submit"><?php echo __('Sync Orders', 'ssbhesabfa'); ?></button>
                     </div>
@@ -547,7 +570,8 @@ class Ssbhesabfa_Setting {
     }
 
 
-    public static function ssbhesabfa_set_webhook() {
+    public static function ssbhesabfa_set_webhook()
+    {
         $url = get_site_url() . '/index.php?ssbhesabfa_webhook=1&token=' . substr(wp_hash(AUTH_KEY . 'ssbhesabfa/webhook'), 0, 10);
 
         $hookPassword = get_option('ssbhesabfa_webhook_password');
@@ -569,7 +593,7 @@ class Ssbhesabfa_Setting {
                     }
                 } else {
                     echo '<div class="error">';
-                    echo '<p>' . __('Cannot check the last change ID. Error Message: ', 'ssbhesabfa')  . $changes->ErrorMessage . '</p>';
+                    echo '<p>' . __('Cannot check the last change ID. Error Message: ', 'ssbhesabfa') . $changes->ErrorMessage . '</p>';
                     echo '</div>';
 
                     Ssbhesabfa_Admin_Functions::log(array("Cannot get item changes. Error Message: $changes->ErrorMessage. Error Code: $changes->ErrorCode"));
@@ -665,6 +689,78 @@ class Ssbhesabfa_Setting {
             return array('0' => __('Cannot get Banks detail.', 'ssbhesabfa'));
         }
     }
+
+    public static function ssbhesabfa_log_setting()
+    {
+        $cleanLogResult = (isset($_GET['cleanLogResult'])) ? wc_clean($_GET['cleanLogResult']) : null;
+
+        if (!is_null($cleanLogResult) && $cleanLogResult === 'true') {
+            echo '<div class="updated">';
+            echo '<p>' . __('The log file was cleared.', 'ssbhesabfa') . '</p>';
+            echo '</div>';
+        } elseif ($cleanLogResult === 'false') {
+            echo '<div class="updated">';
+            echo '<p>' . __('Log file not found.', 'ssbhesabfa') . '</p>';
+            echo '</div>';
+        }
+
+        self::ssbhesabfa_tab_log_html();
+    }
+
+    public static function ssbhesabfa_tab_log_html()
+    {
+        ?>
+        <p><b><?php echo __('Events and bugs log', 'ssbhesabfa') ?></b></p>
+        <br>
+        <div class="flex">
+            <div style="display: inline-block; ">
+                <form id="ssbhesabfa_clean_log" autocomplete="off"
+                      action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=log'); ?>"
+                      method="post">
+                    <div>
+                        <label for="ssbhesabfa-log-clean-submit"></label>
+                        <div>
+                            <button class="button button-primary" id="ssbhesabfa-log-clean-submit"
+                                    name="ssbhesabfa-log-clean-submit"><?php echo __('Clean log', 'ssbhesabfa'); ?></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div style="display: inline-block; margin-right: 10px;">
+                <label for="ssbhesabfa-log-download-submit"></label>
+                <div>
+                    <a class="button button-secondary" target="_blank"
+                        href="<?php echo WP_CONTENT_URL ?>/ssbhesabfa.log">
+                        <?php echo __('Download log file', 'ssbhesabfa'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <br>
+        <?php
+        if (file_exists(WP_CONTENT_DIR . '/ssbhesabfa.log') &&
+            (filesize(WP_CONTENT_DIR . '/ssbhesabfa.log') / 1000) > 1000) {
+
+            $fileSizeInMb = ((filesize(WP_CONTENT_DIR . '/ssbhesabfa.log') / 1000) / 1000);
+            $fileSizeInMb = round($fileSizeInMb, 2);
+
+            $str = __('The log file size is large, clean log file.', 'ssbhesabfa');
+
+            echo '<div class="notice notice-warning">' .
+                '<p>' . $str . ' (' . $fileSizeInMb . 'MB)' . '</p>'
+                . '</div>';
+
+        } else if (file_exists(WP_CONTENT_DIR . '/ssbhesabfa.log')) {
+
+            $logFileContent = file_get_contents(WP_CONTENT_DIR . '/ssbhesabfa.log');
+            echo '<textarea rows="35"  style="width: 100%; box-sizing: border-box; direction: ltr">' . $logFileContent . '</textarea>';
+
+        }
+        ?>
+
+        <?php
+    }
+
 }
 
 Ssbhesabfa_Setting::init();
