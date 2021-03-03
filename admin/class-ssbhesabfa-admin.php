@@ -411,8 +411,6 @@ class Ssbhesabfa_Admin {
 
     public function ssbhesabfa_hook_save_product_variation($id_attribute)
     {
-        Ssbhesabfa_Admin_Functions::logDebugStr('ssbhesabfa_hook_save_product_variation');
-
         //change hesabfa item code
         $variable_field_id = "ssbhesabfa_hesabfa_item_code_" . $id_attribute;
         $code = $_POST[$variable_field_id];

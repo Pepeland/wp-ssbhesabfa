@@ -567,6 +567,7 @@ class Ssbhesabfa_Admin_Functions
             }
         }
 
+        $invoiceItems = array();
         $i = 0;
 	    foreach ($products as $key => $product) {
             $itemCode = $this->getItemCodeByProductId($product['product_id'], $product['variation_id']);
@@ -580,11 +581,11 @@ class Ssbhesabfa_Admin_Functions
                 'Discount' => (float)$this->getPriceInHesabfaDefaultCurrency($product['subtotal'] - $product['total']),
                 'Tax' => (float)$this->getPriceInHesabfaDefaultCurrency($product['subtotal_tax']),
             );
-            array_push($items, $item);
+            array_push($invoiceItems, $item);
             $i++;
         }
 
-        if (empty($items)) {
+        if (empty($invoiceItems)) {
             Ssbhesabfa_Admin_Functions::log(array("Cannot add/update Invoice. At least one item required."));
 
             return false;
@@ -616,7 +617,7 @@ class Ssbhesabfa_Admin_Functions
             'Status' => 2,
             'Tag' => json_encode(array('id_order' => $id_order)),
             'Freight' => $this->getPriceInHesabfaDefaultCurrency($order->get_shipping_total() + $order->get_shipping_tax()),
-            'InvoiceItems' => $items,
+            'InvoiceItems' => $invoiceItems,
         );
 
         $hesabfa = new Ssbhesabfa_Api();
