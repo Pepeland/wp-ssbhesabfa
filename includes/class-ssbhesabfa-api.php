@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Api
- * @version    1.2.9
+ * @version    1.2.10
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/api
@@ -343,7 +343,6 @@ class Ssbhesabfa_Api
     public function settingGetBanks()
     {
         $method = 'setting/getBanks';
-
         return $this->apiRequest($method);
     }
 
@@ -358,6 +357,12 @@ class Ssbhesabfa_Api
     {
         $method = 'setting/GetFiscalYear';
 
+        return $this->apiRequest($method);
+    }
+
+    public function settingGetWarehouses()
+    {
+        $method = 'setting/GetWarehouses';
         return $this->apiRequest($method);
     }
 }
