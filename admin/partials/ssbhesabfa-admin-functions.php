@@ -161,11 +161,15 @@ class Ssbhesabfa_Admin_Functions
                     $id_attribute = $variation->get_id();
                     $code = $this->getItemCodeByProductId($id_product, $id_attribute);
 
+                    $productName = $product->get_title();
+                    $variationName = $variation->get_attribute_summary();
+                    $fullName = Ssbhesabfa_Validation::itemNameValidation($productName . ' - ' . $variationName);
+
                     $hesabfaItem = array(
                         'Code' => $code,
-                        'Name' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-                        'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-                        'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
+                        'Name' => $fullName,
+                        'PurchasesTitle' => $fullName,
+                        'SalesTitle' => $fullName,
                         'ItemType' => $variation->is_virtual() == 1 ? 1 : 0,
                         'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($variation->get_sku()),
                         'Tag' => json_encode(array(
