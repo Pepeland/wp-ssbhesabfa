@@ -311,6 +311,24 @@ class Ssbhesabfa_Admin {
         }
     }
 
+    /*
+    * Action - Ajax 'Update Products' from Hesabfa/Sync tab
+    * @since	1.0.0
+    */
+    public function adminUpdateProductsCallback() {
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+            $func = new Ssbhesabfa_Admin_Functions();
+            if ($func->updateProductsInHesabfaBasedOnStore()) {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&$productUpdateResult=true');
+            } else {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&$productUpdateResult=false');
+            }
+            echo $redirect_url;
+
+            die(); // this is required to return a proper result
+        }
+    }
+
     //This functions related to set webhook
     public function ssbhesabfa_init_internal()
     {

@@ -214,6 +214,41 @@ jQuery(function ($) {
     });
 
 	$(function () {
+		// AJAX - Sync Products
+		$('#ssbhesabfa_update_products').submit(function () {
+			// show processing status
+			$('#ssbhesabfa-update-products-submit').attr('disabled', 'disabled');
+			$('#ssbhesabfa-update-products-submit').removeClass('button-primary');
+			$('#ssbhesabfa-update-products-submit').html('<i class="ofwc-spinner"></i> Updating, please wait...');
+			$('#ssbhesabfa-update-products-submit i.spinner').show();
+
+			var data = {
+				'action': 'adminUpdateProducts'
+			};
+
+			// post it
+			$.post(ajaxurl, data, function (response) {
+				if ('failed' !== response) {
+					var redirectUrl = response;
+
+					/** Debug **/
+					// console.log(redirectUrl);
+					// return false;
+
+					top.location.replace(redirectUrl);
+					return false;
+				}
+				else {
+					alert('Error updating products.');
+					return false;
+				}
+			});
+			/*End Post*/
+			return false;
+		});
+	});
+
+	$(function () {
 		// AJAX - Clean log
 		$('#ssbhesabfa_clean_log').submit(function () {
 			// show processing status

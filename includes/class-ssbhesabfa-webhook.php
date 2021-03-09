@@ -262,9 +262,9 @@ class Ssbhesabfa_Webhook
             if (get_option('ssbhesabfa_item_update_price') == 'yes') {
                 if ($id_attribute != 0) {
                     $variation = new WC_Product_Variation($id_attribute);
-                    $price = Ssbhesabfa_Admin_Functions::getPriceInHesabfaDefaultCurrency($variation->get_price);
+                    $price = Ssbhesabfa_Admin_Functions::getPriceInHesabfaDefaultCurrency($variation->get_regular_price());
                     if ($item->SellPrice != $price) {
-                        $old_price = $variation->get_price;
+                        $old_price = $variation->get_regular_price();
                         $new_price = Ssbhesabfa_Admin_Functions::getPriceInWooCommerceDefaultCurrency($item->SellPrice);
                         update_post_meta($id_attribute, '_price', $new_price);
                         update_post_meta($id_attribute, '_regular_price', $new_price);
@@ -272,9 +272,9 @@ class Ssbhesabfa_Webhook
                         Ssbhesabfa_Admin_Functions::log(array("product ID $id_product-$id_attribute Price changed. Old Price: $old_price. New Price: $item->SellPrice"));
                     }
                 } else {
-                    $price = Ssbhesabfa_Admin_Functions::getPriceInHesabfaDefaultCurrency($product->get_price);
+                    $price = Ssbhesabfa_Admin_Functions::getPriceInHesabfaDefaultCurrency($product->get_regular_price());
                     if ($item->SellPrice != $price) {
-                        $old_price = $product->get_price;
+                        $old_price = $product->get_regular_price();
                         $new_price = Ssbhesabfa_Admin_Functions::getPriceInWooCommerceDefaultCurrency($item->SellPrice);
                         update_post_meta($id_product, '_price', $new_price);
                         update_post_meta($id_product, '_regular_price', $new_price);

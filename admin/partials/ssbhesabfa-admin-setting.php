@@ -513,6 +513,18 @@ class Ssbhesabfa_Setting
                 echo '</div>';
             }
         }
+
+        // Sync - Bulk product update
+        $productUpdateResult = (isset($_GET['$productUpdateResult'])) ? wc_clean($_GET['$productUpdateResult']) : null;
+        if (!is_null($productUpdateResult) && $productUpdateResult == 'true') {
+            echo '<div class="updated">';
+            echo '<p>' . __('Update completed successfully.', 'ssbhesabfa');
+            echo '</div>';
+        } elseif (!is_null($productUpdateResult) && !$productUpdateResult == 'false') {
+            echo '<div class="error">';
+            echo '<p>' . __('Update failed. Please check the log file.', 'ssbhesabfa');
+            echo '</div>';
+        }
         ?>
 
         <div class="notice notice-info">
@@ -564,6 +576,21 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p><?php echo __('Sync/Add orders in online store with hesabfa from above date.', 'ssbhesabfa'); ?></p>
+            </div>
+        </form>
+        <br>
+        <form id="ssbhesabfa_update_products" autocomplete="off"
+              action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=sync'); ?>"
+              method="post">
+            <div>
+                <div>
+                    <label for="ssbhesabfa-update-products-submit"></label>
+                    <div>
+                        <button class="button button-primary" id="ssbhesabfa-update-products-submit"
+                                name="ssbhesabfa-update-products-submit"><?php echo __('Update Products in Hesabfa based on store', 'ssbhesabfa'); ?></button>
+                    </div>
+                </div>
+                <p><?php echo __('Update linked products in hesabfa based on products definition in store', 'ssbhesabfa'); ?></p>
             </div>
         </form>
         <?php

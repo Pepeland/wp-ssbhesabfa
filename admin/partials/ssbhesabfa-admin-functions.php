@@ -152,7 +152,7 @@ class Ssbhesabfa_Admin_Functions
                 );
 
                 if (!get_option('ssbhesabfa_item_update_price')) {
-                    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($product->get_price());
+                    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($product->get_regular_price());
                 }
 
                 $items[] = $hesabfaItem;
@@ -182,7 +182,7 @@ class Ssbhesabfa_Admin_Functions
                     );
 
                     if (!get_option('ssbhesabfa_item_update_price')) {
-                        $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($variation->get_price());
+                        $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($variation->get_regular_price());
                     }
 
                     $items[] = $hesabfaItem;
@@ -858,7 +858,7 @@ class Ssbhesabfa_Admin_Functions
                         'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
                         'ItemType' => $product->is_virtual() == 1 ? 1 : 0,
                         'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($product->get_sku()),
-                        'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($product->get_price()),
+                        'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($product->get_regular_price()),
                         'Tag' => json_encode(array('id_product' => $id_product, 'id_attribute' => 0)),
 //					'Active' => $product->active ? true : false,
                         'NodeFamily' => $this->getCategoryPath($categories[0]),
@@ -877,7 +877,7 @@ class Ssbhesabfa_Admin_Functions
                             'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
                             'ItemType' => $variation->is_virtual() == 1 ? 1 : 0,
                             'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($variation->get_sku()),
-                            'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($variation->get_price()),
+                            'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($variation->get_regular_price()),
                             'Tag' => json_encode(array('id_product' => $id_product, 'id_attribute' => $id_attribute)),
                             //					    'Active' => $variation->variation_is_active ? true : false,
                             'NodeFamily' => $this->getCategoryPath($categories[0]),
@@ -934,7 +934,7 @@ class Ssbhesabfa_Admin_Functions
                 if ($id_obj != false) {
                     $product = new WC_Product($item->ID);
                     $quantity = $product->get_stock_quantity();
-                    $price = $product->get_price();
+                    $price = $product->get_regular_price();
 
                     global $wpdb;
                     $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = " . $id_obj . " AND `obj_type` = 'product'");
@@ -954,7 +954,7 @@ class Ssbhesabfa_Admin_Functions
                     $id_obj = $this->getObjectId('product', $item->ID, $id_attribute);
                     if ($id_obj != false) {
                         $quantity = $variation->get_stock_quantity();
-                        $price = $variation->get_price();
+                        $price = $variation->get_regular_price();
 
                         global $wpdb;
                         $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = " . $id_obj . " AND `obj_type` = 'product'");
@@ -993,8 +993,8 @@ class Ssbhesabfa_Admin_Functions
 
     public function exportCustomers()
     {
-        if ($this->isHesabfaContainContacts())
-            return -1;
+//        if ($this->isHesabfaContainContacts())
+//            return -1;
 
         $customers = get_users(array('fields' => array('ID')));
 
@@ -1140,6 +1140,34 @@ class Ssbhesabfa_Admin_Functions
         return false;
     }
 
+    public function updateProductsInHesabfaBasedOnStore() {
+        $args = array(
+            'post_type' => 'product',
+            'post_status' => array('publish', 'private'),
+            'orderby' => 'ID',
+            'order' => 'ASC',
+            'posts_per_page' => -1
+        );
+        $products = get_posts($args);
+
+        $products_id_array = array();
+        foreach ($products as $product) {
+            $products_id_array[] = $product->ID;
+        }
+
+        $productCount = count($products_id_array);
+        $chunks = ceil($productCount / 500);
+        for ($i = 1; $i <= $chunks; $i++) {
+            if($i === $chunks) {
+                $this->setItems(array_splice($products_id_array, 0, count($products_id_array)));
+            } else {
+                $this->setItems(array_splice($products_id_array, 0, 500));
+            }
+            sleep(1);
+        }
+        return true;
+    }
+
     public function cleanLogFile()
     {
         $filePath = WP_CONTENT_DIR . '/ssbhesabfa.log';
@@ -1180,5 +1208,4 @@ class Ssbhesabfa_Admin_Functions
         file_put_contents(WP_CONTENT_DIR . '/ssbhesabfa.log', PHP_EOL . ob_get_flush(), FILE_APPEND);
         //ob_flush();
     }
-
 }

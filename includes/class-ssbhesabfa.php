@@ -223,6 +223,7 @@ class Ssbhesabfa {
             $this->loader->add_filter('wp_ajax_adminSyncChanges', $plugin_admin, 'adminSyncChangesCallback');
             $this->loader->add_filter('wp_ajax_adminSyncProducts', $plugin_admin, 'adminSyncProductsCallback');
             $this->loader->add_filter('wp_ajax_adminSyncOrders', $plugin_admin, 'adminSyncOrdersCallback');
+            $this->loader->add_filter('wp_ajax_adminUpdateProducts', $plugin_admin, 'adminUpdateProductsCallback');
 
             /*
              * Action - Ajax 'Log Tab' from Hesabfa/Log
