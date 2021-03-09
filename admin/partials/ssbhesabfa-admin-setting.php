@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Setting
- * @version    1.2.10
+ * @version    1.3.11
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/setting
@@ -590,7 +590,7 @@ class Ssbhesabfa_Setting
                                 name="ssbhesabfa-update-products-submit"><?php echo __('Update Products in Hesabfa based on store', 'ssbhesabfa'); ?></button>
                     </div>
                 </div>
-                <p><?php echo __('Update linked products in hesabfa based on products definition in store', 'ssbhesabfa'); ?></p>
+                <p><?php echo __('Update products in hesabfa based on products definition in store.', 'ssbhesabfa'); ?></p>
             </div>
         </form>
         <?php

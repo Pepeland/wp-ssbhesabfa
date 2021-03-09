@@ -564,8 +564,8 @@ msgstr "فایل لاگ پیدا نشد."
 msgid "Update Products in Hesabfa based on store"
 msgstr "به روزرسانی محصولات در حسابفا بر اساس فروشگاه"
 
-msgid "Update linked products in hesabfa based on products definition in store"
-msgstr "به روزرسانی محصولات لینک شده در حسابفا بر اساس مشخصات آنها در فروشگاه"
+msgid "Update products in hesabfa based on products definition in store."
+msgstr "به روزرسانی محصولات در حسابفا بر اساس مشخصات آنها در فروشگاه. محصولات جدید به حسابفا اضافه می شوند و محصولات قبلی ویرایش می شوند."
 
 msgid "Update completed successfully."
 msgstr "به روزرسانی با موفقیت انجام شد."
