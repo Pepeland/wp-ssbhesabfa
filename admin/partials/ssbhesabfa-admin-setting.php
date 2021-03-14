@@ -467,6 +467,11 @@ class Ssbhesabfa_Setting
 
     public static function ssbhesabfa_sync_setting()
     {
+        $result = self::getProductsCount();
+        $storeProductsCount = $result["storeProductsCount"];
+        $hesabfaProductsCount = $result["hesabfaProductsCount"];
+        $linkedProductsCount = $result["linkedProductsCount"];
+
         // Sync - Bulk changes sync offers
         $changesSyncResult = (isset($_GET['changesSyncResult'])) ? wc_clean($_GET['changesSyncResult']) : false;
         if (!is_null($changesSyncResult) && $changesSyncResult == 'true') {
@@ -526,6 +531,12 @@ class Ssbhesabfa_Setting
             echo '</div>';
         }
         ?>
+
+        <div class="notice notice-info">
+            <p><?php echo __('Number of products in store:', 'ssbhesabfa') . ' <b>' . $storeProductsCount . '</b>' ?></p>
+            <p><?php echo __('Number of products in hesabfa:', 'ssbhesabfa') . ' <b>' . $hesabfaProductsCount . '</b>' ?></p>
+            <p><?php echo __('Number of linked products:', 'ssbhesabfa') . ' <b>' . $linkedProductsCount . '</b>' ?></p>
+        </div>
 
         <div class="notice notice-info">
             <p><?php echo __('Sync can take several minutes.', 'ssbhesabfa') ?></p>
@@ -596,6 +607,49 @@ class Ssbhesabfa_Setting
         <?php
     }
 
+    public static function getProductsCount() {
+        $storeProductsCount = self::getProductCountsInStore();
+        $hesabfaProductsCount = self::getProductCountsInHesabfa();
+        $linkedProductsCount = self::getLinkedProductsCount();
+
+        return array("storeProductsCount" => $storeProductsCount,
+            "hesabfaProductsCount" => $hesabfaProductsCount,
+            "linkedProductsCount" => $linkedProductsCount);
+    }
+
+    public static function getProductCountsInHesabfa() {
+        $hesabfa = new Ssbhesabfa_Api();
+        $response = $hesabfa->itemGetItems(array('Take' => 1));
+        if ($response->Success) {
+            return $response->Result->TotalCount;
+        } else return 0;
+    }
+    public static function getLinkedProductsCount() {
+        global $wpdb;
+        return $wpdb->get_var("SELECT COUNT(*) FROM `".$wpdb->prefix."ssbhesabfa` WHERE `obj_type` = 'product'");
+    }
+    public static function getProductCountsInStore() {
+        $args = array(
+            'post_type' => array('product', 'product_variation'),
+            'post_status' => array('publish', 'private'),
+            'orderby' => 'ID',
+            'order' => 'ASC',
+            'posts_per_page' => -1
+        );
+        $products = get_posts($args);
+        $count = count($products);
+        $minusParents = array();
+
+        foreach ($products as $product) {
+            if($product->post_parent) {
+                if(!array_key_exists($product->post_parent, $minusParents)) {
+                    $minusParents[$product->post_parent] = true;
+                    $count--;
+                }
+            }
+        }
+        return $count;
+    }
 
     public static function ssbhesabfa_set_webhook()
     {

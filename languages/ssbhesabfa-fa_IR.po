@@ -576,6 +576,15 @@ msgstr "به روزرسانی با موفقیت انجام شد."
 msgid "Update failed. Please check the log file."
 msgstr "به روزرسانی ناموفق بود. لطفاً لاگ را بررسی کنید."
 
+msgid "Number of products in store:"
+msgstr "تعداد محصولات در فروشگاه:"
+
+msgid "Number of products in hesabfa:"
+msgstr "تعداد محصولات در حسابفا:"
+
+msgid "Number of linked products:"
+msgstr "تعداد محصولات لینک شده:"
+
 #~ msgid "Sync completed, All products added/updated."
 #~ msgstr "همسان‌سازی پایان یافت. تمامی محصولات به‌روزرسانی/افزوده شدند."
 
