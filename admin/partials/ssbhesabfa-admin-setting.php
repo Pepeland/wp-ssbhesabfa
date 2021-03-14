@@ -648,7 +648,7 @@ class Ssbhesabfa_Setting
                         update_option('ssbhesabfa_live_mode', 0);
 
                         echo '<div class="error">';
-                        echo '<p>' . __('Hesabfa and WooCommerce default currency must be same.');
+                        echo '<p>' . __('Hesabfa and WooCommerce default currency must be same.', 'ssbhesabfa');
                         echo '</div>';
                     }
                 } else {

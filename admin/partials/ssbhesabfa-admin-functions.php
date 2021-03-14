@@ -1122,11 +1122,14 @@ class Ssbhesabfa_Admin_Functions
 
     public function syncProducts()
     {
+        self::logDebugStr('--- sync products ---');
         $hesabfa = new Ssbhesabfa_Api();
-        $response = $hesabfa->itemGetItems(array('Take' => 99999999));
+        $filters = array(array("Property"=>"Tag", "Operator"=>"!=", "Value"=>""));
+        $response = $hesabfa->itemGetItems(array('Take' => 99999999, 'Filters' => $filters ));
 
         if ($response->Success) {
             $products = $response->Result->List;
+            self::logDebugStr("products count: " . count($products));
 
             require_once plugin_dir_path(dirname(__FILE__)) . '../includes/class-ssbhesabfa-webhook.php';
             $webhook = new Ssbhesabfa_Webhook();

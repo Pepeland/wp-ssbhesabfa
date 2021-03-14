@@ -226,24 +226,23 @@ class Ssbhesabfa_Webhook
         $id_product = 0;
         $id_attribute = 0;
 
-        $json = json_decode($item->Tag);
-        if (is_object($json)) {
-            $id_product = $json->id_product;
-            if (isset($json->id_attribute)) {
-                $id_attribute = $json->id_attribute;
+        $jsonObj = json_decode($item->Tag);
+        if (is_object($jsonObj)) {
+            $id_product = $jsonObj->id_product;
+            if (isset($jsonObj->id_attribute)) {
+                $id_attribute = $jsonObj->id_attribute;
             }
-        }
+        } else return false;
 
         //check if Tag not set in hesabfa
         if ($id_product == 0) {
             Ssbhesabfa_Admin_Functions::log(array("Item with code: $item->Code is not define in OnlineStore"));
-
             return false;
         }
 
-        //check if product exist in prestashop
+        //check if product exist in woocommerce
         $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('product', $id_product, $id_attribute);
-        if ($id_obj != false) {
+        if ($id_obj) {
             $product = new WC_Product($id_product);
 
             //1.set new Hesabfa Item Code if changes
@@ -254,7 +253,6 @@ class Ssbhesabfa_Webhook
                 $id_hesabfa_old = $row->id_hesabfa;
                 //update all variation
                 $wpdb->update($wpdb->prefix . 'ssbhesabfa', array('id_hesabfa' => (int)$item->Code), array('id_ps' => $id_product, 'obj_type' => 'product'));
-
                 Ssbhesabfa_Admin_Functions::log(array("Item Code changed. Old ID: $id_hesabfa_old. New ID: $item->Code"));
             }
 
