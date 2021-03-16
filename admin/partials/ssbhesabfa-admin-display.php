@@ -18,6 +18,7 @@ class Ssbhesabfa_Admin_Display {
     */
     public static function init() {
         add_action('admin_menu', array(__CLASS__, 'hesabfa_add_settings_menu'));
+        add_action('admin_menu', array(__CLASS__, 'hesabfa_add_menu'));
     }
 
     /**
@@ -25,7 +26,14 @@ class Ssbhesabfa_Admin_Display {
     * @access   public
     */
     public static function hesabfa_add_settings_menu() {
-        add_options_page(__('Hesabfa Options', 'ssbhesabfa'), __('Hesabfa', 'ssbhesabfa'), 'manage_options', 'ssbhesabfa-option', array(__CLASS__, 'ssbhesabfa_option'));
+        //add_options_page(__('Hesabfa Options', 'ssbhesabfa'), __('Hesabfa', 'ssbhesabfa'), 'manage_options', 'ssbhesabfa-option', array(__CLASS__, 'ssbhesabfa_option'));
+    }
+
+    public static function hesabfa_add_menu() {
+        $iconUrl = plugins_url( '/hesabfa-accounting/admin/img/menu-icon.png');
+        add_menu_page( "حسابفا", "حسابفا", "manage_options", "hesabfa_plugin", 'ssbhesabfa-option', $iconUrl, null);
+        add_submenu_page("hesabfa_plugin", "تنظیمات حسابفا", "تنظیمات حسابفا", "manage_options", "hesabfa_plugin", 'ssbhesabfa-option' );
+        add_submenu_page("hesabfa_plugin", "همسان سازی دستی کالاها", "همسان سازی دستی کالاها", "manage_options", "hesabfa_plugin_sync_products_manually", '' );
     }
 
     /**
