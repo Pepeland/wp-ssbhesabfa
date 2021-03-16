@@ -16,8 +16,8 @@ class Ssbhesabfa_Admin_Display {
     * @since    1.0.0
     * @access   static
     */
-    public static function init() {
-        add_action('admin_menu', array(__CLASS__, 'hesabfa_add_settings_menu'));
+    public function init() {
+        //add_action('admin_menu', array(__CLASS__, 'hesabfa_add_settings_menu'));
         add_action('admin_menu', array(__CLASS__, 'hesabfa_add_menu'));
     }
 
@@ -29,18 +29,81 @@ class Ssbhesabfa_Admin_Display {
         //add_options_page(__('Hesabfa Options', 'ssbhesabfa'), __('Hesabfa', 'ssbhesabfa'), 'manage_options', 'ssbhesabfa-option', array(__CLASS__, 'ssbhesabfa_option'));
     }
 
-    public static function hesabfa_add_menu() {
+    function hesabfa_add_menu() {
         $iconUrl = plugins_url( '/hesabfa-accounting/admin/img/menu-icon.png');
-        add_menu_page( "حسابفا", "حسابفا", "manage_options", "hesabfa_plugin", 'ssbhesabfa-option', $iconUrl, null);
-        add_submenu_page("hesabfa_plugin", "تنظیمات حسابفا", "تنظیمات حسابفا", "manage_options", "hesabfa_plugin", 'ssbhesabfa-option' );
-        add_submenu_page("hesabfa_plugin", "همسان سازی دستی کالاها", "همسان سازی دستی کالاها", "manage_options", "hesabfa_plugin_sync_products_manually", '' );
+        add_menu_page( "حسابفا", "حسابفا", "manage_options", "ssbhesabfa-option", array(__CLASS__, 'hesabfa_plugin_page'), $iconUrl, null);
+        add_submenu_page("ssbhesabfa-option", "همسان سازی دستی کالاها", "همسان سازی دستی کالاها", "manage_options", 'hesabfa-sync-products-manually', array(__CLASS__, 'hesabfa_plugin_sync_products_manually') );
     }
+
+    function hesabfa_plugin_sync_products_manually() {
+        $result = self::getProductsAndRelations();
+        $i = 0;
+
+        ?>
+            <p class="mt-4">
+                <b> همسان سازی دستی کالاهای فروشگاه با حسابفا </b>
+            </p>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ID</th>
+                <th scope="col">نام کالا</th>
+                <th scope="col">شناسه محصول</th>
+                <th scope="col">کد حسابفا</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach($result as $p):
+                $i++; ?>
+                <tr class="<?= $p->id_hesabfa ? 'table-success' : 'table-danger'; ?>">
+                    <th scope="row"><?= $i; ?></th>
+                    <td><?= $p->ID; ?></td>
+                    <td><?= $p->post_title; ?></td>
+                    <td><?= $p->sku; ?></td>
+                    <td>
+                        <input type="text" class="form-control" id="<?= $p->ID; ?>" value="<?= $p->id_hesabfa; ?>" style="width: 100px">
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php
+    }
+
+    public static function getProductsAndRelations() {
+        global $wpdb;
+        $row = $wpdb->get_results("SELECT post.ID,post.post_title,wc.sku FROM `".$wpdb->prefix."posts` as post
+                                LEFT JOIN `".$wpdb->prefix."wc_product_meta_lookup` as wc
+                                ON post.id =  wc.product_id                                
+                                WHERE post.post_type IN('product','product_variation')");
+
+        $links = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."ssbhesabfa`                              
+                                WHERE obj_type ='product'");
+
+        foreach ($links as $link) {
+            foreach ($row as $r) {
+                if($r->ID == $link->id_ps && $link->id_ps_attribute == 0) {
+                    $r->id_hesabfa = $link->id_hesabfa;
+                } else if($r->ID == $link->id_ps_attribute) {
+                    $r->id_hesabfa = $link->id_hesabfa;
+                }
+            }
+        }
+
+        //Ssbhesabfa_Admin_Functions::logDebugStr("count: " . count($row));
+        //Ssbhesabfa_Admin_Functions::logDebugObj($row);
+        return $row;
+    }
+
 
     /**
     * @since    1.0.0
     * @access   public
     */
-    public static function ssbhesabfa_option() {
+    public static function hesabfa_plugin_page() {
         if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             $setting_tabs = apply_filters('ssbhesabfa_setting_tab', array(
                 'home' => __('Home', 'ssbhesabfa'),
