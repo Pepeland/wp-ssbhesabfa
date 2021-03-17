@@ -306,9 +306,14 @@ jQuery(function ($) {
 				inputArray.push(obj);
 			}
 
+			const page = $('#pageNumber').val();
+			const rpp = $('#goToPage').attr('data-rpp');
+
 			var data = {
 				'action': 'adminSyncProductsManually',
-				'data': JSON.stringify(inputArray)
+				'data': JSON.stringify(inputArray),
+				'page': page,
+				'rpp': rpp
 			};
 
 			// post it
@@ -330,6 +335,22 @@ jQuery(function ($) {
 			});
 			/*End Post*/
 			return false;
+		});
+
+		$( "#goToPage" ).click(function() {
+			const page = $('#pageNumber').val();
+			const rpp = $('#goToPage').attr('data-rpp');
+			window.location.href = "?page=hesabfa-sync-products-manually&p=" + page + "&rpp=" + rpp;
+		});
+
+		$("#show-tips-btn").click(function () {
+			$('#tips-alert').removeClass('d-none');
+			$('#tips-alert').addClass('d-block');
+		});
+
+		$("#hide-tips-btn").click(function () {
+			$('#tips-alert').removeClass('d-block');
+			$('#tips-alert').addClass('d-none');
 		});
 	});
 

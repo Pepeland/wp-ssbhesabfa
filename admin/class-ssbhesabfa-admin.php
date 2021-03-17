@@ -85,7 +85,7 @@ class Ssbhesabfa_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/ssbhesabfa-admin.css', array(), $this->version, 'all' );
-		wp_enqueue_style( 'bootstrap', plugin_dir_url( __FILE__ ) . 'css/bootstrap.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'bootstrap_css', plugin_dir_url( __FILE__ ) . 'css/bootstrap.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -94,7 +94,6 @@ class Ssbhesabfa_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -108,6 +107,7 @@ class Ssbhesabfa_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/ssbhesabfa-admin.js', array('jquery'), $this->version, false );
+		wp_enqueue_script( 'bootstrap_js', plugin_dir_url( __FILE__ ) . 'js/bootstrap.bundle.min.js', array('jquery'), $this->version, false );
 	}
 
     private function load_dependencies() {
@@ -335,6 +335,11 @@ class Ssbhesabfa_Admin {
 
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
 
+            $page = wc_clean($_POST["page"]);
+            $rpp = wc_clean($_POST["rpp"]);
+            if(!$page) $page = 1;
+            if(!$rpp) $rpp = 10;
+
             if (isset($_POST["data"])) {
                 $data = wc_clean($_POST['data']);
                 $data = str_replace('\\', '', $data);
@@ -345,9 +350,9 @@ class Ssbhesabfa_Admin {
 
             $func = new Ssbhesabfa_Admin_Functions();
             if ($func->syncProductsManually($data)) {
-                $redirect_url = admin_url('admin.php?page=hesabfa-sync-products-manually&result=true');
+                $redirect_url = admin_url("admin.php?page=hesabfa-sync-products-manually&p=$page&rpp=$rpp&result=true");
             } else {
-                $redirect_url = admin_url('admin.php?page=hesabfa-sync-products-manually&result=false');
+                $redirect_url = admin_url("admin.php?page=hesabfa-sync-products-manually&p=$page&rpp=$rpp&result=false");
             }
             echo $redirect_url;
 

@@ -585,6 +585,9 @@ msgstr "تعداد محصولات در حسابفا:"
 msgid "Number of linked products:"
 msgstr "تعداد محصولات لینک شده:"
 
+msgid "Save and next page"
+msgstr "ذخیره و صفحه بعد"
+
 #~ msgid "Sync completed, All products added/updated."
 #~ msgstr "همسان‌سازی پایان یافت. تمامی محصولات به‌روزرسانی/افزوده شدند."
 
