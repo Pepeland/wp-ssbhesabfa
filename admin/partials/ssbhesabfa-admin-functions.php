@@ -1122,14 +1122,12 @@ class Ssbhesabfa_Admin_Functions
 
     public function syncProducts()
     {
-        self::logDebugStr('--- sync products ---');
         $hesabfa = new Ssbhesabfa_Api();
-        $filters = array(array("Property"=>"Tag", "Operator"=>"!=", "Value"=>""));
-        $response = $hesabfa->itemGetItems(array('Take' => 99999999, 'Filters' => $filters ));
+        $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
+        $response = $hesabfa->itemGetItems(array('Take' => 99999999, 'Filters' => $filters));
 
         if ($response->Success) {
             $products = $response->Result->List;
-            self::logDebugStr("products count: " . count($products));
 
             require_once plugin_dir_path(dirname(__FILE__)) . '../includes/class-ssbhesabfa-webhook.php';
             $webhook = new Ssbhesabfa_Webhook();
@@ -1143,7 +1141,37 @@ class Ssbhesabfa_Admin_Functions
         return false;
     }
 
-    public function updateProductsInHesabfaBasedOnStore() {
+    public function syncProductsManually($data)
+    {
+        self::logDebugStr('===== syncProductsManually =====');
+        global $wpdb;
+
+        foreach ($data as $d) {
+            $row = $wpdb->get_row("SELECT * FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id_ps_attribute` = " . $d["id"] . " AND `obj_type` = 'product'");
+
+            if (!is_object($row)) {
+                $row = $wpdb->get_row("SELECT * FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id_ps` = " . $d["id"] . " AND `obj_type` = 'product'");
+            }
+            if (is_object($row)) {
+                if (!$d["hesabfa_id"])
+                    $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $row->id));
+                else
+                    $wpdb->update($wpdb->prefix . 'ssbhesabfa', array('id_hesabfa' => $d["hesabfa_id"]), array('id' => $row->id));
+            } else {
+                if (!$d["hesabfa_id"])
+                    continue;
+                if ($d["parent_id"])
+                    $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array('obj_type' => 'product', 'id_hesabfa' => $d["hesabfa_id"], 'id_ps' => $d["parent_id"], 'id_ps_attribute' => $d["id"]));
+                else
+                    $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array('obj_type' => 'product', 'id_hesabfa' => $d["hesabfa_id"], 'id_ps' => $d["id"], 'id_ps_attribute' => '0'));
+            }
+        }
+        return true;
+    }
+
+    public function updateProductsInHesabfaBasedOnStore()
+    {
+        self::logDebugStr("===== updateProductsInHesabfaBasedOnStore =====");
         $args = array(
             'post_type' => 'product',
             'post_status' => array('publish', 'private'),
@@ -1152,6 +1180,7 @@ class Ssbhesabfa_Admin_Functions
             'posts_per_page' => -1
         );
         $products = get_posts($args);
+        self::logDebugStr("products count: " . count($products));
 
         $products_id_array = array();
         foreach ($products as $product) {
@@ -1161,7 +1190,7 @@ class Ssbhesabfa_Admin_Functions
         $productCount = count($products_id_array);
         $chunks = ceil($productCount / 500);
         for ($i = 1; $i <= $chunks; $i++) {
-            if($i === $chunks) {
+            if ($i === $chunks) {
                 $this->setItems(array_splice($products_id_array, 0, count($products_id_array)));
             } else {
                 $this->setItems(array_splice($products_id_array, 0, 500));

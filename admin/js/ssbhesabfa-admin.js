@@ -283,4 +283,55 @@ jQuery(function ($) {
 		});
 	});
 
+	$(function () {
+		// AJAX - Sync Products Manually
+		$('#ssbhesabfa_sync_products_manually').submit(function () {
+			// show processing status
+			$('#ssbhesabfa_sync_products_manually-submit').attr('disabled', 'disabled');
+			$('#ssbhesabfa_sync_products_manually-submit').removeClass('button-primary');
+			$('#ssbhesabfa_sync_products_manually-submit').html('<i class="ofwc-spinner"></i> Saving, please wait...');
+			$('#ssbhesabfa_sync_products_manually i.spinner').show();
+
+			const inputArray = [];
+			const inputs = $('.code-input');
+			console.log(inputs);
+			for (var n = 0; n < inputs.length; n++) {
+				var i = inputs[n];
+				console.log(i);
+				const obj = {
+					id: $(i).attr('id'),
+					hesabfa_id: $(i).val(),
+					parent_id: $(i).attr('data-parent-id')
+				}
+				inputArray.push(obj);
+			}
+
+			var data = {
+				'action': 'adminSyncProductsManually',
+				'data': JSON.stringify(inputArray)
+			};
+
+			// post it
+			$.post(ajaxurl, data, function (response) {
+				if ('failed' !== response) {
+					var redirectUrl = response;
+
+					/** Debug **/
+					// console.log(redirectUrl);
+					// return false;
+
+					top.location.replace(redirectUrl);
+					return false;
+				}
+				else {
+					alert('Error saving data.');
+					return false;
+				}
+			});
+			/*End Post*/
+			return false;
+		});
+	});
+
+
 });

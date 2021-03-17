@@ -330,6 +330,31 @@ class Ssbhesabfa_Admin {
         }
     }
 
+    public function adminSyncProductsManuallyCallback() {
+        Ssbhesabfa_Admin_Functions::logDebugStr('--- syncProductsManually Callback ---');
+
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+
+            if (isset($_POST["data"])) {
+                $data = wc_clean($_POST['data']);
+                $data = str_replace('\\', '', $data);
+                $data = json_decode($data, true);
+            } else {
+                $errors = true;
+            }
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            if ($func->syncProductsManually($data)) {
+                $redirect_url = admin_url('admin.php?page=hesabfa-sync-products-manually&result=true');
+            } else {
+                $redirect_url = admin_url('admin.php?page=hesabfa-sync-products-manually&result=false');
+            }
+            echo $redirect_url;
+
+            die(); // this is required to return a proper result
+        }
+    }
+
     //This functions related to set webhook
     public function ssbhesabfa_init_internal()
     {

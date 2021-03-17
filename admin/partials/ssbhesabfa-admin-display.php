@@ -36,49 +36,64 @@ class Ssbhesabfa_Admin_Display {
     }
 
     function hesabfa_plugin_sync_products_manually() {
-        $result = self::getProductsAndRelations();
+        $page = $_GET["p"];
+        $rpp = $_GET["rpp"];
+        if(!$page) $page = 1;
+        if(!$rpp) $rpp = 10;
+        $result = self::getProductsAndRelations($page, $rpp);
         $i = 0;
 
         ?>
             <p class="mt-4">
                 <b> همسان سازی دستی کالاهای فروشگاه با حسابفا </b>
             </p>
+         <form id="ssbhesabfa_sync_products_manually" autocomplete="off"
+              action="<?php echo admin_url('admin.php?page=hesabfa-sync-products-manually&p=1'); ?>"
+              method="post">
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">ID</th>
-                <th scope="col">نام کالا</th>
-                <th scope="col">شناسه محصول</th>
-                <th scope="col">کد حسابفا</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach($result as $p):
-                $i++; ?>
-                <tr class="<?= $p->id_hesabfa ? 'table-success' : 'table-danger'; ?>">
-                    <th scope="row"><?= $i; ?></th>
-                    <td><?= $p->ID; ?></td>
-                    <td><?= $p->post_title; ?></td>
-                    <td><?= $p->sku; ?></td>
-                    <td>
-                        <input type="text" class="form-control" id="<?= $p->ID; ?>" value="<?= $p->id_hesabfa; ?>" style="width: 100px">
-                    </td>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">نام کالا</th>
+                    <th scope="col">شناسه محصول</th>
+                    <th scope="col">کد حسابفا</th>
                 </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <?php foreach($result as $p):
+                    $i++; ?>
+                    <tr class="<?= $p->id_hesabfa ? 'table-success' : 'table-danger'; ?>">
+                        <th scope="row"><?= $i; ?></th>
+                        <td><?= $p->ID; ?></td>
+                        <td><?= $p->post_title; ?></td>
+                        <td><?= $p->sku; ?></td>
+                        <td>
+                            <input type="text" class="form-control code-input" id="<?= $p->ID; ?>" data-parent-id="<?= $p->post_parent; ?>" value="<?= $p->id_hesabfa; ?>" style="width: 100px">
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
 
+            <button class="btn btn-success btn-sm" id="ssbhesabfa_sync_products_manually-submit"
+                    name="ssbhesabfa_sync_products_manually-submit"><?php echo __('Save changes', 'ssbhesabfa'); ?></button>
+             <a class="btn btn-outline-primary btn-sm" href="?page=hesabfa-sync-products-manually&p=<?= $page-1 ?>">< صفحه قبل</a>
+             <a class="btn btn-outline-primary btn-sm" href="?page=hesabfa-sync-products-manually&p=<?= $page+1 ?>">صفحه بعد ></a>
+         </form>
         <?php
     }
 
-    public static function getProductsAndRelations() {
+    public static function getProductsAndRelations($page, $rpp) {
+        $offset = ($page-1) * $rpp;
+
         global $wpdb;
-        $row = $wpdb->get_results("SELECT post.ID,post.post_title,wc.sku FROM `".$wpdb->prefix."posts` as post
-                                LEFT JOIN `".$wpdb->prefix."wc_product_meta_lookup` as wc
+        $row = $wpdb->get_results("SELECT post.ID,post.post_title,post.post_parent,wc.sku FROM `".$wpdb->prefix."posts` as post
+                                LEFT OUTER JOIN `".$wpdb->prefix."wc_product_meta_lookup` as wc
                                 ON post.id =  wc.product_id                                
-                                WHERE post.post_type IN('product','product_variation')");
+                                WHERE post.post_type IN('product','product_variation') AND post.post_status IN('publish','private')
+                                ORDER BY post.post_title ASC LIMIT $offset,$rpp");
 
         $links = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."ssbhesabfa`                              
                                 WHERE obj_type ='product'");

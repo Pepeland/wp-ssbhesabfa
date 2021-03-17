@@ -231,6 +231,8 @@ class Ssbhesabfa {
              */
             $this->loader->add_filter('wp_ajax_adminCleanLogFile', $plugin_admin, 'adminCleanLogFileCallback');
 
+            $this->loader->add_filter('wp_ajax_adminSyncProductsManually', $plugin_admin, 'adminSyncProductsManuallyCallback', 10, 2);
+
         } else {
             $this->loader->add_action('admin_notices', $plugin_admin, 'ssbhesabfa_missing_notice');
         }
