@@ -48,7 +48,7 @@ class Ssbhesabfa_Admin_Display
         if (!$rpp) $rpp = 10;
         $result = self::getProductsAndRelations($page, $rpp);
         $pageCount = ceil($result["totalCount"] / $rpp);
-        $i = 0;
+        $i = ($page-1) * $rpp;
 
 //        unset($_COOKIE['syncProductsManuallyHelp']);
 //        setcookie('syncProductsManuallyHelp', null, -1, '/');
