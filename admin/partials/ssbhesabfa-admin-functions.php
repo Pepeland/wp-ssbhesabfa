@@ -1144,6 +1144,30 @@ class Ssbhesabfa_Admin_Functions
     public function syncProductsManually($data)
     {
         self::logDebugStr('===== syncProductsManually =====');
+
+        // check if entered hesabfa codes exist in hesabfa
+        $hesabfa_item_codes = array();
+        foreach ($data as $d) {
+            if ($d["hesabfa_id"]) {
+                $hesabfa_item_codes[] = str_pad($d["hesabfa_id"], 6, "0", STR_PAD_LEFT);
+            }
+        }
+        $hesabfa = new Ssbhesabfa_Api();
+        $filters = array(array("Property" => "Code", "Operator" => "in", "Value" => $hesabfa_item_codes));
+        $response = $hesabfa->itemGetItems(array('Take' => 100, 'Filters' => $filters));
+
+        if ($response->Success) {
+            $products = $response->Result->List;
+            $products_codes = array();
+            foreach ($products as $product)
+                $products_codes[] = $product->Code;
+            $diff = array_diff($hesabfa_item_codes, $products_codes);
+            if (is_array($diff) && count($diff) > 0) {
+                return array("result" => false, "data" => $diff);
+            }
+        }
+
+        $id_product_array = array();
         global $wpdb;
 
         foreach ($data as $d) {
@@ -1165,8 +1189,21 @@ class Ssbhesabfa_Admin_Functions
                 else
                     $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array('obj_type' => 'product', 'id_hesabfa' => $d["hesabfa_id"], 'id_ps' => $d["id"], 'id_ps_attribute' => '0'));
             }
+
+            if ($d["hesabfa_id"]) {
+                if ($d["parent_id"]) {
+                    if (!in_array($d["parent_id"], $id_product_array))
+                        $id_product_array[] = $d["parent_id"];
+                } else {
+                    if (!in_array($d["id"], $id_product_array))
+                        $id_product_array[] = $d["id"];
+                }
+            }
         }
-        return true;
+
+        // call setItems to set item tag in hesabfa
+        $this->setItems($id_product_array);
+        return array("result" => true, "data" => null);
     }
 
     public function updateProductsInHesabfaBasedOnStore()

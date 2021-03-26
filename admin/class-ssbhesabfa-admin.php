@@ -349,10 +349,12 @@ class Ssbhesabfa_Admin {
             }
 
             $func = new Ssbhesabfa_Admin_Functions();
-            if ($func->syncProductsManually($data)) {
+            $res = $func->syncProductsManually($data);
+            if ($res["result"] == true) {
                 $redirect_url = admin_url("admin.php?page=hesabfa-sync-products-manually&p=$page&rpp=$rpp&result=true");
             } else {
-                $redirect_url = admin_url("admin.php?page=hesabfa-sync-products-manually&p=$page&rpp=$rpp&result=false");
+                $data = implode(",", $res["data"]);
+                $redirect_url = admin_url("admin.php?page=hesabfa-sync-products-manually&p=$page&rpp=$rpp&result=false&data=$data");
             }
             echo $redirect_url;
 

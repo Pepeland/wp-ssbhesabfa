@@ -44,14 +44,16 @@ class Ssbhesabfa_Admin_Display
     {
         $page = $_GET["p"];
         $rpp = $_GET["rpp"];
+        if (isset($_GET['data'])) {
+            $data = $_GET["data"];
+            $codesNotFoundInHesabfa = explode(",", $data);
+        }
         if (!$page) $page = 1;
         if (!$rpp) $rpp = 10;
         $result = self::getProductsAndRelations($page, $rpp);
         $pageCount = ceil($result["totalCount"] / $rpp);
-        $i = ($page-1) * $rpp;
-
-//        unset($_COOKIE['syncProductsManuallyHelp']);
-//        setcookie('syncProductsManuallyHelp', null, -1, '/');
+        $i = ($page - 1) * $rpp;
+        $rpp_options = [10, 15, 20, 30, 50];
 
         $showTips = true;
         if (!isset($_COOKIE['syncProductsManuallyHelp'])) {
@@ -64,8 +66,19 @@ class Ssbhesabfa_Admin_Display
         <p class="mt-4">
         <h5>
             همسان سازی دستی کالاهای فروشگاه با حسابفا
-            <span class="badge bg-warning text-dark hand <?= $showTips ? 'd-none' : 'd-inline-block' ?>" id="show-tips-btn">مشاهده نکات مهم</span>
+            <span class="badge bg-warning text-dark hand <?= $showTips ? 'd-none' : 'd-inline-block' ?>"
+                  id="show-tips-btn">مشاهده نکات مهم</span>
         </h5>
+
+        <div class="alert alert-danger alert-dismissible fade show <?= isset($codesNotFoundInHesabfa) ? 'd-block' : 'd-none' ?>"
+             role="alert">
+            <strong>خطا</strong><br> کدهای زیر در حسابفا پیدا نشد:
+            <br>
+            <?php foreach ($codesNotFoundInHesabfa as $code): ?>
+                <span class="badge bg-secondary"><?= $code ?></span>&nbsp;
+            <?php endforeach; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
         <div id="tips-alert"
              class="alert alert-warning alert-dismissible fade show <?= $showTips ? 'd-block' : 'd-none' ?>"
@@ -134,16 +147,11 @@ class Ssbhesabfa_Admin_Display
                     <?= $rpp . ' ' ?>ردیف در هر صفحه
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item"
-                           href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=10">10</a></li>
-                    <li><a class="dropdown-item"
-                           href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=15">15</a></li>
-                    <li><a class="dropdown-item"
-                           href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=20">20</a></li>
-                    <li><a class="dropdown-item"
-                           href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=30">30</a></li>
-                    <li><a class="dropdown-item"
-                           href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=50">50</a></li>
+                    <?php foreach ($rpp_options as $option): ?>
+                        <li><a class="dropdown-item"
+                               href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=<?= $option ?>"><?= $option ?></a>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
             </div>
             <a class="btn btn-outline-secondary btn-sm <?= $page == 1 ? 'disabled' : '' ?>"
