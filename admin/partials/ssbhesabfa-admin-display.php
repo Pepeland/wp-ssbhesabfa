@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Admin_Display
- * @version    1.3.11
+ * @version    1.4.11
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/display
@@ -172,7 +172,7 @@ class Ssbhesabfa_Admin_Display
         $offset = ($page - 1) * $rpp;
 
         global $wpdb;
-        $rows = $wpdb->get_results("SELECT post.ID,post.post_title,post.post_parent,wc.sku FROM `" . $wpdb->prefix . "posts` as post
+        $rows = $wpdb->get_results("SELECT post.ID,post.post_title,post.post_parent,post_excerpt,wc.sku FROM `" . $wpdb->prefix . "posts` as post
                                 LEFT OUTER JOIN `" . $wpdb->prefix . "wc_product_meta_lookup` as wc
                                 ON post.id =  wc.product_id                                
                                 WHERE post.post_type IN('product','product_variation') AND post.post_status IN('publish','private')
@@ -185,6 +185,11 @@ class Ssbhesabfa_Admin_Display
 
         $links = $wpdb->get_results("SELECT * FROM `" . $wpdb->prefix . "ssbhesabfa`                              
                                 WHERE obj_type ='product'");
+
+        foreach ($rows as $r) {
+            if($r->post_excerpt)
+                $r->post_title = $r->post_title . ' [' . $r->post_excerpt . ']';
+        }
 
         foreach ($links as $link) {
             foreach ($rows as $r) {
