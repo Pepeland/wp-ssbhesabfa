@@ -10,7 +10,26 @@
 }
 
 a.nav-tab {
-    padding: 10px;
-    font-family: Tahoma;
+    font-family: IRANYekan;
+    padding: 5px 10px;
     font-weight: normal;
+    border-radius: 7px 7px 0px 0px;
+}
+
+.hesabfa-tab-page-title {
+    font-family: IRANYekan !important;
+    margin-top: 15px;
+    color: dimgray;
+}
+
+.hesabfa-p {
+    font-family: IRANYekan;
+}
+
+.hesabfa-f {
+    font-family: IRANYekan;
+}
+
+.hesabfa-f-12 {
+    font-size: 12pt;
 }

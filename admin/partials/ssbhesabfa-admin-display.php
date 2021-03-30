@@ -63,107 +63,112 @@ class Ssbhesabfa_Admin_Display
         }
 
         ?>
-        <p class="mt-4">
-        <h5>
-            همسان سازی دستی کالاهای فروشگاه با حسابفا
-            <span class="badge bg-warning text-dark hand <?= $showTips ? 'd-none' : 'd-inline-block' ?>"
-                  id="show-tips-btn">مشاهده نکات مهم</span>
-        </h5>
+        <div class="hesabfa-f">
+            <p class="mt-4">
+            <h5 class="hesabfa-tab-page-title">
+                همسان سازی دستی کالاهای فروشگاه با حسابفا
+                <span class="badge bg-warning text-dark hand <?= $showTips ? 'd-none' : 'd-inline-block' ?>"
+                      id="show-tips-btn">مشاهده نکات مهم</span>
+            </h5>
 
-        <div class="alert alert-danger alert-dismissible fade show <?= isset($codesNotFoundInHesabfa) ? 'd-block' : 'd-none' ?>"
-             role="alert">
-            <strong>خطا</strong><br> کدهای زیر در حسابفا پیدا نشد:
-            <br>
-            <?php foreach ($codesNotFoundInHesabfa as $code): ?>
-                <span class="badge bg-secondary"><?= $code ?></span>&nbsp;
-            <?php endforeach; ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div id="tips-alert"
-             class="alert alert-warning alert-dismissible fade show <?= $showTips ? 'd-block' : 'd-none' ?>"
-             role="alert">
-            <strong>توجه!</strong>
-            <ul style="list-style-type:square">
-                <li>تغییرات هر صفحه را ذخیره کنید و سپس به صفحه بعد بروید.</li>
-                <li>کد حسابفا همان کد 6 رقمی (کد حسابداری کالا) است.</li>
-                <li>از وجود تعریف کالا در حسابفا اطمینان حاصل کنید.</li>
-                <li>این صفحه برای زمانی است که شما از قبل یک کالا را هم در فروشگاه و هم در حسابفا
-                    تعریف کرده اید اما اتصالی بین آنها وجود ندارد.
-                    به کمک این صفحه می توانید این اتصال را بصورت دستی برقرار کنید.
-                </li>
-                <li>
-                    برای راحتی کار، این جدول بر اساس نام محصول مرتب سازی شده است،
-                    بنابراین در حسابفا نیز لیست کالاها را بر اساس نام مرتب سازی کرده و از روی آن شروع به وارد کردن کدهای
-                    متناظر در این جدول نمایید.
-                </li>
-            </ul>
-            <button type="button" class="btn-close" id="hide-tips-btn"></button>
-        </div>
-
-        </p>
-        <form id="ssbhesabfa_sync_products_manually" autocomplete="off"
-              action="<?php echo admin_url('admin.php?page=hesabfa-sync-products-manually&p=1'); ?>"
-              method="post">
-
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">ID</th>
-                    <th scope="col">نام کالا</th>
-                    <th scope="col">شناسه محصول</th>
-                    <th scope="col">کد حسابفا</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($result["data"] as $p):
-                    $i++; ?>
-                    <tr class="<?= $p->id_hesabfa ? 'table-success' : 'table-danger'; ?>">
-                        <th scope="row"><?= $i; ?></th>
-                        <td><?= $p->ID; ?></td>
-                        <td><?= $p->post_title; ?></td>
-                        <td><?= $p->sku; ?></td>
-                        <td>
-                            <input type="text" class="form-control code-input" id="<?= $p->ID; ?>"
-                                   data-parent-id="<?= $p->post_parent; ?>" value="<?= $p->id_hesabfa; ?>"
-                                   style="width: 100px">
-                        </td>
-                    </tr>
+            <div class="alert alert-danger alert-dismissible fade show <?= isset($codesNotFoundInHesabfa) ? 'd-block' : 'd-none' ?>"
+                 role="alert">
+                <strong>خطا</strong><br> کدهای زیر در حسابفا پیدا نشد:
+                <br>
+                <?php foreach ($codesNotFoundInHesabfa as $code): ?>
+                    <span class="badge bg-secondary"><?= $code ?></span>&nbsp;
                 <?php endforeach; ?>
-                </tbody>
-            </table>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
 
-            <label><?= $result["totalCount"] ?> رکورد </label> |
-            <label><?= $pageCount ?> صفحه </label> |
-            <label>صفحه جاری: </label>
-            <input id="pageNumber" class="form-control form-control-sm d-inline" type="text" value="<?= $page ?>"
-                   style="width: 80px">
-            <a id="goToPage" class="btn btn-outline-secondary btn-sm" data-rpp="<?= $rpp ?>" href="javascript:void(0)">برو</a>
-
-            <div class="dropdown d-inline">
-                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    <?= $rpp . ' ' ?>ردیف در هر صفحه
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <?php foreach ($rpp_options as $option): ?>
-                        <li><a class="dropdown-item"
-                               href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=<?= $option ?>"><?= $option ?></a>
-                        </li>
-                    <?php endforeach; ?>
+            <div id="tips-alert"
+                 class="alert alert-warning alert-dismissible fade show <?= $showTips ? 'd-block' : 'd-none' ?>"
+                 role="alert">
+                <strong>توجه!</strong>
+                <ul style="list-style-type:square">
+                    <li>تغییرات هر صفحه را ذخیره کنید و سپس به صفحه بعد بروید.</li>
+                    <li>کد حسابفا همان کد 6 رقمی (کد حسابداری کالا) است.</li>
+                    <li>از وجود تعریف کالا در حسابفا اطمینان حاصل کنید.</li>
+                    <li>این صفحه برای زمانی است که شما از قبل یک کالا را هم در فروشگاه و هم در حسابفا
+                        تعریف کرده اید اما اتصالی بین آنها وجود ندارد.
+                        به کمک این صفحه می توانید این اتصال را بصورت دستی برقرار کنید.
+                    </li>
+                    <li>
+                        برای راحتی کار، این جدول بر اساس نام محصول مرتب سازی شده است،
+                        بنابراین در حسابفا نیز لیست کالاها را بر اساس نام مرتب سازی کرده و از روی آن شروع به وارد کردن
+                        کدهای
+                        متناظر در این جدول نمایید.
+                    </li>
                 </ul>
+                <button type="button" class="btn-close" id="hide-tips-btn"></button>
             </div>
-            <a class="btn btn-outline-secondary btn-sm <?= $page == 1 ? 'disabled' : '' ?>"
-               href="?page=hesabfa-sync-products-manually&p=<?= $page - 1 ?>&rpp=<?= $rpp ?>">< صفحه قبل</a>
-            <a class="btn btn-outline-secondary btn-sm <?= $page == $pageCount ? 'disabled' : '' ?>"
-               href="?page=hesabfa-sync-products-manually&p=<?= $page + 1 ?>&rpp=<?= $rpp ?>">صفحه بعد ></a>
 
-            <div class="mt-3">
-                <button class="btn btn-success" id="ssbhesabfa_sync_products_manually-submit"
-                        name="ssbhesabfa_sync_products_manually-submit"><?php echo __('Save changes', 'ssbhesabfa'); ?></button>
-            </div>
-        </form>
+            </p>
+            <form id="ssbhesabfa_sync_products_manually" autocomplete="off"
+                  action="<?php echo admin_url('admin.php?page=hesabfa-sync-products-manually&p=1'); ?>"
+                  method="post">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">نام کالا</th>
+                        <th scope="col">شناسه محصول</th>
+                        <th scope="col">کد حسابفا</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($result["data"] as $p):
+                        $i++; ?>
+                        <tr class="<?= $p->id_hesabfa ? 'table-success' : 'table-danger'; ?>">
+                            <th scope="row"><?= $i; ?></th>
+                            <td><?= $p->ID; ?></td>
+                            <td><?= $p->post_title; ?></td>
+                            <td><?= $p->sku; ?></td>
+                            <td>
+                                <input type="text" class="form-control code-input" id="<?= $p->ID; ?>"
+                                       data-parent-id="<?= $p->post_parent; ?>" value="<?= $p->id_hesabfa; ?>"
+                                       style="width: 100px">
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <label><?= $result["totalCount"] ?> رکورد </label> |
+                <label><?= $pageCount ?> صفحه </label> |
+                <label>صفحه جاری: </label>
+                <input id="pageNumber" class="form-control form-control-sm d-inline" type="text" value="<?= $page ?>"
+                       style="width: 80px">
+                <a id="goToPage" class="btn btn-outline-secondary btn-sm" data-rpp="<?= $rpp ?>"
+                   href="javascript:void(0)">برو</a>
+
+                <div class="dropdown d-inline">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                            id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <?= $rpp . ' ' ?>ردیف در هر صفحه
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <?php foreach ($rpp_options as $option): ?>
+                            <li><a class="dropdown-item"
+                                   href="?page=hesabfa-sync-products-manually&p=<?= $page ?>&rpp=<?= $option ?>"><?= $option ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <a class="btn btn-outline-secondary btn-sm <?= $page == 1 ? 'disabled' : '' ?>"
+                   href="?page=hesabfa-sync-products-manually&p=<?= $page - 1 ?>&rpp=<?= $rpp ?>">< صفحه قبل</a>
+                <a class="btn btn-outline-secondary btn-sm <?= $page == $pageCount ? 'disabled' : '' ?>"
+                   href="?page=hesabfa-sync-products-manually&p=<?= $page + 1 ?>&rpp=<?= $rpp ?>">صفحه بعد ></a>
+
+                <div class="mt-3">
+                    <button class="btn btn-success" id="ssbhesabfa_sync_products_manually-submit"
+                            name="ssbhesabfa_sync_products_manually-submit"><?php echo __('Save changes', 'ssbhesabfa'); ?></button>
+                </div>
+            </form>
+        </div>
         <?php
     }
 
@@ -187,7 +192,7 @@ class Ssbhesabfa_Admin_Display
                                 WHERE obj_type ='product'");
 
         foreach ($rows as $r) {
-            if($r->post_excerpt)
+            if ($r->post_excerpt)
                 $r->post_title = $r->post_title . ' [' . $r->post_excerpt . ']';
         }
 
@@ -211,7 +216,7 @@ class Ssbhesabfa_Admin_Display
      */
     public static function hesabfa_plugin_page()
     {
-        $iconsArray = ['home','cog','box-open','users','file-invoice-dollar','money-check-alt','file-export','sync-alt','file-alt'];
+        $iconsArray = ['home', 'cog', 'box-open', 'users', 'file-invoice-dollar', 'money-check-alt', 'file-export', 'sync-alt', 'file-alt'];
         if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             $setting_tabs = apply_filters('ssbhesabfa_setting_tab', array(
                 'home' => __('Home', 'ssbhesabfa'),
@@ -226,7 +231,7 @@ class Ssbhesabfa_Admin_Display
             ));
             $current_tab = (isset($_GET['tab'])) ? wc_clean($_GET['tab']) : 'home';
             ?>
-            <h2 class="nav-tab-wrapper">
+            <h2 class="nav-tab-wrapper mt-2">
                 <?php
                 $i = 0;
                 foreach ($setting_tabs as $name => $label) {

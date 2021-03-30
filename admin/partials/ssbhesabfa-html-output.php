@@ -56,7 +56,7 @@ class Ssbhesabfa_Html_output {
                     $description = $tip = '';
                 }
                 if ($description && in_array($value['type'], array('textarea', 'radio'))) {
-                    $description = '<p style="margin-top:0">' . wp_kses_post($description) . '</p>';
+                    $description = '<p style="margin-top:0" class="hesabfa-p">' . wp_kses_post($description) . '</p>';
                 } elseif ($description && in_array($value['type'], array('checkbox'))) {
                     $description = wp_kses_post($description);
                 } elseif ($description) {
@@ -69,17 +69,17 @@ class Ssbhesabfa_Html_output {
                 }
                 if ($tip && in_array($value['type'], array('checkbox'))) {
 
-                    $tip = '<p class="description">' . $tip . '</p>';
+                    $tip = '<p class="description hesabfa-p">' . $tip . '</p>';
                 }
                 switch ($value['type']) {
                     case 'title':
                         if (!empty($value['title'])) {
-                            echo '<h3>' . esc_html($value['title']) . '</h3>';
+                            echo '<h3 class="hesabfa-tab-page-title">' . esc_html($value['title']) . '</h3>';
                         }
                         if (!empty($value['desc'])) {
                             echo wpautop(wptexturize(wp_kses_post($value['desc'])));
                         }
-                        echo '<table class="form-table">' . "\n\n";
+                        echo '<table class="form-table hesabfa-p">' . "\n\n";
                         break;
                     case 'sectionend':
                         echo '</table>';
@@ -376,7 +376,7 @@ class Ssbhesabfa_Html_output {
         foreach ($update_options as $name => $value) {
             update_option($name, wc_clean($value));
         }
-        echo '<div class="updated"><p>' . __( 'Settings were saved successfully.', 'ssbhesabfa' ) . '</p></div>';
+        echo '<div class="updated"><p class="hesabfa-p">' . __( 'Settings were saved successfully.', 'ssbhesabfa' ) . '</p></div>';
         return true;
     }
 }
