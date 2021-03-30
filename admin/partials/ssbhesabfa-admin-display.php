@@ -211,6 +211,7 @@ class Ssbhesabfa_Admin_Display
      */
     public static function hesabfa_plugin_page()
     {
+        $iconsArray = ['home','cog','box-open','users','file-invoice-dollar','money-check-alt','file-export','sync-alt','file-alt'];
         if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             $setting_tabs = apply_filters('ssbhesabfa_setting_tab', array(
                 'home' => __('Home', 'ssbhesabfa'),
@@ -227,8 +228,12 @@ class Ssbhesabfa_Admin_Display
             ?>
             <h2 class="nav-tab-wrapper">
                 <?php
-                foreach ($setting_tabs as $name => $label)
-                    echo '<a href="' . admin_url('admin.php?page=ssbhesabfa-option&tab=' . $name) . '" class="nav-tab ' . ($current_tab == $name ? 'nav-tab-active' : '') . '">' . $label . '</a>';
+                $i = 0;
+                foreach ($setting_tabs as $name => $label) {
+                    $iconUrl = plugins_url("/hesabfa-accounting/admin/img/icons/$iconsArray[$i].svg");
+                    $i++;
+                    echo '<a href="' . admin_url('admin.php?page=ssbhesabfa-option&tab=' . $name) . '" class="nav-tab ' . ($current_tab == $name ? 'nav-tab-active' : '') . '">' . "<svg width='16' height='16' class='hesabfa-tab-icon'><image href='$iconUrl' width='16' height='16' /></svg>" . $label . '</a>';
+                }
                 ?>
             </h2>
             <?php
