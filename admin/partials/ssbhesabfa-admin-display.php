@@ -62,6 +62,7 @@ class Ssbhesabfa_Admin_Display
             $showTips = false;
         }
 
+        self::hesabfa_plugin_header();
         ?>
         <div class="hesabfa-f">
             <p class="mt-4">
@@ -230,6 +231,7 @@ class Ssbhesabfa_Admin_Display
                 'log' => __('Log', 'ssbhesabfa')
             ));
             $current_tab = (isset($_GET['tab'])) ? wc_clean($_GET['tab']) : 'home';
+            self::hesabfa_plugin_header();
             ?>
             <h2 class="nav-tab-wrapper mt-2">
                 <?php
@@ -253,6 +255,24 @@ class Ssbhesabfa_Admin_Display
         } else {
             echo '<div class="wrap">' . __('Hesabfa Plugin requires the WooCommerce to work!, Please install/activate woocommerce and try again', 'ssbhesabfa') . '</div>';
         }
+    }
+
+    public static function hesabfa_plugin_header() {
+        $logoUrl = plugins_url('/hesabfa-accounting/admin/img/hesabfa-logo.fa.png');
+        ?>
+        <div class="hesabfa-header">
+            <div class="row">
+                <div class="col-auto">
+                    <img src="<?php echo $logoUrl ?>" alt="حسابفا">
+                </div>
+                <div class="col"></div>
+                <div class="col-auto">
+                    <a class="btn btn-sm btn-success" href="https://app.hesabfa.com/u/login" target="_blank">ورود به حسابفا</a>
+                    <a class="btn btn-sm btn-warning" href="https://www.hesabfa.com/help/topics/%D8%A7%D9%81%D8%B2%D9%88%D9%86%D9%87/%D9%88%D9%88%DA%A9%D8%A7%D9%85%D8%B1%D8%B3" target="_blank">راهنمای افزونه</a>
+                </div>
+            </div>
+        </div>
+        <?php
     }
 }
 

@@ -33,3 +33,15 @@ a.nav-tab {
 .hesabfa-f-12 {
     font-size: 12pt;
 }
+
+.hesabfa-header {
+    font-family: IRANYekan;
+    background-color: #304967;
+    box-shadow: 5px 5px 5px #f3f3f3;
+    padding: 5px;
+    margin-right: -20px;
+}
+
+.hesabfa-header img {
+    height: 35px;
+}
