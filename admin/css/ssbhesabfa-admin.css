@@ -6,7 +6,6 @@
     width: 16px;
     height: 16px;
     margin-left: 10px;
-
 }
 
 a.nav-tab {
@@ -44,4 +43,10 @@ a.nav-tab {
 
 .hesabfa-header img {
     height: 35px;
+}
+
+.hesabfa-card {
+    max-width: none !important;
+    margin-left: 20px;
+    background-color: whitesmoke !important;
 }

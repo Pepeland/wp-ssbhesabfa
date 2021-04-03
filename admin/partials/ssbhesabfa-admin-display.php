@@ -210,7 +210,6 @@ class Ssbhesabfa_Admin_Display
         return array("data" => $rows, "totalCount" => $totalCount);
     }
 
-
     /**
      * @since    1.0.0
      * @access   public

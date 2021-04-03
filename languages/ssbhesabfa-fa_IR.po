@@ -398,9 +398,15 @@ msgstr "خروجی مشتریان با خطا مواجه شد. حسابفا از
 msgid "Export Products"
 msgstr "خروجی محصولات"
 
+msgid "Import Products"
+msgstr "ورود محصولات"
+
 #: admin/partials/ssbhesabfa-admin-setting.php:395
 msgid "Export and add all online store products to Hesabfa"
 msgstr "افزودن تمامی محصولات فروشگاه آنلاین در حسابفا"
+
+msgid "Import and add all products from Hesabfa to online store"
+msgstr "افزودن تمامی محصولات حسابفا به فروشگاه آنلاین"
 
 #: admin/partials/ssbhesabfa-admin-setting.php:407
 msgid "Export Products opening quantity"

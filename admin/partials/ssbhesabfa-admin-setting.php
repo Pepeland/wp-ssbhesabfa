@@ -47,7 +47,8 @@ class Ssbhesabfa_Setting
     {
         ?>
         <h3 class="hesabfa-tab-page-title"><?php esc_attr_e('Hesabfa Accounting', 'ssbhesabfa'); ?></h3>
-        <p class="mt-4 hesabfa-p hesabfa-f-12 ms-3" style="text-align: justify"><?php esc_attr_e('This module helps connect your (online) store to Hesabfa online accounting software. By using this module, saving products, contacts, and orders in your store will also save them automatically in your Hesabfa account. Besides that, just after a client pays a bill, the receipt document will be stored in Hesabfa as well. Of course, you have to register your account in Hesabfa first. To do so, visit Hesabfa at the link here www.hesabfa.com and sign up for free. After you signed up and entered your account, choose your business, then in the settings menu/API, you can find the API keys for the business and import them to the plugin’s settings. Now your module is ready to use.', 'ssbhesabfa'); ?></p>
+        <p class="mt-4 hesabfa-p hesabfa-f-12 ms-3"
+           style="text-align: justify"><?php esc_attr_e('This module helps connect your (online) store to Hesabfa online accounting software. By using this module, saving products, contacts, and orders in your store will also save them automatically in your Hesabfa account. Besides that, just after a client pays a bill, the receipt document will be stored in Hesabfa as well. Of course, you have to register your account in Hesabfa first. To do so, visit Hesabfa at the link here www.hesabfa.com and sign up for free. After you signed up and entered your account, choose your business, then in the settings menu/API, you can find the API keys for the business and import them to the plugin’s settings. Now your module is ready to use.', 'ssbhesabfa'); ?></p>
         <p class="hesabfa-p hesabfa-f-12"><?php esc_attr_e('For more information and a full guide to how to use Hesabfa and WooCommerce Plugin, visit Hesabfa’s website and go to the “Accounting School” menu.', 'ssbhesabfa'); ?></p>
         <?php
     }
@@ -417,7 +418,7 @@ class Ssbhesabfa_Setting
             <p class="hesabfa-p"><?php echo __('Export can take several minutes.', 'ssbhesabfa') ?></p>
         </div>
         <br>
-        <form id="ssbhesabfa_export_products" autocomplete="off"
+        <form class="card hesabfa-card" id="ssbhesabfa_export_products" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
               method="post">
             <div>
@@ -428,26 +429,27 @@ class Ssbhesabfa_Setting
                                 name="ssbhesabfa-export-product-submit"><?php echo __('Export Products', 'ssbhesabfa'); ?></button>
                     </div>
                 </div>
-                <p class="hesabfa-p"><?php echo __('Export and add all online store products to Hesabfa', 'ssbhesabfa'); ?></p>
+                <p class="hesabfa-p mt-2"><?php echo __('Export and add all online store products to Hesabfa', 'ssbhesabfa'); ?></p>
             </div>
         </form>
 
-        <form id="ssbhesabfa_export_products_opening_quantity" autocomplete="off"
+        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_export_products_opening_quantity" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
               method="post">
             <div>
                 <div>
                     <label for="ssbhesabfa-export-product-opening-quantity-submit"></label>
                     <div>
-                        <button class="button button-primary hesabfa-f" id="ssbhesabfa-export-product-opening-quantity-submit"
+                        <button class="button button-primary hesabfa-f"
+                                id="ssbhesabfa-export-product-opening-quantity-submit"
                                 name="ssbhesabfa-export-product-opening-quantity-submit"<?php if (get_option('ssbhesabfa_use_export_product_opening_quantity') == true) echo 'disabled'; ?>><?php echo __('Export Products opening quantity', 'ssbhesabfa'); ?></button>
                     </div>
                 </div>
-                <p class="hesabfa-p"><?php echo __('Export the products quantity and record the \'products opening quantity\' in the Hesabfa', 'ssbhesabfa'); ?></p>
+                <p class="hesabfa-p mt-2"><?php echo __('Export the products quantity and record the \'products opening quantity\' in the Hesabfa', 'ssbhesabfa'); ?></p>
             </div>
         </form>
 
-        <form id="ssbhesabfa_export_customers" autocomplete="off"
+        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_export_customers" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
               method="post">
             <div>
@@ -458,7 +460,31 @@ class Ssbhesabfa_Setting
                                 name="ssbhesabfa-export-customer-submit"><?php echo __('Export Customers', 'ssbhesabfa'); ?></button>
                     </div>
                 </div>
-                <p class="hesabfa-p"><?php echo __('Export and add all online store customers to Hesabfa.', 'ssbhesabfa'); ?></p>
+                <p class="hesabfa-p mt-2"><?php echo __('Export and add all online store customers to Hesabfa.', 'ssbhesabfa'); ?></p>
+            </div>
+        </form>
+
+        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_export_products" autocomplete="off"
+              action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
+              method="post">
+            <div>
+                <div>
+                    <label for="ssbhesabfa-import-product-submit"></label>
+                    <div>
+                        <button class="button button-primary hesabfa-f" id="ssbhesabfa-import-product-submit"
+                                name="ssbhesabfa-import-product-submit"><?php echo __('Import Products', 'ssbhesabfa'); ?></button>
+                    </div>
+                </div>
+                <p class="hesabfa-p mt-2">
+                    <?php echo __('Import and add all products from Hesabfa to online store', 'ssbhesabfa'); ?>
+                </p>
+                <label class="small">نکات مهم:</label>
+                <ul class="bg-warning p-2 small" style="border-radius: 5px">
+                    <li>با انجام این عملیات محصولات لینک نشده از حسابفا وارد فروشگاه می شوند.</li>
+                    <li>اگر از قبل محصولات هم در فروشگاه ثبت شده اند و هم در حسابفا و به هم لینک نشده اند باید از گزینه
+                        همسان سازی دستی محصولات استفاده کنید.
+                    </li>
+                </ul>
             </div>
         </form>
         <?php
@@ -607,7 +633,8 @@ class Ssbhesabfa_Setting
         <?php
     }
 
-    public static function getProductsCount() {
+    public static function getProductsCount()
+    {
         $storeProductsCount = self::getProductCountsInStore();
         $hesabfaProductsCount = self::getProductCountsInHesabfa();
         $linkedProductsCount = self::getLinkedProductsCount();
@@ -617,18 +644,23 @@ class Ssbhesabfa_Setting
             "linkedProductsCount" => $linkedProductsCount);
     }
 
-    public static function getProductCountsInHesabfa() {
+    public static function getProductCountsInHesabfa()
+    {
         $hesabfa = new Ssbhesabfa_Api();
         $response = $hesabfa->itemGetItems(array('Take' => 1));
         if ($response->Success) {
             return $response->Result->TotalCount;
         } else return 0;
     }
-    public static function getLinkedProductsCount() {
+
+    public static function getLinkedProductsCount()
+    {
         global $wpdb;
-        return $wpdb->get_var("SELECT COUNT(*) FROM `".$wpdb->prefix."ssbhesabfa` WHERE `obj_type` = 'product'");
+        return $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `obj_type` = 'product'");
     }
-    public static function getProductCountsInStore() {
+
+    public static function getProductCountsInStore()
+    {
         $args = array(
             'post_type' => array('product', 'product_variation'),
             'post_status' => array('publish', 'private'),
@@ -641,8 +673,8 @@ class Ssbhesabfa_Setting
         $minusParents = array();
 
         foreach ($products as $product) {
-            if($product->post_parent) {
-                if(!array_key_exists($product->post_parent, $minusParents)) {
+            if ($product->post_parent) {
+                if (!array_key_exists($product->post_parent, $minusParents)) {
                     $minusParents[$product->post_parent] = true;
                     $count--;
                 }
@@ -792,53 +824,53 @@ class Ssbhesabfa_Setting
     {
         ?>
         <div style="padding-left: 20px">
-        <h3 class="hesabfa-tab-page-title"><?php echo __('Events and bugs log', 'ssbhesabfa') ?></h3>
-        <div class="flex">
-            <div style="display: inline-block; ">
-                <form id="ssbhesabfa_clean_log" autocomplete="off"
-                      action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=log'); ?>"
-                      method="post">
-                    <div>
-                        <label for="ssbhesabfa-log-clean-submit"></label>
+            <h3 class="hesabfa-tab-page-title"><?php echo __('Events and bugs log', 'ssbhesabfa') ?></h3>
+            <div class="flex">
+                <div style="display: inline-block; ">
+                    <form id="ssbhesabfa_clean_log" autocomplete="off"
+                          action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=log'); ?>"
+                          method="post">
                         <div>
-                            <button class="button button-primary hesabfa-f" id="ssbhesabfa-log-clean-submit"
-                                    name="ssbhesabfa-log-clean-submit"><?php echo __('Clean log', 'ssbhesabfa'); ?></button>
+                            <label for="ssbhesabfa-log-clean-submit"></label>
+                            <div>
+                                <button class="button button-primary hesabfa-f" id="ssbhesabfa-log-clean-submit"
+                                        name="ssbhesabfa-log-clean-submit"><?php echo __('Clean log', 'ssbhesabfa'); ?></button>
+                            </div>
                         </div>
+                    </form>
+                </div>
+                <div style="display: inline-block; margin-right: 10px;">
+                    <label for="ssbhesabfa-log-download-submit"></label>
+                    <div>
+                        <a class="button button-secondary hesabfa-f" target="_blank"
+                           href="<?php echo WP_CONTENT_URL ?>/ssbhesabfa.log">
+                            <?php echo __('Download log file', 'ssbhesabfa'); ?>
+                        </a>
                     </div>
-                </form>
-            </div>
-            <div style="display: inline-block; margin-right: 10px;">
-                <label for="ssbhesabfa-log-download-submit"></label>
-                <div>
-                    <a class="button button-secondary hesabfa-f" target="_blank"
-                        href="<?php echo WP_CONTENT_URL ?>/ssbhesabfa.log">
-                        <?php echo __('Download log file', 'ssbhesabfa'); ?>
-                    </a>
                 </div>
             </div>
+            <br>
+            <?php
+            if (file_exists(WP_CONTENT_DIR . '/ssbhesabfa.log') &&
+                (filesize(WP_CONTENT_DIR . '/ssbhesabfa.log') / 1000) > 1000) {
+
+                $fileSizeInMb = ((filesize(WP_CONTENT_DIR . '/ssbhesabfa.log') / 1000) / 1000);
+                $fileSizeInMb = round($fileSizeInMb, 2);
+
+                $str = __('The log file size is large, clean log file.', 'ssbhesabfa');
+
+                echo '<div class="notice notice-warning">' .
+                    '<p class="hesabfa-p">' . $str . ' (' . $fileSizeInMb . 'MB)' . '</p>'
+                    . '</div>';
+
+            } else if (file_exists(WP_CONTENT_DIR . '/ssbhesabfa.log')) {
+
+                $logFileContent = file_get_contents(WP_CONTENT_DIR . '/ssbhesabfa.log');
+                echo '<textarea rows="35"  style="width: 100%; box-sizing: border-box; direction: ltr; margin-left: 10px; background-color: whitesmoke">' . $logFileContent . '</textarea>';
+
+            }
+            ?>
         </div>
-        <br>
-        <?php
-        if (file_exists(WP_CONTENT_DIR . '/ssbhesabfa.log') &&
-            (filesize(WP_CONTENT_DIR . '/ssbhesabfa.log') / 1000) > 1000) {
-
-            $fileSizeInMb = ((filesize(WP_CONTENT_DIR . '/ssbhesabfa.log') / 1000) / 1000);
-            $fileSizeInMb = round($fileSizeInMb, 2);
-
-            $str = __('The log file size is large, clean log file.', 'ssbhesabfa');
-
-            echo '<div class="notice notice-warning">' .
-                '<p class="hesabfa-p">' . $str . ' (' . $fileSizeInMb . 'MB)' . '</p>'
-                . '</div>';
-
-        } else if (file_exists(WP_CONTENT_DIR . '/ssbhesabfa.log')) {
-
-            $logFileContent = file_get_contents(WP_CONTENT_DIR . '/ssbhesabfa.log');
-            echo '<textarea rows="35"  style="width: 100%; box-sizing: border-box; direction: ltr; margin-left: 10px; background-color: whitesmoke">' . $logFileContent . '</textarea>';
-
-        }
-        ?>
-            </div>
         <?php
     }
 
