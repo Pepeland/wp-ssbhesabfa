@@ -9,7 +9,6 @@
  */
 
 class Ssbhesabfa_Html_output {
-
     public static function init($options = array()) {
         if (!empty($options)) {
             foreach ($options as $value) {
@@ -382,9 +381,3 @@ class Ssbhesabfa_Html_output {
 }
 
 Ssbhesabfa_Html_output::init();
-
-
-
-
-
-

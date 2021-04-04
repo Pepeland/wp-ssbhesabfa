@@ -328,9 +328,15 @@ msgstr "رمزعبور حسابفا را وارد کنید"
 msgid "API Key"
 msgstr "کلید API"
 
+msgid "Login token"
+msgstr "توکن ورود"
+
 #: admin/partials/ssbhesabfa-admin-setting.php:283
 msgid "Find API key in Setting->Financial Settings->API Menu"
 msgstr "کلید API را در حسابفا از منوی تنظیمات->تنظیمات مالی->API پیدا کنید"
+
+msgid "Find Login token in Setting->Financial Settings->API Menu"
+msgstr "توکن ورود را در حسابفا از منوی تنظیمات->تنظیمات مالی->API پیدا کنید"
 
 #: admin/partials/ssbhesabfa-admin-setting.php:323
 msgid ""

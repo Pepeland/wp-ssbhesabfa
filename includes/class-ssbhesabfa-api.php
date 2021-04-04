@@ -23,6 +23,7 @@ class Ssbhesabfa_Api
             'apiKey' => get_option('ssbhesabfa_account_api'),
             'userId' => get_option('ssbhesabfa_account_username'),
             'password' => get_option('ssbhesabfa_account_password'),
+            'loginToken' => get_option('ssbhesabfa_account_login_token'),
         ), $data);
 
         //Debug mode

@@ -280,8 +280,14 @@ class Ssbhesabfa_Setting
 
     public static function ssbhesabfa_api_setting_fields()
     {
-
         $fields[] = array('title' => __('API Settings', 'ssbhesabfa'), 'type' => 'title', 'desc' => '', 'id' => 'api_options');
+
+        $fields[] = array(
+            'title' => __('API Key', 'ssbhesabfa'),
+            'desc' => __('Find API key in Setting->Financial Settings->API Menu', 'ssbhesabfa'),
+            'id' => 'ssbhesabfa_account_api',
+            'type' => 'text',
+        );
 
         $fields[] = array(
             'title' => __('Email', 'ssbhesabfa'),
@@ -298,9 +304,9 @@ class Ssbhesabfa_Setting
         );
 
         $fields[] = array(
-            'title' => __('API Key', 'ssbhesabfa'),
-            'desc' => __('Find API key in Setting->Financial Settings->API Menu', 'ssbhesabfa'),
-            'id' => 'ssbhesabfa_account_api',
+            'title' => __('Login token', 'ssbhesabfa'),
+            'desc' => __('Find Login token in Setting->Financial Settings->API Menu', 'ssbhesabfa'),
+            'id' => 'ssbhesabfa_account_login_token',
             'type' => 'text',
         );
 
@@ -332,7 +338,6 @@ class Ssbhesabfa_Setting
 
         Ssbhesabfa_Setting::ssbhesabfa_set_webhook();
     }
-
 
     public static function ssbhesabfa_export_setting()
     {
@@ -489,7 +494,6 @@ class Ssbhesabfa_Setting
         </form>
         <?php
     }
-
 
     public static function ssbhesabfa_sync_setting()
     {
