@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Api
- * @version    1.4.11
+ * @version    1.5.12
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/api
@@ -23,7 +23,7 @@ class Ssbhesabfa_Api
             'apiKey' => get_option('ssbhesabfa_account_api'),
             'userId' => get_option('ssbhesabfa_account_username'),
             'password' => get_option('ssbhesabfa_account_password'),
-            'loginToken' => get_option('ssbhesabfa_account_login_token'),
+            'loginToken' => get_option('ssbhesabfa_account_login_token') ? get_option('ssbhesabfa_account_login_token') : '',
         ), $data);
 
         //Debug mode
@@ -43,6 +43,8 @@ class Ssbhesabfa_Api
             'sslverify' => false,
             'data_format' => 'body',
         );
+
+        //Ssbhesabfa_Admin_Functions::logDebugObj($options);
 
         $wp_remote_post = wp_remote_post($endpoint, $options);
         $result = json_decode(wp_remote_retrieve_body($wp_remote_post));

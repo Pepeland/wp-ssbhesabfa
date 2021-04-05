@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Setting
- * @version    1.4.11
+ * @version    1.5.12
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/setting
@@ -469,7 +469,7 @@ class Ssbhesabfa_Setting
             </div>
         </form>
 
-        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_export_products" autocomplete="off"
+        <form class="card hesabfa-card hesabfa-f d-none" id="ssbhesabfa_export_products" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
               method="post">
             <div>
