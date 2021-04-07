@@ -7,6 +7,7 @@
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/functions
  * @author     Saeed Sattar Beglou <saeed.sb@gmail.com>
+ * @author     HamidReza Gharahzadeh <hamidprime@gmail.com>
  */
 
 class Ssbhesabfa_Admin_Functions

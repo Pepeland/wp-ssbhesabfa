@@ -2,6 +2,7 @@
 
 /*
  * @author     Saeed Sattar Beglou <saeed.sb@gmail.com>
+ * @author     HamidReza Gharahzadeh <hamidprime@gmail.com>
  */
 
 /* Check security token */
