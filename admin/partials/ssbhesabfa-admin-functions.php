@@ -920,6 +920,19 @@ class Ssbhesabfa_Admin_Functions
         return false;
     }
 
+    public function importProducts()
+    {
+        // get products from hesabfa
+        $hesabfa = new Ssbhesabfa_Api();
+        $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
+        $response = $hesabfa->itemGetItems(array('Take' => 99999999, 'Filters' => $filters));
+        if ($response->Success) {
+            $items = $response->Result;
+
+        }
+        return false;
+    }
+
     public function exportOpeningQuantity()
     {
         $args = array('post_type' => 'product', 'posts_per_page' => -1);
