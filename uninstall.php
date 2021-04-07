@@ -19,3 +19,11 @@ foreach ($options as $option) {
 }
 
 $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ssbhesabfa");
+
+// delete tags in hesabfa
+$hesabfaApi = new Ssbhesabfa_Api();
+$result = $hesabfaApi->fixClearTags();
+
+if (!$result->Success) {
+    Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot clear tags. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
+}

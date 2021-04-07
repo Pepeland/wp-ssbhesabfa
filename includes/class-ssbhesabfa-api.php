@@ -378,4 +378,11 @@ class Ssbhesabfa_Api
         $method = 'setting/GetWarehouses';
         return $this->apiRequest($method);
     }
+
+    public function fixClearTags()
+    {
+        $method = 'fix/clearTag';
+        return $this->apiRequest($method);
+    }
+
 }
