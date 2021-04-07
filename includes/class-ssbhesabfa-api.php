@@ -252,6 +252,16 @@ class Ssbhesabfa_Api
         return $this->apiRequest($method, $data);
     }
 
+    public function invoiceGetByIdList($idList)
+    {
+        $method = 'invoice/getById';
+        $data = array(
+            'idList' => $idList,
+        );
+
+        return $this->apiRequest($method, $data);
+    }
+
     public function invoiceGetInvoices($queryinfo, $type = 0)
     {
         $method = 'invoice/getinvoices';

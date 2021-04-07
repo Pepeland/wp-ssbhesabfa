@@ -8,10 +8,10 @@
 
 class Ssbhesabfa_Webhook
 {
-	public $invoicesObjectId = array();
-	public $invoiceItemsCode = array();
-	public $itemsObjectId = array();
-	public $contactsObjectId = array();
+    public $invoicesObjectId = array();
+    public $invoiceItemsCode = array();
+    public $itemsObjectId = array();
+    public $contactsObjectId = array();
 
     public function __construct()
     {
@@ -20,49 +20,49 @@ class Ssbhesabfa_Webhook
         $changes = $hesabfaApi->settingGetChanges($lastChange + 1);
         if ($changes->Success) {
             foreach ($changes->Result as $item) {
-	            if (!$item->API) {
-		            switch ($item->ObjectType) {
-			            case 'Invoice':
-				            $this->invoicesObjectId[] = $item->ObjectId;
-				            foreach (explode(',', $item->Extra) as $invoiceItem) {
-				                if ($invoiceItem != ''){
+                if (!$item->API) {
+                    switch ($item->ObjectType) {
+                        case 'Invoice':
+                            $this->invoicesObjectId[] = $item->ObjectId;
+                            foreach (explode(',', $item->Extra) as $invoiceItem) {
+                                if ($invoiceItem != '') {
                                     $this->invoiceItemsCode[] = $invoiceItem;
                                 }
-				            }
+                            }
 
                             break;
-			            case 'Product':
-				            //if Action was deleted
-				            if ($item->Action == 53) {
-					            $id_obj = Ssbhesabfa_Admin_Functions::getObjectIdByCode('product', $item->Extra);
-					            global $wpdb;
-					            $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $id_obj));
+                        case 'Product':
+                            //if Action was deleted
+                            if ($item->Action == 53) {
+                                $id_obj = Ssbhesabfa_Admin_Functions::getObjectIdByCode('product', $item->Extra);
+                                global $wpdb;
+                                $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $id_obj));
 
                                 break;
                             }
-				            $this->itemsObjectId[] = $item->ObjectId;
+                            $this->itemsObjectId[] = $item->ObjectId;
 
                             break;
-			            case 'Contact':
-				            //if Action was deleted
-				            if ($item->Action == 33) {
-					            $id_obj = Ssbhesabfa_Admin_Functions::getObjectIdByCode('customer', $item->Extra);
-					            global $wpdb;
-					            $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $id_obj));
+                        case 'Contact':
+                            //if Action was deleted
+                            if ($item->Action == 33) {
+                                $id_obj = Ssbhesabfa_Admin_Functions::getObjectIdByCode('customer', $item->Extra);
+                                global $wpdb;
+                                $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $id_obj));
 
-					            break;
-				            }
+                                break;
+                            }
 
-				            $this->contactsObjectId[] = $item->ObjectId;
+                            $this->contactsObjectId[] = $item->ObjectId;
                             break;
-		            }
+                    }
 
-		            switch ($item->Action) {
+                    switch ($item->Action) {
                         case '101':
                             $func = new Ssbhesabfa_Admin_Functions();
                             $func->syncProducts();
                     }
-	            }
+                }
             }
 
             //remove duplicate values
@@ -73,11 +73,11 @@ class Ssbhesabfa_Webhook
 
             $this->setChanges();
 
-	        //set LastChange ID
-	        $lastChange = end($changes->Result);
-	        if (is_object($lastChange)) {
-		        update_option('ssbhesabfa_last_log_check_id', $lastChange->Id);
-	        }
+            //set LastChange ID
+            $lastChange = end($changes->Result);
+            if (is_object($lastChange)) {
+                update_option('ssbhesabfa_last_log_check_id', $lastChange->Id);
+            }
         } else {
             Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot check last changes. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
 
@@ -87,63 +87,64 @@ class Ssbhesabfa_Webhook
         return true;
     }
 
-	public function setChanges() {
-		//Invoices
+    public function setChanges()
+    {
+        //Invoices
         if (!empty($this->invoicesObjectId)) {
             $invoices = $this->getObjectsByIdList($this->invoicesObjectId, 'invoice');
             if ($invoices != false) {
-				foreach ($invoices as $invoice) {
-					$this->setInvoiceChanges($invoice);
-				}
-			}
-		}
+                foreach ($invoices as $invoice) {
+                    $this->setInvoiceChanges($invoice);
+                }
+            }
+        }
 
-		//Contacts
+        //Contacts
         if (!empty($this->contactsObjectId)) {
-			$contacts = $this->getObjectsByIdList(array_unique($this->contactsObjectId), 'contact');
-			if ($contacts != false) {
-				foreach ($contacts as $contact) {
-					$this->setContactChanges($contact);
-				}
-			}
-		}
+            $contacts = $this->getObjectsByIdList(array_unique($this->contactsObjectId), 'contact');
+            if ($contacts != false) {
+                foreach ($contacts as $contact) {
+                    $this->setContactChanges($contact);
+                }
+            }
+        }
 
-		//Items
-		$items = array();
+        //Items
+        $items = array();
 
         if (!empty($this->itemsObjectId)) {
-			$objects = $this->getObjectsByIdList($this->itemsObjectId, 'item');
-			if ($objects != false) {
-				foreach ($objects as $object) {
-					array_push($items, $object);
-				}
-			}
-		}
+            $objects = $this->getObjectsByIdList($this->itemsObjectId, 'item');
+            if ($objects != false) {
+                foreach ($objects as $object) {
+                    array_push($items, $object);
+                }
+            }
+        }
 
-		if (!empty($this->invoiceItemsCode)) {
-			$objects = $this->getObjectsByCodeList($this->invoiceItemsCode);
-			if ($objects != false) {
-				foreach ($objects as $object) {
-					array_push($items, $object);
-				}
-			}
-		}
+        if (!empty($this->invoiceItemsCode)) {
+            $objects = $this->getObjectsByCodeList($this->invoiceItemsCode);
+            if ($objects != false) {
+                foreach ($objects as $object) {
+                    array_push($items, $object);
+                }
+            }
+        }
 
         if (!empty($items)) {
-			foreach ($items as $item) {
-				$this->setItemChanges($item);
-			}
-		}
+            foreach ($items as $item) {
+                $this->setItemChanges($item);
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	// use in webhook call when invoice change
+    // use in webhook call when invoice change
     public function setInvoiceChanges($invoice)
     {
-	    if (!is_object($invoice)) {
-		    return false;
-	    }
+        if (!is_object($invoice)) {
+            return false;
+        }
 
         //1.set new Hesabfa Invoice Code if changes
         $number = $invoice->Number;
@@ -163,7 +164,7 @@ class Ssbhesabfa_Webhook
                 $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('order', $id_order);
                 if ($id_obj != false) {
                     global $wpdb;
-                    $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id` = $id_obj");
+                    $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = $id_obj");
                     if (is_object($row) && $row->id_hesabfa != $number) {
                         $id_hesabfa_old = $row->id_hesabfa;
                         //ToDo: number must int in hesabfa, what can i do
@@ -179,9 +180,9 @@ class Ssbhesabfa_Webhook
     // use in webhook call when contact change
     public function setContactChanges($contact)
     {
-	    if (!is_object($contact)) {
-		    return false;
-	    }
+        if (!is_object($contact)) {
+            return false;
+        }
 
         //1.set new Hesabfa Contact Code if changes
         $code = $contact->Code;
@@ -204,7 +205,7 @@ class Ssbhesabfa_Webhook
         $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('customer', $id_customer);
         if ($id_obj != false) {
             global $wpdb;
-            $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id` = $id_obj");
+            $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = $id_obj");
 
             if (is_object($row) && $row->id_hesabfa != $code) {
                 $id_hesabfa_old = $row->id_hesabfa;
@@ -247,7 +248,7 @@ class Ssbhesabfa_Webhook
 
             //1.set new Hesabfa Item Code if changes
             global $wpdb;
-            $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id` = $id_obj");
+            $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = $id_obj");
 
             if (is_object($row) && $row->id_hesabfa != $item->Code) {
                 $id_hesabfa_old = $row->id_hesabfa;
@@ -312,45 +313,47 @@ class Ssbhesabfa_Webhook
         }
     }
 
-	public function getObjectsByIdList($idList, $type) {
-		$hesabfaApi = new Ssbhesabfa_Api();
-		switch ($type) {
-			case 'item':
-				$result = $hesabfaApi->itemGetById($idList);
-				break;
-			case 'contact':
-				$result = $hesabfaApi->contactGetById($idList);
-				break;
-			case 'invoice':
-				$result = $hesabfaApi->invoiceGetById($idList);
-				break;
-			default:
-				return false;
-		}
+    public function getObjectsByIdList($idList, $type)
+    {
+        $hesabfaApi = new Ssbhesabfa_Api();
+        switch ($type) {
+            case 'item':
+                $result = $hesabfaApi->itemGetById($idList);
+                break;
+            case 'contact':
+                $result = $hesabfaApi->contactGetById($idList);
+                break;
+            case 'invoice':
+                $result = $hesabfaApi->invoiceGetByIdList($idList);
+                break;
+            default:
+                return false;
+        }
 
-		if (is_object($result) && $result->Success) {
-			return $result->Result;
-		}
+        if (is_object($result) && $result->Success) {
+            return $result->Result;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function getObjectsByCodeList($codeList) {
-		$queryInfo = array(
-			'Filters' => array(array(
-				'Property' => 'Code',
-				'Operator' => 'in',
-				'Value' => $codeList,
-			))
-		);
+    public function getObjectsByCodeList($codeList)
+    {
+        $queryInfo = array(
+            'Filters' => array(array(
+                'Property' => 'Code',
+                'Operator' => 'in',
+                'Value' => $codeList,
+            ))
+        );
 
-		$hesabfaApi = new Ssbhesabfa_Api();
-		$result = $hesabfaApi->itemGetItems($queryInfo);
+        $hesabfaApi = new Ssbhesabfa_Api();
+        $result = $hesabfaApi->itemGetItems($queryInfo);
 
-		if (is_object($result) && $result->Success) {
-			return $result->Result->List;
-		}
+        if (is_object($result) && $result->Success) {
+            return $result->Result->List;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }
