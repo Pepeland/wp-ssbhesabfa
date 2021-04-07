@@ -12,6 +12,14 @@ if (!defined( 'WP_UNINSTALL_PLUGIN')) {
 	exit;
 }
 
+require 'includes/class-ssbhesabfa-api.php';
+// delete tags in hesabfa
+$hesabfaApi = new Ssbhesabfa_Api();
+$result = $hesabfaApi->fixClearTags();
+if (!$result->Success) {
+    Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot clear tags. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
+}
+
 global $wpdb;
 $options = $wpdb->get_results("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '%ssbhesabfa%'");
 foreach ($options as $option) {
@@ -19,11 +27,3 @@ foreach ($options as $option) {
 }
 
 $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ssbhesabfa");
-
-// delete tags in hesabfa
-$hesabfaApi = new Ssbhesabfa_Api();
-$result = $hesabfaApi->fixClearTags();
-
-if (!$result->Success) {
-    Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot clear tags. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
-}
