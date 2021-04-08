@@ -35,6 +35,41 @@ jQuery(function ($) {
 		});
     });
 
+	$(function () {
+		// AJAX - Import Products
+		$('#ssbhesabfa_import_products').submit(function () {
+			// show processing status
+			$('#ssbhesabfa-import-product-submit').attr('disabled', 'disabled');
+			$('#ssbhesabfa-import-product-submit').removeClass('button-primary');
+			$('#ssbhesabfa-import-product-submit').html('<i class="ofwc-spinner"></i> در حال ورود کالاها از حسابفا, لطفاً صبر کنید...');
+			$('#ssbhesabfa-import-product-submit i.spinner').show();
+
+			var data = {
+				'action': 'adminImportProducts'
+			};
+
+			// post it
+			$.post(ajaxurl, data, function (response) {
+				if ('failed' !== response) {
+					var redirectUrl = response;
+
+					/** Debug **/
+					// console.log(redirectUrl);
+					// return false;
+
+					top.location.replace(redirectUrl);
+					return false;
+				}
+				else {
+					alert('Error importing products.');
+					return false;
+				}
+			});
+			/*End Post*/
+			return false;
+		});
+	});
+
     $(function () {
 		// AJAX - Export Products opening quantity
 		$('#ssbhesabfa_export_products_opening_quantity').submit(function () {
@@ -69,6 +104,7 @@ jQuery(function ($) {
 			return false;
 		});
     });
+
 
     $(function () {
 		// AJAX - Export Customers

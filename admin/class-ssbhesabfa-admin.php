@@ -184,6 +184,25 @@ class Ssbhesabfa_Admin {
         }
     }
 
+    public function adminImportProductsCallback() {
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+            $func = new Ssbhesabfa_Admin_Functions();
+            $import_count = $func->importProducts();
+
+            if ($import_count === -1){
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=false&error=-1');
+            }
+            else if ($import_count === false) {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=false');
+            } else {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=true&processed=' . $import_count);
+            }
+            echo $redirect_url;
+
+            die(); // this is required to return a proper result
+        }
+    }
+
     /*
      * Action - Ajax 'export products Opening Quantity' from Hesabfa/Export tab
      * @since	1.0.6

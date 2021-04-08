@@ -214,6 +214,7 @@ class Ssbhesabfa {
              * @since	1.0.0
              */
             $this->loader->add_filter('wp_ajax_adminExportProducts', $plugin_admin, 'adminExportProductsCallback');
+            $this->loader->add_filter('wp_ajax_adminImportProducts', $plugin_admin, 'adminImportProductsCallback');
             $this->loader->add_filter('wp_ajax_adminExportProductsOpeningQuantity', $plugin_admin, 'adminExportProductsOpeningQuantityCallback');
             $this->loader->add_filter('wp_ajax_adminExportCustomers', $plugin_admin, 'adminExportCustomersCallback');
 

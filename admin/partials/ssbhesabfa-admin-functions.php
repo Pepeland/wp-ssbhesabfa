@@ -922,6 +922,7 @@ class Ssbhesabfa_Admin_Functions
 
     public function importProducts()
     {
+        $id_product_array = array();
         // get products from hesabfa
         $hesabfa = new Ssbhesabfa_Api();
         $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
@@ -929,6 +930,48 @@ class Ssbhesabfa_Admin_Functions
         if ($response->Success) {
             $items = $response->Result;
 
+            foreach ($items as $item) {
+                global $wpdb;
+
+                // add product to database
+                $wpdb->insert($wpdb->prefix . 'posts', array(
+                    'post_author' => (int)get_the_author_meta('ID'),
+                    'post_date' => date("Y-m-d H:i:s"),
+                    'post_date_gmt' => date("Y-m-d H:i:s"),
+                    'post_content' => '',
+                    'post_title' => $item->Name,
+                    'post_excerpt' => '',
+                    'post_status ' => 'private',
+                    'comment_status ' => 'open',
+                    'ping_status ' => 'closed',
+                    'post_password ' => '',
+                    'post_name' => str_replace(' ', '-', trim($item->Name)),
+                    'to_ping' => '',
+                    'pinged' => '',
+                    'post_modified' => date("Y-m-d H:i:s"),
+                    'post_modified_gmt' => date("Y-m-d H:i:s"),
+                    'post_content_filtered' => '',
+                    'post_parent' => 0,
+                    'guid' => get_site_url() . '/product/' . str_replace(' ', '-', trim($item->Name)) . '/',
+                    'menu_order' => 0,
+                    'post_type' => 'product',
+                    'post_mime_type' => '',
+                    'comment_count' => 0,
+                ));
+                $postId = $wpdb->insert_id;
+                $id_product_array[] = $postId;
+
+                // add product link to hesabfa
+                $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
+                    'obj_type' => 'product',
+                    'id_hesabfa' => (int)$item->Code,
+                    'id_ps' => $postId,
+                    'id_ps_attribute' => 0,
+                ));
+            }
+
+            // set items (to set tag in hesabfa)
+            $this->setItems($id_product_array);
         }
         return false;
     }

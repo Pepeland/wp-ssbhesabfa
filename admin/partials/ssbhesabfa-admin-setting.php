@@ -470,7 +470,7 @@ class Ssbhesabfa_Setting
             </div>
         </form>
 
-        <form class="card hesabfa-card hesabfa-f d-none" id="ssbhesabfa_export_products" autocomplete="off"
+        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_export_products" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
               method="post">
             <div>
