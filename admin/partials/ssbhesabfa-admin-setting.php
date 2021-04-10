@@ -344,6 +344,7 @@ class Ssbhesabfa_Setting
     {
         // Export - Bulk product export offers
         $productExportResult = (isset($_GET['productExportResult'])) ? wc_clean($_GET['productExportResult']) : null;
+        $productImportResult = (isset($_GET['productImportResult'])) ? wc_clean($_GET['productImportResult']) : null;
         $error = (isset($_GET['error'])) ? wc_clean($_GET['error']) : null;
 
         if (!is_null($productExportResult) && $productExportResult === 'true') {
@@ -367,6 +368,23 @@ class Ssbhesabfa_Setting
                 echo '<p class="hesabfa-p">' . __('Export products fail. Please check the log file.', 'ssbhesabfa');
                 echo '</div>';
             }
+        }
+
+        if (!is_null($productImportResult) && $productImportResult === 'true') {
+            $processed = (isset($_GET['processed'])) ? wc_clean($_GET['processed']) : null;
+            if ($processed == 0) {
+                echo '<div class="updated">';
+                echo '<p class="hesabfa-p">' . __('No products were imported, All products were imported or there are no product', 'ssbhesabfa');
+                echo '</div>';
+            } else {
+                echo '<div class="updated">';
+                echo '<p class="hesabfa-p">' . sprintf(__('Import products completed. %s products added/updated.', 'ssbhesabfa'), $processed);
+                echo '</div>';
+            }
+        } elseif ($productImportResult === 'false') {
+            echo '<div class="updated">';
+            echo '<p class="hesabfa-p">' . __('Import products fail. Please check the log file.', 'ssbhesabfa');
+            echo '</div>';
         }
 
         // Export - Product opening quantity export offers
@@ -470,7 +488,7 @@ class Ssbhesabfa_Setting
             </div>
         </form>
 
-        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_export_products" autocomplete="off"
+        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_import_products" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=export'); ?>"
               method="post">
             <div>
@@ -484,13 +502,17 @@ class Ssbhesabfa_Setting
                 <p class="hesabfa-p mt-2">
                     <?php echo __('Import and add all products from Hesabfa to online store', 'ssbhesabfa'); ?>
                 </p>
-                <label class="small">نکات مهم:</label>
-                <ul class="bg-warning p-2 small" style="border-radius: 5px">
-                    <li>با انجام این عملیات محصولات لینک نشده از حسابفا وارد فروشگاه می شوند.</li>
-                    <li>اگر از قبل محصولات هم در فروشگاه ثبت شده اند و هم در حسابفا و به هم لینک نشده اند باید از گزینه
-                        همسان سازی دستی محصولات استفاده کنید.
-                    </li>
-                </ul>
+                <div class="bg-warning p-2" style="border-radius: 5px">
+                    <label class="fw-bold">نکات مهم:</label>
+                    <ul>
+                        <li>با انجام این عملیات محصولات لینک نشده از حسابفا وارد فروشگاه می شوند.</li>
+                        <li>اگر محصولات از قبل هم در فروشگاه تعریف شده اند و هم در حسابفا و به هم لینک نشده اند باید از گزینه
+                            همسان سازی دستی محصولات استفاده کنید.
+                        </li>
+                        <li>محصولات در وضعیت خصوصی وارد فروشگاه می شوند و سپس هر زمان مایل بودید می توانید وضعیت را به منتشر شده تغییر دهید.</li>
+                        <li>تمامی محصولات بعنوان محصول ساده (و نه متغیر) وارد فروشگاه می شوند.</li>
+                    </ul>
+                </div>
             </div>
         </form>
         <?php

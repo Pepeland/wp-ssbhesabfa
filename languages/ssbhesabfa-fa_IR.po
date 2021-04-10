@@ -344,10 +344,19 @@ msgid ""
 msgstr ""
 "هیچ محصولی استخراج نشد، تمامی محصولات قبلا استخراج شده‌اند یا محصولی وجود ندارد."
 
+msgid ""
+"No products were imported, All products were imported or there are no product"
+msgstr ""
+"هیچ محصولی وارد نشد، تمامی محصولات قبلا وارد شده‌اند یا محصولی وجود ندارد."
+
+
 #: admin/partials/ssbhesabfa-admin-setting.php:327
 #, php-format
 msgid "Export products completed. %s products added/updated."
 msgstr "استخراج محصولات به اتمام رسید. ‪‬%s محصول استخراج شد."
+
+msgid "Import products completed. %s products added/updated."
+msgstr "ورود محصولات به اتمام رسید. ‪‬%s محصول وارد شد."
 
 #: admin/partials/ssbhesabfa-admin-setting.php:335
 msgid "Export products fail. Hesabfa has already contained products."
@@ -356,6 +365,9 @@ msgstr "خروجی محصولات با خطا مواجه شد. حسابفا از
 #: admin/partials/ssbhesabfa-admin-setting.php:339
 msgid "Export products fail. Please check the log file."
 msgstr "خروجی محصولات با خطا مواجه شد. لطفا لاگ را بررسی کنید."
+
+msgid "Import products fail. Please check the log file."
+msgstr "ورود محصولات با خطا مواجه شد. لطفا لاگ را بررسی کنید."
 
 #: admin/partials/ssbhesabfa-admin-setting.php:340
 msgid "Export product opening quantity completed."

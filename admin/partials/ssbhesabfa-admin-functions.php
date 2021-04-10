@@ -925,26 +925,25 @@ class Ssbhesabfa_Admin_Functions
         $id_product_array = array();
         // get products from hesabfa
         $hesabfa = new Ssbhesabfa_Api();
-        $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
+        $filters = array(array("Property" => "Tag", "Operator" => "=", "Value" => ""));
         $response = $hesabfa->itemGetItems(array('Take' => 99999999, 'Filters' => $filters));
         if ($response->Success) {
-            $items = $response->Result;
-
+            $items = $response->Result->List;
             foreach ($items as $item) {
                 global $wpdb;
 
                 // add product to database
                 $wpdb->insert($wpdb->prefix . 'posts', array(
-                    'post_author' => (int)get_the_author_meta('ID'),
+                    'post_author' => get_current_user_id(),
                     'post_date' => date("Y-m-d H:i:s"),
                     'post_date_gmt' => date("Y-m-d H:i:s"),
                     'post_content' => '',
                     'post_title' => $item->Name,
                     'post_excerpt' => '',
-                    'post_status ' => 'private',
-                    'comment_status ' => 'open',
-                    'ping_status ' => 'closed',
-                    'post_password ' => '',
+                    'post_status' => 'private',
+                    'comment_status' => 'open',
+                    'ping_status' => 'closed',
+                    'post_password' => '',
                     'post_name' => str_replace(' ', '-', trim($item->Name)),
                     'to_ping' => '',
                     'pinged' => '',
@@ -958,6 +957,7 @@ class Ssbhesabfa_Admin_Functions
                     'post_mime_type' => '',
                     'comment_count' => 0,
                 ));
+
                 $postId = $wpdb->insert_id;
                 $id_product_array[] = $postId;
 
@@ -972,6 +972,7 @@ class Ssbhesabfa_Admin_Functions
 
             // set items (to set tag in hesabfa)
             $this->setItems($id_product_array);
+            return count($items);
         }
         return false;
     }
