@@ -139,6 +139,8 @@ class Ssbhesabfa_Admin_Functions
             if (!$variations) {
                 $code = $this->getItemCodeByProductId($id_product);
 
+                $price = $product->get_regular_price() ? $product->get_regular_price() : $product->get_price();
+
                 $hesabfaItem = array(
                     'Code' => $code,
                     'Name' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
@@ -150,11 +152,13 @@ class Ssbhesabfa_Admin_Functions
 //			    'Active' => $product->active ? true : false,
                     'NodeFamily' => $this->getCategoryPath($categories[0]),
                     'ProductCode' => $id_product,
+                    'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($price)
                 );
 
-                if (!get_option('ssbhesabfa_item_update_price')) {
-                    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($product->get_regular_price());
-                }
+
+//                if (!get_option('ssbhesabfa_item_update_price')) {
+//                    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($product->get_regular_price());
+//                }
 
                 $items[] = $hesabfaItem;
             } else {
@@ -165,6 +169,7 @@ class Ssbhesabfa_Admin_Functions
                     $productName = $product->get_title();
                     $variationName = $variation->get_attribute_summary();
                     $fullName = Ssbhesabfa_Validation::itemNameValidation($productName . ' - ' . $variationName);
+                    $price = $variation->get_regular_price() ? $variation->get_regular_price() : $variation->get_price();
 
                     $hesabfaItem = array(
                         'Code' => $code,
@@ -180,11 +185,12 @@ class Ssbhesabfa_Admin_Functions
 //					    'Active' => $variation->variation_is_active ? true : false,
                         'NodeFamily' => $this->getCategoryPath($categories[0]),
                         'ProductCode' => $id_product,
+                        'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($price)
                     );
 
-                    if (!get_option('ssbhesabfa_item_update_price')) {
-                        $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($variation->get_regular_price());
-                    }
+//                    if (!get_option('ssbhesabfa_item_update_price')) {
+//                        $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($variation->get_regular_price());
+//                    }
 
                     $items[] = $hesabfaItem;
                 }
@@ -819,8 +825,8 @@ class Ssbhesabfa_Admin_Functions
     //Export
     public function exportProducts()
     {
-        if ($this->isHesabfaContainItems())
-            return -1;
+//        if ($this->isHesabfaContainItems())
+//            return -1;
 
         $args = array(
             'post_type' => 'product',

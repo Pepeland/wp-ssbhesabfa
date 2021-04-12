@@ -109,6 +109,9 @@ msgstr "روش‌های پرداخت"
 msgid "Export"
 msgstr "خروجی"
 
+msgid "Import and export data"
+msgstr "ورود و خروج اطلاعات"
+
 #: admin/partials/ssbhesabfa-admin-display.php:45
 msgid "Sync"
 msgstr "همسان‌سازی"

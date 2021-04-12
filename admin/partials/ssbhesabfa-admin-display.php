@@ -226,7 +226,7 @@ class Ssbhesabfa_Admin_Display
                 'customers' => __('Customers', 'ssbhesabfa'),
                 'invoice' => __('Invoice', 'ssbhesabfa'),
                 'payment' => __('Payment Methods', 'ssbhesabfa'),
-                'export' => __('Export', 'ssbhesabfa'),
+                'export' => __('Import and export data', 'ssbhesabfa'),
                 'sync' => __('Sync', 'ssbhesabfa'),
                 'log' => __('Log', 'ssbhesabfa')
             ));
