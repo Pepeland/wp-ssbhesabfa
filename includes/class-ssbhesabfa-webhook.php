@@ -16,6 +16,8 @@ class Ssbhesabfa_Webhook
 
     public function __construct()
     {
+        self::logDebugStr("===== Webhook Called =====");
+
         $hesabfaApi = new Ssbhesabfa_Api();
         $lastChange = get_option('ssbhesabfa_last_log_check_id');
         $changes = $hesabfaApi->settingGetChanges($lastChange + 1);

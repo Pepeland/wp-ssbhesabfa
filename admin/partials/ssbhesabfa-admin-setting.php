@@ -750,26 +750,8 @@ class Ssbhesabfa_Setting
 
     public static function getProductCountsInStore()
     {
-        $args = array(
-            'post_type' => array('product', 'product_variation'),
-            'post_status' => array('publish', 'private'),
-            'orderby' => 'ID',
-            'order' => 'ASC',
-            'posts_per_page' => -1
-        );
-        $products = get_posts($args);
-        $count = count($products);
-        $minusParents = array();
-
-        foreach ($products as $product) {
-            if ($product->post_parent) {
-                if (!array_key_exists($product->post_parent, $minusParents)) {
-                    $minusParents[$product->post_parent] = true;
-                    $count--;
-                }
-            }
-        }
-        return $count;
+        global $wpdb;
+        return $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts` WHERE `post_type` IN ('product','product_variation') AND `post_status` IN ('publish', 'private', 'draft')  ");
     }
 
     public static function ssbhesabfa_set_webhook()

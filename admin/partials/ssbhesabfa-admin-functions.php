@@ -825,17 +825,9 @@ class Ssbhesabfa_Admin_Functions
     //Export
     public function exportProducts()
     {
-//        if ($this->isHesabfaContainItems())
-//            return -1;
-
-        $args = array(
-            'post_type' => 'product',
-            'post_status' => array('publish', 'private'),
-            'orderby' => 'ID',
-            'order' => 'ASC',
-            'posts_per_page' => -1
-        );
-        $products = get_posts($args);
+        global $wpdb;
+        $products = $wpdb->get_results("SELECT ID FROM `" . $wpdb->prefix . "posts`                                                                
+                                WHERE post_type = 'product' AND post_status IN('publish','private')");
 
         $items = array();
         $items[0] = array();
@@ -918,6 +910,7 @@ class Ssbhesabfa_Admin_Functions
                 } else {
                     Ssbhesabfa_Admin_Functions::log(array("Cannot add bulk item. Error Message: " . (string)$response->ErrorMessage . ". Error Code: " . (string)$response->ErrorCode . "."));
                 }
+                sleep(2);
             }
             return $count;
         } else {
@@ -985,45 +978,36 @@ class Ssbhesabfa_Admin_Functions
 
     public function exportOpeningQuantity()
     {
-        $args = array('post_type' => 'product', 'posts_per_page' => -1);
-        $products = get_posts($args);
+        $rpp = 500;
+        $page = 0;
+        global $wpdb;
+        $total = $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts`                                                                
+                                WHERE post_type = 'product' AND post_status IN('publish','private')");
+        $totalPages = ceil($total / $rpp);
 
-        $items = array();
+        for ($i = 0; $i < $totalPages; $i++) {
+            $page++;
+            $offset = ($page - 1) * $rpp;
 
-        foreach ($products as $item) {
-            $variations = $this->getProductVariations($item->ID);
-            if (!$variations) {
-                //do if product exists in hesabfa
-                $id_obj = $this->getObjectId('product', $item->ID, 0);
-                if ($id_obj != false) {
-                    $product = new WC_Product($item->ID);
-                    $quantity = $product->get_stock_quantity();
-                    $price = $product->get_regular_price();
+            $products = $wpdb->get_results("SELECT ID FROM `" . $wpdb->prefix . "posts`                                                                
+                                WHERE post_type = 'product' AND post_status IN('publish','private')
+                                LIMIT $offset,$rpp");
 
-                    global $wpdb;
-                    $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = " . $id_obj . " AND `obj_type` = 'product'");
+            $items = array();
 
-                    if (is_object($product) && is_object($row) && $quantity > 0 && $price > 0) {
-                        array_push($items, array(
-                            'Code' => $row->id_hesabfa,
-                            'Quantity' => $quantity,
-                            'UnitPrice' => $this->getPriceInHesabfaDefaultCurrency($price),
-                        ));
-                    }
-                }
-            } else {
-                foreach ($variations as $variation) {
+            foreach ($products as $item) {
+                $variations = $this->getProductVariations($item->ID);
+                if (!$variations) {
                     //do if product exists in hesabfa
-                    $id_attribute = $variation->get_id();
-                    $id_obj = $this->getObjectId('product', $item->ID, $id_attribute);
+                    $id_obj = $this->getObjectId('product', $item->ID, 0);
                     if ($id_obj != false) {
-                        $quantity = $variation->get_stock_quantity();
-                        $price = $variation->get_regular_price();
+                        $product = new WC_Product($item->ID);
+                        $quantity = $product->get_stock_quantity();
+                        $price = $product->get_regular_price() ? $product->get_regular_price() : $product->get_price();
 
-                        global $wpdb;
                         $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = " . $id_obj . " AND `obj_type` = 'product'");
 
-                        if (is_object($variation) && is_object($row) && $quantity > 0 && $price > 0) {
+                        if (is_object($product) && is_object($row) && $quantity > 0 && $price > 0) {
                             array_push($items, array(
                                 'Code' => $row->id_hesabfa,
                                 'Quantity' => $quantity,
@@ -1031,28 +1015,53 @@ class Ssbhesabfa_Admin_Functions
                             ));
                         }
                     }
+                } else {
+                    foreach ($variations as $variation) {
+                        //do if product exists in hesabfa
+                        $id_attribute = $variation->get_id();
+                        $id_obj = $this->getObjectId('product', $item->ID, $id_attribute);
+                        if ($id_obj != false) {
+                            $quantity = $variation->get_stock_quantity();
+                            $price = $variation->get_regular_price() ? $variation->get_regular_price() : $variation->get_price();
+
+                            $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = " . $id_obj . " AND `obj_type` = 'product'");
+
+                            if (is_object($variation) && is_object($row) && $quantity > 0 && $price > 0) {
+                                array_push($items, array(
+                                    'Code' => $row->id_hesabfa,
+                                    'Quantity' => $quantity,
+                                    'UnitPrice' => $this->getPriceInHesabfaDefaultCurrency($price),
+                                ));
+                            }
+                        }
+                    }
                 }
             }
+
+            if (!empty($items)) //call API when at least one product exists
+            {
+                $hesabfa = new Ssbhesabfa_Api();
+                $response = $hesabfa->itemUpdateOpeningQuantity($items);
+                if ($response->Success) {
+                    // continue batch loop
+
+                } else {
+                    Ssbhesabfa_Admin_Functions::log(array('ssbhesabfa - Cannot set Opening quantity. Error Code: ' . $response->ErrorCode . '. Error Message: ' . $response->ErrorMessage));
+                    if ($response->ErrorCode = 199 && $response->ErrorMessage == 'No-Shareholders-Exist') {
+                        return 'shareholderError';
+                    }
+                    return 'false';
+                }
+            } else {
+                Ssbhesabfa_Admin_Functions::log(array('ssbhesabfa - No product available for set Opening quantity.'));
+                return 'noProduct';
+            }
+
+            sleep(2);
         }
 
-        if (!empty($items)) //call API when at least one product exists
-        {
-            $hesabfa = new Ssbhesabfa_Api();
-            $response = $hesabfa->itemUpdateOpeningQuantity($items);
-            if ($response->Success) {
-                Ssbhesabfa_Admin_Functions::log(array('ssbhesabfa - Opening quantity successfully added.'));
-                return 'true';
-            } else {
-                Ssbhesabfa_Admin_Functions::log(array('ssbhesabfa - Cannot set Opening quantity. Error Code: ' . $response->ErrorCode . '. Error Message: ' . $response->ErrorMessage));
-                if ($response->ErrorCode = 199 && $response->ErrorMessage == 'No-Shareholders-Exist') {
-                    return 'shareholderError';
-                }
-                return 'false';
-            }
-        } else {
-            Ssbhesabfa_Admin_Functions::log(array('ssbhesabfa - No product available for set Opening quantity.'));
-            return 'noProduct';
-        }
+        Ssbhesabfa_Admin_Functions::log(array('ssbhesabfa - Opening quantity successfully added.'));
+        return 'true';
     }
 
     public function exportCustomers()
@@ -1186,23 +1195,38 @@ class Ssbhesabfa_Admin_Functions
 
     public function syncProducts()
     {
+        self::logDebugStr("=== sync products price and quantity from hesabfa to store ===");
+
         $hesabfa = new Ssbhesabfa_Api();
         $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
-        $response = $hesabfa->itemGetItems(array('Take' => 99999999, 'Filters' => $filters));
-
+        $response = $hesabfa->itemGetItems(array('Take' => 1, 'Filters' => $filters));
+        $total = 0;
         if ($response->Success) {
-            $products = $response->Result->List;
+            $total = $response->Result->TotalCount;
+        } else {
+            Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for sync. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
+            return false;
+        };
 
-            require_once plugin_dir_path(dirname(__FILE__)) . '../includes/class-ssbhesabfa-webhook.php';
-            $webhook = new Ssbhesabfa_Webhook();
-            foreach ($products as $product) {
-                $webhook->setItemChanges($product);
+        $rpp = 500;
+        $totalPages = ceil($total / $rpp);
+
+        for ($page = 1; $page < $totalPages + 1; $page++) {
+            $offset = ($page - 1) * $rpp;
+            $response = $hesabfa->itemGetItems(array('Skip' => $offset,'Take' => $rpp, 'Filters' => $filters));
+            if ($response->Success) {
+                $products = $response->Result->List;
+                foreach ($products as $product) {
+//                    $webhook->setItemChanges($product);
+                    self::setItemChanges($product);
+                }
+                sleep(1);
+            } else {
+                Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for sync. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
+                return false;
             }
-            return true;
         }
-
-        Ssbhesabfa_Admin_Functions::log(array("Cannot get bulk item. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
-        return false;
+        return true;
     }
 
     public function syncProductsManually($data)
@@ -1308,6 +1332,101 @@ class Ssbhesabfa_Admin_Functions
             file_put_contents($filePath, "");
             return true;
         } else return false;
+    }
+
+    public static function setItemChanges($item)
+    {
+        if (!is_object($item)) {
+            return false;
+        }
+
+        $id_product = 0;
+        $id_attribute = 0;
+
+        $jsonObj = json_decode($item->Tag);
+        if (is_object($jsonObj)) {
+            $id_product = $jsonObj->id_product;
+            if (isset($jsonObj->id_attribute)) {
+                $id_attribute = $jsonObj->id_attribute;
+            }
+        } else return false;
+
+        //check if Tag not set in hesabfa
+        if ($id_product == 0) {
+            Ssbhesabfa_Admin_Functions::log(array("Item with code: $item->Code is not define in OnlineStore"));
+            return false;
+        }
+
+        //check if product exist in woocommerce
+        $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('product', $id_product, $id_attribute);
+        if ($id_obj) {
+            $product = new WC_Product($id_product);
+
+            //1.set new Hesabfa Item Code if changes
+            global $wpdb;
+            $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = $id_obj");
+
+            if (is_object($row) && $row->id_hesabfa != $item->Code) {
+                $id_hesabfa_old = $row->id_hesabfa;
+                //update all variation
+                $wpdb->update($wpdb->prefix . 'ssbhesabfa', array('id_hesabfa' => (int)$item->Code), array('id_ps' => $id_product, 'obj_type' => 'product'));
+                Ssbhesabfa_Admin_Functions::log(array("Item Code changed. Old ID: $id_hesabfa_old. New ID: $item->Code"));
+            }
+
+            //2.set new Price
+            if (get_option('ssbhesabfa_item_update_price') == 'yes') {
+                if ($id_attribute != 0) {
+                    $variation = new WC_Product_Variation($id_attribute);
+                    $price = Ssbhesabfa_Admin_Functions::getPriceInHesabfaDefaultCurrency($variation->get_regular_price());
+                    if ($item->SellPrice != $price) {
+                        $old_price = $variation->get_regular_price();
+                        $new_price = Ssbhesabfa_Admin_Functions::getPriceInWooCommerceDefaultCurrency($item->SellPrice);
+                        update_post_meta($id_attribute, '_price', $new_price);
+                        update_post_meta($id_attribute, '_regular_price', $new_price);
+
+                        Ssbhesabfa_Admin_Functions::log(array("product ID $id_product-$id_attribute Price changed. Old Price: $old_price. New Price: $item->SellPrice"));
+                    }
+                } else {
+                    $price = Ssbhesabfa_Admin_Functions::getPriceInHesabfaDefaultCurrency($product->get_regular_price());
+                    if ($item->SellPrice != $price) {
+                        $old_price = $product->get_regular_price();
+                        $new_price = Ssbhesabfa_Admin_Functions::getPriceInWooCommerceDefaultCurrency($item->SellPrice);
+                        update_post_meta($id_product, '_price', $new_price);
+                        update_post_meta($id_product, '_regular_price', $new_price);
+
+                        Ssbhesabfa_Admin_Functions::log(array("product ID $id_product Price changed. Old Price: $old_price. New Price: $item->SellPrice"));
+                    }
+                }
+            }
+
+            //3.set new Quantity
+            if (get_option('ssbhesabfa_item_update_quantity') == 'yes') {
+                if ($id_attribute != 0) {
+                    $variation = new WC_Product_Variation($id_attribute);
+                    if ($item->Stock != $variation->get_stock_quantity()) {
+                        $old_quantity = $variation->get_stock_quantity();
+                        $new_quantity = $item->Stock;
+
+                        $new_stock_status = ($new_quantity > 0) ? "instock" : "outofstock";
+                        update_post_meta($id_attribute, '_stock', $new_quantity);
+                        wc_update_product_stock_status($id_attribute, $new_stock_status);
+
+                        Ssbhesabfa_Admin_Functions::log(array("product ID $id_product-$id_attribute quantity changed. Old qty: $old_quantity. New qty: $item->Stock"));
+                    }
+                } else {
+                    if ($item->Stock != $product->get_stock_quantity()) {
+                        $old_quantity = $product->get_stock_quantity();
+                        $new_quantity = $item->Stock;
+
+                        $new_stock_status = ($new_quantity > 0) ? "instock" : "outofstock";
+                        update_post_meta($id_product, '_stock', $new_quantity);
+                        wc_update_product_stock_status($id_product, $new_stock_status);
+
+                        Ssbhesabfa_Admin_Functions::log(array("product ID $id_product quantity changed. Old qty: $old_quantity. New qty: $item->Stock"));
+                    }
+                }
+            }
+        }
     }
 
     public static function log($params)
