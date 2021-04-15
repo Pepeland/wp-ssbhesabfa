@@ -769,6 +769,7 @@ class Ssbhesabfa_Setting
 
                 //set the last log ID if is not set
                 $lastChanges = get_option('ssbhesabfa_last_log_check_id');
+                if(!$lastChange) $lastChanges = 0;
                 $changes = $ssbhesabfa_api->settingGetChanges($lastChanges);
                 if ($changes->Success) {
                     if (get_option('ssbhesabfa_last_log_check_id') == 0) {

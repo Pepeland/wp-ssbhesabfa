@@ -1297,14 +1297,10 @@ class Ssbhesabfa_Admin_Functions
     public function updateProductsInHesabfaBasedOnStore()
     {
         self::logDebugStr("===== updateProductsInHesabfaBasedOnStore =====");
-        $args = array(
-            'post_type' => 'product',
-            'post_status' => array('publish', 'private'),
-            'orderby' => 'ID',
-            'order' => 'ASC',
-            'posts_per_page' => -1
-        );
-        $products = get_posts($args);
+        global $wpdb;
+        $products = $wpdb->get_results("SELECT ID FROM `" . $wpdb->prefix . "posts`                                                                
+                                WHERE post_type = 'product' AND post_status IN('publish','private')");
+
         self::logDebugStr("products count: " . count($products));
 
         $products_id_array = array();
