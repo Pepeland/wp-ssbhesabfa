@@ -44,7 +44,6 @@ class Ssbhesabfa_Webhook
                                 break;
                             }
                             $this->itemsObjectId[] = $item->ObjectId;
-
                             break;
                         case 'Contact':
                             //if Action was deleted
@@ -52,7 +51,6 @@ class Ssbhesabfa_Webhook
                                 $id_obj = Ssbhesabfa_Admin_Functions::getObjectIdByCode('customer', $item->Extra);
                                 global $wpdb;
                                 $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $id_obj));
-
                                 break;
                             }
 
@@ -60,11 +58,11 @@ class Ssbhesabfa_Webhook
                             break;
                     }
 
-                    switch ($item->Action) {
-                        case '101':
-                            $func = new Ssbhesabfa_Admin_Functions();
-                            $func->syncProducts();
-                    }
+//                    switch ($item->Action) {
+//                        case '101':
+//                            $func = new Ssbhesabfa_Admin_Functions();
+//                            $func->syncProducts();
+//                    }
                 }
             }
 
