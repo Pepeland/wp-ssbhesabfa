@@ -167,18 +167,26 @@ class Ssbhesabfa_Admin {
      */
     public function adminExportProductsCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $func = new Ssbhesabfa_Admin_Functions();
-            $update_count = $func->exportProducts();
 
-            if ($update_count === -1){
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false&error=-1');
-            }
-            else if ($update_count === false) {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false');
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->exportProducts($batch, $totalBatch, $total);
+            $update_count = $result['updateCount'];
+
+            if ($result['error']) {
+                if ($update_count === -1) {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false&error=-1' . $update_count);
+                } else {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false');
+                }
+                echo json_encode($result);
             } else {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=true&processed=' . $update_count);
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=true&processed=' . $update_count);
+                echo json_encode($result);
             }
-            echo $redirect_url;
 
             die(); // this is required to return a proper result
         }
@@ -186,19 +194,26 @@ class Ssbhesabfa_Admin {
 
     public function adminImportProductsCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+
             $func = new Ssbhesabfa_Admin_Functions();
-            $import_count = $func->importProducts();
+            $result = $func->importProducts($batch, $totalBatch, $total);
+            $import_count = $result['total'];
 
-            if ($import_count === -1){
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=false&error=-1');
-            }
-            else if ($import_count === false) {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=false');
+            if ($result['error']) {
+                if ($import_count === -1) {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=false&error=-1');
+                } else {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=false');
+                }
             } else {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=true&processed=' . $import_count);
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productImportResult=true&processed=' . $import_count);
             }
-            echo $redirect_url;
 
+            echo json_encode($result);
             die(); // this is required to return a proper result
         }
     }
@@ -209,24 +224,28 @@ class Ssbhesabfa_Admin {
      */
     public function adminExportProductsOpeningQuantityCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $func = new Ssbhesabfa_Admin_Functions();
-            switch ($func->exportOpeningQuantity()) {
-                case 'true':
-                    update_option('ssbhesabfa_use_export_product_opening_quantity', true);
-                    $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=true');
-                    break;
-                case 'false':
-                    $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=false');
-                    break;
-                case 'shareholderError':
-                    $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=false&shareholderError=true');
-                    break;
-                case 'noProduct':
-                    $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=false&noProduct=true');
-                    break;
-            }
-            echo $redirect_url;
 
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->exportOpeningQuantity($batch, $totalBatch, $total);
+            if($result['error']) {
+                if($result['errorType'] == 'shareholderError') {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=false&shareholderError=true');
+                } else if($result['errorType'] == 'noProduct') {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=false&noProduct=true');
+                } else {
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=false');
+                }
+            } else {
+                if($result["done"] == true)
+                    update_option('ssbhesabfa_use_export_product_opening_quantity', true);
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productOpeningQuantityExportResult=true');
+            }
+
+            echo json_encode($result);
             die(); // this is required to return a proper result
         }
     }
@@ -276,14 +295,20 @@ class Ssbhesabfa_Admin {
      */
     public function adminSyncProductsCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $func = new Ssbhesabfa_Admin_Functions();
-            if ($func->syncProducts()) {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&productSyncResult=true');
-            } else {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&productSyncResult=false');
-            }
-            echo $redirect_url;
 
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->syncProducts($batch, $totalBatch, $total);
+            if ($result['error']) {
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&productSyncResult=false');
+                echo json_encode($result);
+            } else {
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&productSyncResult=true');
+                echo json_encode($result);
+            }
             die(); // this is required to return a proper result
         }
     }
@@ -339,14 +364,20 @@ class Ssbhesabfa_Admin {
     */
     public function adminUpdateProductsCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $func = new Ssbhesabfa_Admin_Functions();
-            if ($func->updateProductsInHesabfaBasedOnStore()) {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&$productUpdateResult=true');
-            } else {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&$productUpdateResult=false');
-            }
-            echo $redirect_url;
 
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->updateProductsInHesabfaBasedOnStore($batch, $totalBatch, $total);
+
+            if ($result['error']) {
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&$productUpdateResult=false');
+            } else {
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&$productUpdateResult=true');
+            }
+            echo json_encode($result);
             die(); // this is required to return a proper result
         }
     }

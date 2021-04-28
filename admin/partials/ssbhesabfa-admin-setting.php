@@ -454,6 +454,9 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Export and add all online store products to Hesabfa', 'ssbhesabfa'); ?></p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="exportProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="exportProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
                 <div class="bg-warning p-2 small hesabfa-f" style="border-radius: 5px">
                     <label class="fw-bold">نکات مهم:</label>
                     <ul>
@@ -479,6 +482,9 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Export the products quantity and record the \'products opening quantity\' in the Hesabfa', 'ssbhesabfa'); ?></p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="exportProductsOpeningQuantityProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="exportProductsOpeningQuantityProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
                 <div class="bg-warning p-2 small hesabfa-f" style="border-radius: 5px">
                     <label class="fw-bold">نکات مهم:</label>
                     <ul>
@@ -530,6 +536,9 @@ class Ssbhesabfa_Setting
                 <p class="hesabfa-p mt-2">
                     <?php echo __('Import and add all products from Hesabfa to online store', 'ssbhesabfa'); ?>
                 </p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="importProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="importProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
                 <div class="bg-warning p-2 small" style="border-radius: 5px">
                     <label class="fw-bold">نکات مهم:</label>
                     <ul>
@@ -661,6 +670,9 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Sync quantity and price of products in hesabfa with online store.', 'ssbhesabfa'); ?></p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="syncProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="syncProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
                 <div class="bg-warning p-2 small hesabfa-f" style="border-radius: 5px">
                     <label class="fw-bold">نکات مهم:</label>
                     <ul>
@@ -710,6 +722,9 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Update products in hesabfa based on products definition in store.', 'ssbhesabfa'); ?></p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="updateProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="updateProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
                 <div class="bg-warning p-2 small hesabfa-f" style="border-radius: 5px">
                     <label class="fw-bold">نکات مهم:</label>
                     <ul>
