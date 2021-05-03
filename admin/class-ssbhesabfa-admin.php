@@ -472,7 +472,11 @@ class Ssbhesabfa_Admin {
 
     public function ssbhesabfa_hook_order_status_change($id_order, $from, $to)
     {
+        Ssbhesabfa_Admin_Functions::logDebugStr("***** ssbhesabfa_hook_order_status_change *****");
+
         foreach (get_option('ssbhesabfa_invoice_status') as $status) {
+            Ssbhesabfa_Admin_Functions::logDebugStr("status: $status");
+
             if ($status == $to) {
                 $function = new Ssbhesabfa_Admin_Functions();
                 $function->setOrder($id_order);

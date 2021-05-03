@@ -686,6 +686,10 @@ class Ssbhesabfa_Admin_Functions
         $woocommerce_currency = get_woocommerce_currency();
         $hesabfa_currency = get_option('ssbhesabfa_hesabfa_default_currency');
 
+        if(!is_numeric($price)) {
+            $price = intval($price);
+        }
+
         if ($hesabfa_currency == 'IRR' && $woocommerce_currency == 'IRT') {
             $price *= 10;
         }
@@ -1230,45 +1234,49 @@ class Ssbhesabfa_Admin_Functions
 
     public function syncProducts($batch, $totalBatch, $total)
     {
-        self::logDebugStr("=== sync products price and quantity from hesabfa to store: part $batch ===");
-        $result = array();
-        $result["error"] = false;
+        try {
+            self::logDebugStr("=== sync products price and quantity from hesabfa to store: part $batch ===");
+            $result = array();
+            $result["error"] = false;
 
-        $hesabfa = new Ssbhesabfa_Api();
-        $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
-        $rpp = 500;
+            $hesabfa = new Ssbhesabfa_Api();
+            $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
+            $rpp = 500;
 
-        if ($batch == 1) {
-            $total = 0;
-            $response = $hesabfa->itemGetItems(array('Take' => 1, 'Filters' => $filters));
+            if ($batch == 1) {
+                $total = 0;
+                $response = $hesabfa->itemGetItems(array('Take' => 1, 'Filters' => $filters));
+                if ($response->Success) {
+                    $total = $response->Result->FilteredCount;
+                    $totalBatch = ceil($total / $rpp);
+                } else {
+                    Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for sync. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
+                    $result["error"] = true;
+                    return $result;
+                };
+            }
+
+            $offset = ($batch - 1) * $rpp;
+            $response = $hesabfa->itemGetItems(array('Skip' => $offset, 'Take' => $rpp, 'SortBy' => 'Id', 'Filters' => $filters));
             if ($response->Success) {
-                $total = $response->Result->FilteredCount;
-                $totalBatch = ceil($total / $rpp);
+                $products = $response->Result->List;
+                foreach ($products as $product) {
+                    self::setItemChanges($product);
+                }
+                sleep(1);
             } else {
                 Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for sync. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
                 $result["error"] = true;
                 return $result;
-            };
-        }
-
-        $offset = ($batch - 1) * $rpp;
-        $response = $hesabfa->itemGetItems(array('Skip' => $offset, 'Take' => $rpp, 'SortBy' => 'Id', 'Filters' => $filters));
-        if ($response->Success) {
-            $products = $response->Result->List;
-            foreach ($products as $product) {
-                self::setItemChanges($product);
             }
-            sleep(1);
-        } else {
-            Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for sync. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
-            $result["error"] = true;
-            return $result;
-        }
 
-        $result["batch"] = $batch;
-        $result["totalBatch"] = $totalBatch;
-        $result["total"] = $total;
-        return $result;
+            $result["batch"] = $batch;
+            $result["totalBatch"] = $totalBatch;
+            $result["total"] = $total;
+            return $result;
+        } catch (Error $error) {
+            self::logDebugStr("Error in sync products: " . $error->getMessage());
+        }
     }
 
     public function syncProductsManually($data)
