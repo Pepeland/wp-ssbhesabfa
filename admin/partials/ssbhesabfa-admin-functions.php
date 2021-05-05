@@ -710,6 +710,10 @@ class Ssbhesabfa_Admin_Functions
         $woocommerce_currency = get_woocommerce_currency();
         $hesabfa_currency = get_option('ssbhesabfa_hesabfa_default_currency');
 
+        if(!is_numeric($price)) {
+            $price = intval($price);
+        }
+
         if ($hesabfa_currency == 'IRR' && $woocommerce_currency == 'IRT') {
             $price /= 10;
         }
@@ -720,23 +724,6 @@ class Ssbhesabfa_Admin_Functions
 
         return $price;
     }
-
-//    public function convert_currency( $price ) {
-//
-//        switch ( get_woocommerce_currency() ) {
-//            case 'IRT':
-//                $price /= 10;
-//                break;
-//            case 'IRHR':
-//                $price /= 1000;
-//                break;
-//            case 'IRHT':
-//                $price /= 10000;
-//                break;
-//        }
-//
-//        return ceil( $price );
-//    }
 
     public function setOrderPayment($id_order)
     {
@@ -772,15 +759,24 @@ class Ssbhesabfa_Admin_Functions
                 $date_obj = $order->get_date_modified();
             }
 
-            $response = $hesabfa->invoiceSavePayment($number, $bank_code, $date_obj->date('Y-m-d H:i:s'), $this->getPriceInHesabfaDefaultCurrency($order->get_total()), $transaction_id);
-
+            $response = $hesabfa->invoiceGet($number);
             if ($response->Success) {
-                Ssbhesabfa_Admin_Functions::log(array("Hesabfa invoice payment added. Order ID: $id_order"));
+                if($response->Result->Paid > 0) {
+                    // payment submited before
+                } else {
+                    $response = $hesabfa->invoiceSavePayment($number, $bank_code, $date_obj->date('Y-m-d H:i:s'), $this->getPriceInHesabfaDefaultCurrency($order->get_total()), $transaction_id);
 
+                    if ($response->Success) {
+                        Ssbhesabfa_Admin_Functions::log(array("Hesabfa invoice payment added. Order ID: $id_order"));
+                        return true;
+                    } else {
+                        Ssbhesabfa_Admin_Functions::log(array("Cannot add Hesabfa Invoice payment. Order ID: $id_order. Error Code: " . (string)$response->ErrorCode . ". Error Message: " . (string)$response->ErrorMessage . "."));
+                        return false;
+                    }
+                }
                 return true;
             } else {
-                Ssbhesabfa_Admin_Functions::log(array("Cannot add Hesabfa Invoice payment. Order ID: $id_order. Error Code: " . (string)$response->ErrorCode . ". Error Message: " . (string)$response->ErrorMessage . "."));
-
+                Ssbhesabfa_Admin_Functions::log(array("Error while trying to get invoice. Invoice Number: $number. Error Code: " . (string)$response->ErrorCode . ". Error Message: " . (string)$response->ErrorMessage . "."));
                 return false;
             }
         } else {
@@ -1406,10 +1402,20 @@ class Ssbhesabfa_Admin_Functions
             return false;
         }
 
+        self::logDebugStr("***** Debug: section 3 *****");
+
         //check if product exist in woocommerce
         $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('product', $id_product, $id_attribute);
+        self::logDebugStr("***** Debug: id_obj: $id_obj, id_product: $id_product, id_attribute: $id_attribute *****");
+
         if ($id_obj) {
-            $product = new WC_Product($id_product);
+            try {
+                $product = new WC_Product($id_product);
+            } catch (Error $e) {
+                self::logDebugStr("***** Debug: Error finding product. *****" . $e->getMessage());
+                return false;
+            }
+            self::logDebugStr("***** Debug: section 3.1 *****");
 
             //1.set new Hesabfa Item Code if changes
             global $wpdb;
@@ -1418,9 +1424,11 @@ class Ssbhesabfa_Admin_Functions
             if (is_object($row) && $row->id_hesabfa != $item->Code) {
                 $id_hesabfa_old = $row->id_hesabfa;
                 //update all variation
+                self::logDebugStr("***** Debug: section 3.2 *****");
                 $wpdb->update($wpdb->prefix . 'ssbhesabfa', array('id_hesabfa' => (int)$item->Code), array('id_ps' => $id_product, 'obj_type' => 'product'));
                 Ssbhesabfa_Admin_Functions::log(array("Item Code changed. Old ID: $id_hesabfa_old. New ID: $item->Code"));
             }
+            self::logDebugStr("***** Debug: section 3.3 *****");
 
             //2.set new Price
             if (get_option('ssbhesabfa_item_update_price') == 'yes') {
@@ -1476,6 +1484,9 @@ class Ssbhesabfa_Admin_Functions
                 }
             }
         }
+
+        self::logDebugStr("***** Debug: section 4 *****");
+
     }
 
     public static function log($params)
