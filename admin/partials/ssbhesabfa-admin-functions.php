@@ -1402,20 +1402,11 @@ class Ssbhesabfa_Admin_Functions
             return false;
         }
 
-        self::logDebugStr("***** Debug: section 3 *****");
-
         //check if product exist in woocommerce
         $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('product', $id_product, $id_attribute);
-        self::logDebugStr("***** Debug: id_obj: $id_obj, id_product: $id_product, id_attribute: $id_attribute *****");
 
         if ($id_obj) {
-            try {
-                $product = new WC_Product($id_product);
-            } catch (Error $e) {
-                self::logDebugStr("***** Debug: Error finding product. *****" . $e->getMessage());
-                return false;
-            }
-            self::logDebugStr("***** Debug: section 3.1 *****");
+            $product = new WC_Product($id_product);
 
             //1.set new Hesabfa Item Code if changes
             global $wpdb;
@@ -1424,11 +1415,9 @@ class Ssbhesabfa_Admin_Functions
             if (is_object($row) && $row->id_hesabfa != $item->Code) {
                 $id_hesabfa_old = $row->id_hesabfa;
                 //update all variation
-                self::logDebugStr("***** Debug: section 3.2 *****");
                 $wpdb->update($wpdb->prefix . 'ssbhesabfa', array('id_hesabfa' => (int)$item->Code), array('id_ps' => $id_product, 'obj_type' => 'product'));
                 Ssbhesabfa_Admin_Functions::log(array("Item Code changed. Old ID: $id_hesabfa_old. New ID: $item->Code"));
             }
-            self::logDebugStr("***** Debug: section 3.3 *****");
 
             //2.set new Price
             if (get_option('ssbhesabfa_item_update_price') == 'yes') {
@@ -1484,9 +1473,6 @@ class Ssbhesabfa_Admin_Functions
                 }
             }
         }
-
-        self::logDebugStr("***** Debug: section 4 *****");
-
     }
 
     public static function log($params)
