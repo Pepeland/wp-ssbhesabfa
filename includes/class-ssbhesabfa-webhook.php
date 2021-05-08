@@ -64,17 +64,11 @@ class Ssbhesabfa_Webhook
                 }
             }
 
-            Ssbhesabfa_Admin_Functions::logDebugStr("=== invoice items to update:");
-            Ssbhesabfa_Admin_Functions::logDebugObj($this->invoiceItemsCode);
-
             //remove duplicate values
             $this->invoiceItemsCode = array_unique($this->invoiceItemsCode);
             $this->contactsObjectId = array_unique($this->contactsObjectId);
             $this->itemsObjectId = array_unique($this->itemsObjectId);
             $this->invoicesObjectId = array_unique($this->invoicesObjectId);
-
-            Ssbhesabfa_Admin_Functions::logDebugStr("=== invoice items after removing duplicates:");
-            Ssbhesabfa_Admin_Functions::logDebugObj($this->invoiceItemsCode);
 
             $this->setChanges();
 
@@ -128,6 +122,7 @@ class Ssbhesabfa_Webhook
 
         if (!empty($this->invoiceItemsCode)) {
             $objects = $this->getObjectsByCodeList($this->invoiceItemsCode);
+
             if ($objects != false) {
                 foreach ($objects as $object) {
                     array_push($items, $object);
@@ -344,16 +339,13 @@ class Ssbhesabfa_Webhook
 
     public function getObjectsByCodeList($codeList)
     {
-        $queryInfo = array(
-            'Filters' => array(array(
-                'Property' => 'Code',
-                'Operator' => 'in',
-                'Value' => $codeList,
-            ))
-        );
 
+        $filters = array(array("Property" => "Code", "Operator" => "in", "Value" => $codeList));
         $hesabfaApi = new Ssbhesabfa_Api();
-        $result = $hesabfaApi->itemGetItems($queryInfo);
+
+        $result = $hesabfaApi->itemGetItems(array('Take' => 100000, 'Filters' => $filters));
+
+        //$result = $hesabfaApi->itemGetItems($queryInfo);
 
         if (is_object($result) && $result->Success) {
             return $result->Result->List;
