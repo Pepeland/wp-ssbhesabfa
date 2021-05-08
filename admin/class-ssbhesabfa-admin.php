@@ -571,7 +571,8 @@ class Ssbhesabfa_Admin {
     //ToDo: check why base product not deleted
     public function ssbhesabfa_hook_delete_product($id_product)
     {
-        Ssbhesabfa_Admin_Functions::logDebugStr("*** ssbhesabfa_hook_delete_product ***");
+        //Ssbhesabfa_Admin_Functions::logDebugStr("*** ssbhesabfa_hook_delete_product ***");
+        //Ssbhesabfa_Admin_Functions::logDebugObj($id_product);
 
         $func = new Ssbhesabfa_Admin_Functions();
         $hesabfaApi = new Ssbhesabfa_Api();
@@ -593,7 +594,6 @@ class Ssbhesabfa_Admin {
         $code = $func->getItemCodeByProductId($id_product);
         if ($code != false) {
             $hesabfaApi->itemDelete($code);
-
             $wpdb->delete($wpdb->prefix.'ssbhesabfa', array('id_hesabfa' => $code, 'obj_type' => 'product'));
             Ssbhesabfa_Admin_Functions::log(array("Product deleted. Product ID: $id_product"));
         }

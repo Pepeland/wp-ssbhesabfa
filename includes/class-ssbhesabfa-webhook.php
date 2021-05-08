@@ -32,7 +32,6 @@ class Ssbhesabfa_Webhook
                                     $this->invoiceItemsCode[] = $invoiceItem;
                                 }
                             }
-
                             break;
                         case 'Product':
                             //if Action was deleted
@@ -40,7 +39,6 @@ class Ssbhesabfa_Webhook
                                 $id_obj = Ssbhesabfa_Admin_Functions::getObjectIdByCode('product', $item->Extra);
                                 global $wpdb;
                                 $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id' => $id_obj));
-
                                 break;
                             }
                             $this->itemsObjectId[] = $item->ObjectId;
@@ -66,11 +64,17 @@ class Ssbhesabfa_Webhook
                 }
             }
 
+            Ssbhesabfa_Admin_Functions::logDebugStr("=== invoice items to update:");
+            Ssbhesabfa_Admin_Functions::logDebugObj($this->invoiceItemsCode);
+
             //remove duplicate values
             $this->invoiceItemsCode = array_unique($this->invoiceItemsCode);
             $this->contactsObjectId = array_unique($this->contactsObjectId);
             $this->itemsObjectId = array_unique($this->itemsObjectId);
             $this->invoicesObjectId = array_unique($this->invoicesObjectId);
+
+            Ssbhesabfa_Admin_Functions::logDebugStr("=== invoice items after removing duplicates:");
+            Ssbhesabfa_Admin_Functions::logDebugObj($this->invoiceItemsCode);
 
             $this->setChanges();
 

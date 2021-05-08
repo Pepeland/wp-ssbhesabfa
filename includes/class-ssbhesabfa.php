@@ -195,8 +195,8 @@ class Ssbhesabfa {
                 $this->loader->add_action('woocommerce_update_product', $plugin_admin, 'ssbhesabfa_hook_new_product');
 //                $this->loader->add_action('woocommerce_update_product_variation', $plugin_admin, 'ssbhesabfa_hook_new_product');
                 //Runs when a product is deleted.
-                $this->loader->add_action('woocommerce_delete_product', $plugin_admin, 'ssbhesabfa_hook_delete_product');
-                $this->loader->add_action('woocommerce_delete_product_variation', $plugin_admin, 'ssbhesabfa_hook_delete_product_variation');
+                $this->loader->add_action('before_delete_post', $plugin_admin, 'ssbhesabfa_hook_delete_product');
+                //$this->loader->add_action('woocommerce_delete_product_variation', $plugin_admin, 'ssbhesabfa_hook_delete_product_variation');
 
                 //Display Hesabfa item code in Product data section
                 $this->loader->add_action('woocommerce_product_options_general_product_data', $plugin_admin, 'ssbhesabfa_hook_product_options_general_product_data');
