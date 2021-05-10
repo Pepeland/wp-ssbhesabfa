@@ -105,6 +105,10 @@ class Ssbhesabfa_Admin_Functions
         }
 
         $product = wc_get_product($id_product);
+
+        if(is_bool($product))
+            return false;
+
         if ($product->is_type('variable')) {
             $children = $product->get_children($args = '', $output = OBJECT);
             $variations = array();
