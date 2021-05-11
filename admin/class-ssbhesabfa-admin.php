@@ -632,7 +632,7 @@ class Ssbhesabfa_Admin {
 
     public function ssbhesabfa_hook_process_product_meta($post_id)
     {
-        $itemCode = $_POST['ssbhesabfa_hesabfa_item_code_0'];
+        $itemCode = isset($_POST['ssbhesabfa_hesabfa_item_code_0']) ? $_POST['ssbhesabfa_hesabfa_item_code_0'] : '';
 
         if($itemCode === "")
             return;

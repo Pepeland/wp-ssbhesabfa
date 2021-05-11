@@ -57,7 +57,6 @@ class Ssbhesabfa_Setting
 
     public static function ssbhesabfa_catalog_setting_fields()
     {
-
         $fields[] = array('title' => __('Catalog Settings', 'ssbhesabfa'), 'type' => 'title', 'desc' => '', 'id' => 'catalog_options');
 
         $fields[] = array(
