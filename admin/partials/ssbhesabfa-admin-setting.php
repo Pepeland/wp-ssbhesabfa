@@ -198,6 +198,11 @@ class Ssbhesabfa_Setting
         $ssbhesabf_setting_fields = self::ssbhesabfa_invoice_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
+        <div class="alert alert-warning hesabfa-f">
+            <strong>توجه</strong><br>
+            در اینجا تعیین کنید که فاکتور سفارش در چه مرحله ای در حسابفا ثبت شود.
+            و چه زمان برای یک سفارش فاکتور برگشت از فروش ثبت شود.
+        </div>
         <form id="ssbhesabfa_form" enctype="multipart/form-data" action="" method="post">
             <?php $Html_output->init($ssbhesabf_setting_fields); ?>
             <p class="submit hesabfa-p">
@@ -214,7 +219,6 @@ class Ssbhesabfa_Setting
         $Html_output = new Ssbhesabfa_Html_output();
         $Html_output->save_fields($ssbhesabf_setting_fields);
     }
-
 
     public static function ssbhesabfa_payment_setting_fields()
     {
@@ -260,6 +264,11 @@ class Ssbhesabfa_Setting
         $ssbhesabf_setting_fields = self::ssbhesabfa_payment_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
+        <div class="alert alert-warning hesabfa-f">
+            <strong>توجه</strong><br>
+            در اینجا تعیین کنید که رسید دریافت وجه فاکتور در چه وضعیتی ثبت شود
+            و در هر روش پرداخت، رسید در چه بانکی ثبت شود.
+        </div>
         <form id="ssbhesabfa_form" enctype="multipart/form-data" action="" method="post">
             <?php $Html_output->init($ssbhesabf_setting_fields); ?>
             <p class="submit hesabfa-p">
@@ -320,6 +329,22 @@ class Ssbhesabfa_Setting
         $ssbhesabf_setting_fields = self::ssbhesabfa_api_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
+            <div class="alert alert-warning hesabfa-f">
+                <strong>توجه</strong><br>
+                <ul class="mx-4" style="list-style-type:square">
+                    <li>
+                        برای اتصال به API حسابفا و فعال شدن این افزونه باید در اینجا
+                        کلید API و توکن ورود به کسب و کار خود را وارد کنید.
+                    </li>
+                    <li>
+                        اگر برای اتصال به API حسابفا از توکن ورود استفاده کنید
+                        نیازی به وارد کردن ایمیل و رمز عبور نیست.
+                    </li>
+                    <li>
+                        برای پیدا کردن توکن ورود و کلید API، در حسابفا به قسمت تنظیمات، تنظیمات API مراجعه کنید.
+                    </li>
+                </ul>
+            </div>
         <form id="ssbhesabfa_form" enctype="multipart/form-data" action="" method="post">
             <?php $Html_output->init($ssbhesabf_setting_fields); ?>
             <p class="submit hesabfa-p">
