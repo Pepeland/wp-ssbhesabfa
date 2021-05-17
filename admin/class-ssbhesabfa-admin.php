@@ -418,6 +418,27 @@ class Ssbhesabfa_Admin {
     public function ssbhesabfa_init_internal()
     {
         add_rewrite_rule( 'ssbhesabfa-webhook.php$', 'index.php?ssbhesabfa_webhook=1', 'top' );
+        $this->checkForSyncChanges();
+    }
+
+    private function checkForSyncChanges() {
+        $syncChangesLastDate = get_option('ssbhesabfa_sync_changes_last_date');
+        if(!isset($syncChangesLastDate) || $syncChangesLastDate == false)
+        {
+            add_option('ssbhesabfa_sync_changes_last_date', new DateTime());
+            $syncChangesLastDate = new DateTime();
+            Ssbhesabfa_Admin_Functions::logDebugStr('set last date');
+        }
+
+        $nowDateTime = new DateTime();
+        $diff = $nowDateTime->diff($syncChangesLastDate);
+
+        if($diff->i > 5) {
+            Ssbhesabfa_Admin_Functions::logDebugStr('*** Sync changes automatically ***');
+            update_option('ssbhesabfa_sync_changes_last_date', new DateTime());
+            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-ssbhesabfa-webhook.php';
+            new Ssbhesabfa_Webhook();
+        }
     }
 
     public function ssbhesabfa_query_vars( $query_vars )
