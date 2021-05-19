@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Api
- * @version    1.7.23
+ * @version    1.7.27
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/api
