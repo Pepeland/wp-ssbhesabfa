@@ -244,10 +244,18 @@ class Ssbhesabfa_Webhook
         //check if product exist in woocommerce
         $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('product', $id_product, $id_attribute);
         if ($id_obj) {
+            global $wpdb;
+            $found = $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts`                                                                
+                                WHERE ID = $id_product AND post_status IN('publish','private')");
+
+            if(!$found) {
+                Ssbhesabfa_Admin_Functions::logDebugStr("product not found in woocommerce. product id: $id_product");
+                return false;
+            }
+
             $product = new WC_Product($id_product);
 
             //1.set new Hesabfa Item Code if changes
-            global $wpdb;
             $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `" . $wpdb->prefix . "ssbhesabfa` WHERE `id` = $id_obj");
 
             if (is_object($row) && $row->id_hesabfa != $item->Code) {
