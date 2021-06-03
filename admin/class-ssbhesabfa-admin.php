@@ -485,12 +485,6 @@ class Ssbhesabfa_Admin {
     }
 
     //Invoice
-    public function ssbhesabfa_hook_new_order($id_order)
-    {
-        $function = new Ssbhesabfa_Admin_Functions();
-        $function->setOrder($id_order);
-    }
-
     public function ssbhesabfa_hook_order_status_change($id_order, $from, $to)
     {
         Ssbhesabfa_Admin_Functions::logDebugStr("***** ssbhesabfa_hook_order_status_change *****");

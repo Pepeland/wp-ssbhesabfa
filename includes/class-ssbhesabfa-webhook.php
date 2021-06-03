@@ -249,7 +249,8 @@ class Ssbhesabfa_Webhook
                                 WHERE ID = $id_product AND post_status IN('publish','private')");
 
             if(!$found) {
-                Ssbhesabfa_Admin_Functions::logDebugStr("product not found in woocommerce. product id: $id_product");
+                Ssbhesabfa_Admin_Functions::logDebugStr("product not found in woocommerce. product id: $id_product, code in Hesabfa: $item->Code");
+                $wpdb->delete($wpdb->prefix.'ssbhesabfa', array('id_hesabfa' => $item->Code, 'obj_type' => 'product'));
                 return false;
             }
 

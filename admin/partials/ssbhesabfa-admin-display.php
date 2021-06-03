@@ -18,7 +18,7 @@ class Ssbhesabfa_Admin_Display
      * @since    1.0.0
      * @access   static
      */
-    public function init()
+    public static function init()
     {
         //add_action('admin_menu', array(__CLASS__, 'hesabfa_add_settings_menu'));
         add_action('admin_menu', array(__CLASS__, 'hesabfa_add_menu'));

@@ -537,7 +537,6 @@ class Ssbhesabfa_Admin_Functions
         $number = $this->getInvoiceNumberByOrderId($id_order);
         if (!$number) {
             $number = null;
-
             if ($orderType == 2) //return if saleInvoice not set before
             {
                 return false;
@@ -605,6 +604,7 @@ class Ssbhesabfa_Admin_Functions
                 'Discount' => (float)$this->getPriceInHesabfaDefaultCurrency($product['subtotal'] - $product['total']),
                 'Tax' => (float)$this->getPriceInHesabfaDefaultCurrency($product['subtotal_tax']),
             );
+
             array_push($invoiceItems, $item);
             $i++;
         }

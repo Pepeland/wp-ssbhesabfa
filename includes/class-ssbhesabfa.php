@@ -167,8 +167,6 @@ class Ssbhesabfa {
                 }
 
                 //Runs when a new order added.
-//                $this->loader->add_action('woocommerce_thankyou', $plugin_admin, 'ssbhesabfa_hook_new_order', 10, 1);
-//                $this->loader->add_action('woocommerce_new_order', $plugin_admin, 'ssbhesabfa_hook_new_order', 10, 1);
                 $this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'ssbhesabfa_hook_order_status_change', 10, 3);
 
                 //Runs when an order paid.
