@@ -615,6 +615,13 @@ msgstr "تعداد محصولات لینک شده:"
 msgid "Save and next page"
 msgstr "ذخیره و صفحه بعد"
 
+msgid "Invoice in Hesabfa"
+msgstr "فاکتور حسابفا"
+
+msgid "Submit Invoice"
+msgstr "ثبت فاکتور"
+
+
 #~ msgid "Sync completed, All products added/updated."
 #~ msgstr "همسان‌سازی پایان یافت. تمامی محصولات به‌روزرسانی/افزوده شدند."
 

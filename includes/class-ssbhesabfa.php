@@ -159,6 +159,10 @@ class Ssbhesabfa {
         $this->loader->add_filter( 'query_vars', $plugin_admin, 'ssbhesabfa_query_vars' );
         $this->loader->add_action( 'parse_request', $plugin_admin, 'ssbhesabfa_parse_request' );
 
+        // add filter and action for woocommerce order list
+        $this->loader->add_filter( 'manage_edit-shop_order_columns',$plugin_admin, 'custom_hesabfa_column_order_list', 20 );
+        $this->loader->add_action( 'manage_shop_order_posts_custom_column', $plugin_admin , 'custom_orders_list_column_content', 20, 2 );
+
         if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             //Check plugin live mode
             if (get_option('ssbhesabfa_live_mode')) {
@@ -224,6 +228,7 @@ class Ssbhesabfa {
             $this->loader->add_filter('wp_ajax_adminSyncProducts', $plugin_admin, 'adminSyncProductsCallback');
             $this->loader->add_filter('wp_ajax_adminSyncOrders', $plugin_admin, 'adminSyncOrdersCallback');
             $this->loader->add_filter('wp_ajax_adminUpdateProducts', $plugin_admin, 'adminUpdateProductsCallback');
+            $this->loader->add_filter('wp_ajax_adminSubmitInvoice', $plugin_admin, 'adminSubmitInvoiceCallback');
 
             /*
              * Action - Ajax 'Log Tab' from Hesabfa/Log

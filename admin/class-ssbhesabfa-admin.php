@@ -382,6 +382,19 @@ class Ssbhesabfa_Admin {
         }
     }
 
+    public function adminSubmitInvoiceCallback() {
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+
+            $orderId = wc_clean($_POST['orderId']);
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->setOrder($orderId);
+            echo json_encode($result);
+            die(); // this is required to return a proper result
+        }
+    }
+
+
     public function adminSyncProductsManuallyCallback() {
         Ssbhesabfa_Admin_Functions::logDebugStr('--- syncProductsManually Callback ---');
 
@@ -445,6 +458,46 @@ class Ssbhesabfa_Admin {
     {
         $query_vars[] = 'ssbhesabfa_webhook';
         return $query_vars;
+    }
+
+    public function custom_hesabfa_column_order_list($columns) {
+        $reordered_columns = array();
+
+        // Inserting columns to a specific location
+        foreach( $columns as $key => $column){
+            $reordered_columns[$key] = $column;
+            if( $key ==  'order_status' ){
+                // Inserting after "Status" column
+                $reordered_columns['hesabfa-column-invoice-number'] = __('Invoice in Hesabfa', 'ssbhesabfa');
+                $reordered_columns['hesabfa-column-submit-invoice'] = __('Submit Invoice', 'ssbhesabfa');
+            }
+        }
+        return $reordered_columns;
+    }
+
+    public function custom_orders_list_column_content($column, $post_id) {
+        global $wpdb;
+
+        switch ( $column )
+        {
+            case 'hesabfa-column-invoice-number' :
+                // Get custom post meta data
+                $row = $wpdb->get_row("SELECT `id_hesabfa` FROM `".$wpdb->prefix."ssbhesabfa` WHERE `id_ps` = $post_id AND `obj_type` = 'order'");
+
+                //$my_var_one = get_post_meta( $post_id, '_the_meta_key1', true );
+                if(!empty($row))
+                    echo '<mark class="order-status bg-info text-white fw-bold"><span>' . $row->id_hesabfa . '</span></mark>';
+                else
+                    echo '<small></small>';
+                break;
+
+            case 'hesabfa-column-submit-invoice' :
+                    echo '<a role="button" class="btn btn-sm btn-outline-success btn-submit-invoice" ';
+                    echo "data-order-id='$post_id'>";
+                    echo __('Submit Invoice', 'ssbhesabfa');
+                    echo '</a>';
+                break;
+        }
     }
 
     public function ssbhesabfa_parse_request( &$wp )

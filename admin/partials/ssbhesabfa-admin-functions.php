@@ -575,25 +575,34 @@ class Ssbhesabfa_Admin_Functions
         }
 
         // add product before insert invoice
-        $items = array();
+        $notDefinedItems = array();
         $products = $order->get_items();
         foreach ($products as $product) {
+            if($product['product_id'] == 0) continue;
             $itemCode = $this->getItemCodeByProductId($product['product_id'], $product['variation_id']);
             if ($itemCode == null) {
-                $items[] = $product['product_id'];
+                $notDefinedItems[] = $product['product_id'];
             }
         }
 
-        if (!empty($items)) {
-            if (!$this->setItems($items)) {
+        if (!empty($notDefinedItems)) {
+            if (!$this->setItems($notDefinedItems)) {
+                self::logDebugStr("Cannot add/update Invoice. Failed to set products. Order ID: $id_order");
                 return false;
             }
         }
 
         $invoiceItems = array();
         $i = 0;
+        $failed = false;
         foreach ($products as $key => $product) {
             $itemCode = $this->getItemCodeByProductId($product['product_id'], $product['variation_id']);
+
+            if($itemCode == null)
+            {
+                $failed = true;
+                break;
+            }
 
             $item = array(
                 'RowNumber' => $i,
@@ -609,9 +618,13 @@ class Ssbhesabfa_Admin_Functions
             $i++;
         }
 
+        if($failed) {
+            self::logDebugStr("Cannot add/update Invoice. Item code is NULL. Check your invoice products and relations with Hesabfa. Order ID: $id_order");
+            return false;
+        }
+
         if (empty($invoiceItems)) {
             Ssbhesabfa_Admin_Functions::log(array("Cannot add/update Invoice. At least one item required."));
-
             return false;
         }
 

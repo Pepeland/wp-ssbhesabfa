@@ -462,4 +462,37 @@ jQuery(function ($) {
         });
     });
 
+    $(".btn-submit-invoice").on( "click", function() {
+        var orderId = $(this).attr("data-order-id");
+
+        var btnEl = $('.btn-submit-invoice[data-order-id=' + orderId + ']');
+
+        btnEl.attr('aria-disabled', true);
+        btnEl.addClass('disabled');
+        btnEl.html('ثبت فاکتور...');
+        //btnEl.show();
+
+        submitInvoice(orderId);
+    });
+
+    function submitInvoice(orderId) {
+        var data = {
+            'action': 'adminSubmitInvoice',
+            'orderId': orderId
+        };
+        $.post(ajaxurl, data, function (response) {
+            if ('failed' !== response) {
+                const res = JSON.parse(response);
+                // refresh page
+                location.reload();
+            } else {
+                alert('Error submiting invoice.');
+                return false;
+            }
+        });
+    }
+
+
 });
+
+
