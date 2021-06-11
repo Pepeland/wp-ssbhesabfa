@@ -17,7 +17,6 @@ a.nav-tab {
 
 .hesabfa-tab-page-title {
     font-family: IRANYekan !important;
-    margin-top: 15px;
     color: dimgray;
 }
 
@@ -49,4 +48,8 @@ a.nav-tab {
     max-width: none !important;
     margin-left: 20px;
     background-color: whitesmoke !important;
+}
+
+.hesabfa-bold {
+    font-weight: bold;
 }

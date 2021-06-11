@@ -66,8 +66,8 @@ class Ssbhesabfa_Admin_Display
         self::hesabfa_plugin_header();
         ?>
         <div class="hesabfa-f">
-            <p class="mt-4">
-            <h5 class="hesabfa-tab-page-title">
+            <p class="p mt-4">
+            <h5 class="h5 hesabfa-tab-page-title">
                 همسان سازی دستی کالاهای فروشگاه با حسابفا
                 <span class="badge bg-warning text-dark hand <?= $showTips ? 'd-none' : 'd-inline-block' ?>"
                       id="show-tips-btn">مشاهده نکات مهم</span>

@@ -486,13 +486,13 @@ class Ssbhesabfa_Admin {
 
                 //$my_var_one = get_post_meta( $post_id, '_the_meta_key1', true );
                 if(!empty($row))
-                    echo '<mark class="order-status bg-info text-white fw-bold"><span>' . $row->id_hesabfa . '</span></mark>';
+                    echo '<mark class="order-status"><span>' . $row->id_hesabfa . '</span></mark>';
                 else
                     echo '<small></small>';
                 break;
 
             case 'hesabfa-column-submit-invoice' :
-                    echo '<a role="button" class="btn btn-sm btn-outline-success btn-submit-invoice" ';
+                    echo '<a role="button" class="button btn-submit-invoice" ';
                     echo "data-order-id='$post_id'>";
                     echo __('Submit Invoice', 'ssbhesabfa');
                     echo '</a>';
