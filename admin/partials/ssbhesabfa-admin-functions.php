@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
- * @version    1.7.27
+ * @version    1.71.29
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/functions

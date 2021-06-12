@@ -79,7 +79,6 @@ class Ssbhesabfa_Webhook
             }
         } else {
             Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot check last changes. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
-
             return false;
         }
 
@@ -158,7 +157,7 @@ class Ssbhesabfa_Webhook
         if ($invoice->InvoiceType == 0) {
             //check if Tag not set in hesabfa
             if ($id_order == 0) {
-                Ssbhesabfa_Admin_Functions::log(array("This invoice is not define in OnlineStore. Order Number: " . $number));
+                Ssbhesabfa_Admin_Functions::log(array("This invoice is not defined in OnlineStore. Invoice Number: " . $number));
             } else {
                 //check if order exist in wooCommerce
                 $id_obj = Ssbhesabfa_Admin_Functions::getObjectId('order', $id_order);

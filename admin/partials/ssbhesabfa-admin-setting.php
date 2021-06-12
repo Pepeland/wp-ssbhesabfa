@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Setting
- * @version    1.7.27
+ * @version    1.71.29
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/setting
@@ -342,6 +342,10 @@ class Ssbhesabfa_Setting
                     </li>
                     <li>
                         برای پیدا کردن توکن ورود و کلید API، در حسابفا به قسمت تنظیمات، تنظیمات API مراجعه کنید.
+                    </li>
+                    <li>
+                        اگر می خواهید کسب و کار دیگری را به افزونه متصل کنید، ابتدا باید یک بار افزونه را
+                        حذف و مجدد نصب کنید تا جدول ارتباطات کسب و کار قبلی با افزونه حذف گردد.
                     </li>
                 </ul>
             </div>
