@@ -386,4 +386,10 @@ class Ssbhesabfa_Api
         return $this->apiRequest($method);
     }
 
+    public function settingGetSubscriptionInfo()
+    {
+        $method = 'setting/getBusinessInfo';
+        return $this->apiRequest($method);
+    }
+
 }

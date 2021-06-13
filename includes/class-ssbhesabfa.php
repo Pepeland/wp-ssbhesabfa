@@ -155,13 +155,8 @@ class Ssbhesabfa {
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
         //Related to webhook set
-        $this->loader->add_action( 'init', $plugin_admin, 'ssbhesabfa_init_internal' );
         $this->loader->add_filter( 'query_vars', $plugin_admin, 'ssbhesabfa_query_vars' );
         $this->loader->add_action( 'parse_request', $plugin_admin, 'ssbhesabfa_parse_request' );
-
-        // add filter and action for woocommerce order list
-        $this->loader->add_filter( 'manage_edit-shop_order_columns',$plugin_admin, 'custom_hesabfa_column_order_list', 20 );
-        $this->loader->add_action( 'manage_shop_order_posts_custom_column', $plugin_admin , 'custom_orders_list_column_content', 20, 2 );
 
         if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             //Check plugin live mode
@@ -169,6 +164,12 @@ class Ssbhesabfa {
                 if (get_option('ssbhesabfa_hesabfa_default_currency') === 0) {
                     $this->loader->add_action('admin_notices', $plugin_admin, 'ssbhesabfa_currency_notice');
                 }
+
+                $this->loader->add_action( 'init', $plugin_admin, 'ssbhesabfa_init_internal' );
+
+                // add filter and action for woocommerce order list
+                $this->loader->add_filter( 'manage_edit-shop_order_columns',$plugin_admin, 'custom_hesabfa_column_order_list', 20 );
+                $this->loader->add_action( 'manage_shop_order_posts_custom_column', $plugin_admin , 'custom_orders_list_column_content', 20, 2 );
 
                 //Runs when a new order added.
                 $this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'ssbhesabfa_hook_order_status_change', 10, 3);

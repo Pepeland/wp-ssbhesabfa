@@ -326,6 +326,14 @@ class Ssbhesabfa_Setting
 
     public static function ssbhesabfa_api_setting()
     {
+        $businessInfo = self::getSubscriptionInfo();
+        $isBusinessInfo = false;
+        if($businessInfo["expireDate"] != '' && $businessInfo["expireDate"] != null) {
+            $isBusinessInfo = true;
+            $expireDate = strtotime($businessInfo["expireDate"]);
+            $expireDateStr = date("Y/m/d", $expireDate);
+        }
+
         $ssbhesabf_setting_fields = self::ssbhesabfa_api_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
@@ -349,6 +357,21 @@ class Ssbhesabfa_Setting
                     </li>
                 </ul>
             </div>
+        <div class="card hesabfa-card hesabfa-f <?php echo $isBusinessInfo ? '' : 'd-none' ?>">
+            <strong>اطلاعات کسب و کار</strong>
+            <div class="row mt-2">
+                <div class="col">نام کسب و کار:</div>
+                <div class="col text-info fw-bold"><?php echo $businessInfo["businessName"] ?></div>
+                <div class="col">طرح:</div>
+                <div class="col text-info fw-bold"><?php echo $businessInfo["plan"] ?></div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">اعتبار سند:</div>
+                <div class="col text-info fw-bold"><?php echo $businessInfo["credit"] ?></div>
+                <div class="col">تاریخ انقضا:</div>
+                <div class="col text-info fw-bold"><?php echo $expireDateStr ?></div>
+            </div>
+        </div>
         <form id="ssbhesabfa_form" enctype="multipart/form-data" action="" method="post">
             <?php $Html_output->init($ssbhesabf_setting_fields); ?>
             <p class="submit hesabfa-p">
@@ -795,6 +818,28 @@ class Ssbhesabfa_Setting
     {
         global $wpdb;
         return $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts` WHERE `post_type` IN ('product','product_variation') AND `post_status` IN ('publish', 'private', 'draft')  ");
+    }
+
+    public static function getSubscriptionInfo()
+    {
+        $businessName = '';
+        $credit = '';
+        $expireDate = '';
+        $plan = '';
+
+        $hesabfa = new Ssbhesabfa_Api();
+        $response = $hesabfa->settingGetSubscriptionInfo();
+        if ($response->Success) {
+            $businessName = $response->Result->Name;
+            $credit = $response->Result->Credit;
+            $expireDate = $response->Result->ExpireDate;
+            $plan = $response->Result->Subscription;
+        }
+
+        return array("businessName" => $businessName,
+            "credit" => $credit,
+            "expireDate" => $expireDate,
+            "plan" => $plan);
     }
 
     public static function ssbhesabfa_set_webhook()
