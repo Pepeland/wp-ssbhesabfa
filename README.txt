@@ -4,7 +4,7 @@ Tags: accounting cloud hesabfa
 Requires at least: 5.2
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 1.71.29
+Stable tag: 1.72.29
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -188,6 +188,10 @@ For more information and a full guide to how to use Hesabfa and WooCommerce Plug
 * some bugs fixed.
 * add Hesabfa invoice number in order list
 * add Hesabfa invoice submit button in order list
+
+= 1.72.29 - 12.06.2021 =
+* add business info in api setting tab.
+* add a page to show duplicate product codes.
 
 == Upgrade Notice ==
 Automatic updates should work smoothly, but we still recommend you back up your site.

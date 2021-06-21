@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Admin_Display
- * @version    1.71.29
+ * @version    1.72.29
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/display
@@ -39,6 +39,7 @@ class Ssbhesabfa_Admin_Display
         add_menu_page("حسابفا", "حسابفا", "manage_options", "ssbhesabfa-option", array(__CLASS__, 'hesabfa_plugin_page'), $iconUrl, null);
         add_submenu_page("ssbhesabfa-option", "تنظیمات حسابفا", "تنظیمات حسابفا", "manage_options", 'ssbhesabfa-option', array(__CLASS__, 'hesabfa_plugin_page'));
         add_submenu_page("ssbhesabfa-option", "همسان سازی دستی کالاها", "همسان سازی دستی کالاها", "manage_options", 'hesabfa-sync-products-manually', array(__CLASS__, 'hesabfa_plugin_sync_products_manually'));
+        add_submenu_page("ssbhesabfa-option", "کدهای تکراری", "کدهای تکراری", "manage_options", 'hesabfa-repeated-products', array(__CLASS__, 'hesabfa_plugin_repeated_products'));
     }
 
     function hesabfa_plugin_sync_products_manually()
@@ -174,6 +175,51 @@ class Ssbhesabfa_Admin_Display
         <?php
     }
 
+    function hesabfa_plugin_repeated_products()
+    {
+        global $wpdb;
+        $rows = $wpdb->get_results("SELECT id_hesabfa FROM " . $wpdb->prefix . "ssbhesabfa GROUP BY id_hesabfa HAVING COUNT(id_hesabfa) > 1;");
+        $ids = array();
+
+        foreach ($rows as $row)
+            $ids[] = $row->id_hesabfa;
+
+        $idsStr = implode(',', $ids);
+        $rows = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "ssbhesabfa WHERE id_hesabfa IN ($idsStr) ORDER BY id_hesabfa");
+        //Ssbhesabfa_Admin_Functions::logDebugObj($rows);
+        $i = 0;
+
+        self::hesabfa_plugin_header();
+        ?>
+        <div class="hesabfa-f mt-4">
+            <h5 class="h5 hesabfa-tab-page-title">
+                کد محصولات تکراری
+            </h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">کد حسابفا</th>
+                    <th scope="col">شناسه محصول</th>
+                    <th scope="col">شناسه متغیر</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($rows as $p):
+                    $i++; ?>
+                    <tr>
+                        <th scope="row"><?= $i; ?></th>
+                        <td><?= $p->id_hesabfa; ?></td>
+                        <td><?= $p->id_ps; ?></td>
+                        <td><?= $p->id_ps_attribute; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
     public static function getProductsAndRelations($page, $rpp)
     {
         $offset = ($page - 1) * $rpp;
@@ -257,7 +303,8 @@ class Ssbhesabfa_Admin_Display
         }
     }
 
-    public static function hesabfa_plugin_header() {
+    public static function hesabfa_plugin_header()
+    {
         $logoUrl = plugins_url('/hesabfa-accounting/admin/img/hesabfa-logo.fa.png');
         ?>
         <div class="hesabfa-header">
@@ -267,8 +314,11 @@ class Ssbhesabfa_Admin_Display
                 </div>
                 <div class="col"></div>
                 <div class="col-auto">
-                    <a class="btn btn-sm btn-success" href="https://app.hesabfa.com/u/login" target="_blank">ورود به حسابفا</a>
-                    <a class="btn btn-sm btn-warning" href="https://www.hesabfa.com/help/topics/%D8%A7%D9%81%D8%B2%D9%88%D9%86%D9%87/%D9%88%D9%88%DA%A9%D8%A7%D9%85%D8%B1%D8%B3" target="_blank">راهنمای افزونه</a>
+                    <a class="btn btn-sm btn-success" href="https://app.hesabfa.com/u/login" target="_blank">ورود به
+                        حسابفا</a>
+                    <a class="btn btn-sm btn-warning"
+                       href="https://www.hesabfa.com/help/topics/%D8%A7%D9%81%D8%B2%D9%88%D9%86%D9%87/%D9%88%D9%88%DA%A9%D8%A7%D9%85%D8%B1%D8%B3"
+                       target="_blank">راهنمای افزونه</a>
                 </div>
             </div>
         </div>
