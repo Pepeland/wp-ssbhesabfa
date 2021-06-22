@@ -152,6 +152,10 @@ class Ssbhesabfa_Admin {
         echo '<div class="error"><p>' . __('Hesabfa Plugin need to connect to Hesabfa Accounting, Please check the API credential!', 'ssbhesabfa') . '</p></div>';
     }
 
+    public function ssbhesabfa_business_expired_notice() {
+        echo '<div class="error"><p>' . __('Cannot connect to Hesabfa. Business expired.', 'ssbhesabfa') . '</p></div>';
+    }
+
     /**
      * Missing hesabfa default currency notice for the admin area.
      *
@@ -389,6 +393,9 @@ class Ssbhesabfa_Admin {
 
             $func = new Ssbhesabfa_Admin_Functions();
             $result = $func->setOrder($orderId);
+            if($result)
+                $func->setOrderPayment($orderId);
+
             echo json_encode($result);
             die(); // this is required to return a proper result
         }

@@ -22,6 +22,8 @@ class Ssbhesabfa_Webhook
         $lastChange = get_option('ssbhesabfa_last_log_check_id');
         $changes = $hesabfaApi->settingGetChanges($lastChange + 1);
         if ($changes->Success) {
+            update_option('ssbhesabfa_business_expired', 0);
+
             foreach ($changes->Result as $item) {
                 if (!$item->API) {
                     switch ($item->ObjectType) {
@@ -79,11 +81,20 @@ class Ssbhesabfa_Webhook
             }
         } else {
             Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot check last changes. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
+            if($changes->ErrorCode == 108) {
+                update_option('ssbhesabfa_business_expired', 1);
+                add_action('admin_notices', array( __CLASS__, 'ssbhesabfa_business_expired_notice' ));
+            }
             return false;
         }
 
         return true;
     }
+
+    public function ssbhesabfa_business_expired_notice() {
+        echo '<div class="error"><p>' . __('Cannot connect to Hesabfa. Business expired.', 'ssbhesabfa') . '</p></div>';
+    }
+
 
     public function setChanges()
     {

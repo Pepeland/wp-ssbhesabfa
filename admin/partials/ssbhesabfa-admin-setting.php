@@ -372,6 +372,13 @@ class Ssbhesabfa_Setting
                 <div class="col text-info fw-bold"><?php echo $expireDateStr ?></div>
             </div>
         </div>
+
+        <div class="alert alert-danger hesabfa-f mt-2" id="changeBusinessWarning">
+            <strong>هشدار</strong><br>
+            برای اتصال یک کسب و کار دیگر به افزونه، ابتدا باید یک بار افزونه را حذف و مجدد
+            نصب کنید تا جدول ارتباطات افزونه با کسب و کار قبل حذف گردد.
+        </div>
+
         <form id="ssbhesabfa_form" enctype="multipart/form-data" action="" method="post">
             <?php $Html_output->init($ssbhesabf_setting_fields); ?>
             <p class="submit hesabfa-p">
@@ -802,7 +809,7 @@ class Ssbhesabfa_Setting
     public static function getProductCountsInHesabfa()
     {
         $hesabfa = new Ssbhesabfa_Api();
-        $response = $hesabfa->itemGetItems(array('Take' => 1));
+        $response = $hesabfa->itemGetItems(array('Take' => 5));
         if ($response->Success) {
             return $response->Result->TotalCount;
         } else return 0;
@@ -854,6 +861,7 @@ class Ssbhesabfa_Setting
         if (is_object($response)) {
             if ($response->Success) {
                 update_option('ssbhesabfa_live_mode', 1);
+                update_option('ssbhesabfa_business_expired', 0);
 
                 //set the last log ID if is not set
                 $lastChanges = get_option('ssbhesabfa_last_log_check_id');
@@ -913,9 +921,17 @@ class Ssbhesabfa_Setting
             } else {
                 update_option('ssbhesabfa_live_mode', 0);
 
-                echo '<div class="error">';
-                echo '<p class="hesabfa-p">' . __('Cannot set Hesabfa webHook. Error Message:', 'ssbhesabfa') . $response->ErrorMessage . '</p>';
-                echo '</div>';
+                if($response->ErrorCode === 108) {
+                    echo '<div class="error">';
+                    echo '<p class="hesabfa-p">' . __('Cannot connect to Hesabfa. Business expired.', 'ssbhesabfa') . $response->ErrorMessage . '</p>';
+                    echo '</div>';
+                    update_option('ssbhesabfa_business_expired', 1);
+                } else {
+                    echo '<div class="error">';
+                    echo '<p class="hesabfa-p">' . __('Cannot set Hesabfa webHook. Error Message:', 'ssbhesabfa') . $response->ErrorMessage . '</p>';
+                    echo '</div>';
+                    update_option('ssbhesabfa_business_expired', 0);
+                }
 
                 Ssbhesabfa_Admin_Functions::log(array("Cannot set Hesabfa webHook. Error Message: $response->ErrorMessage. Error Code: $response->ErrorCode"));
             }

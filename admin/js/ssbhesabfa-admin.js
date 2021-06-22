@@ -492,6 +492,19 @@ jQuery(function ($) {
         });
     }
 
+    // change business warning
+    var oldApiKey = '';
+    $("#changeBusinessWarning").hide();
+
+    $("#ssbhesabfa_account_api").focusin( function () {
+        oldApiKey = $("#ssbhesabfa_account_api" ).val();
+    });
+    $("#ssbhesabfa_account_api").focusout( function () {
+        var newApiKey = $("#ssbhesabfa_account_api" ).val();
+        if(oldApiKey != '' && oldApiKey != newApiKey) {
+            $("#changeBusinessWarning").show();
+        }
+    });
 
 });
 

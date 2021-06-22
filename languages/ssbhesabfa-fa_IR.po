@@ -533,6 +533,9 @@ msgstr "تنظیمات API به روزرسانی شد، اتصال موفقیت 
 msgid "Cannot set Hesabfa webHook. Error Message:"
 msgstr "امکان تنظیم وب‌هوک در حسابفا وجود ندارد. شرح خطا:"
 
+msgid "Cannot connect to Hesabfa. Business expired."
+msgstr "امکان اتصال به حسابفا وجود ندارد، کسب و کار منقضی شده است."
+
 #: admin/partials/ssbhesabfa-admin-setting.php:614
 msgid "Cannot connect to Hesabfa servers. Please check your Internet connection"
 msgstr "اتصال به حسابفا برقرار نیست، لطفا اتصال اینترنت را بررسی نمایید."

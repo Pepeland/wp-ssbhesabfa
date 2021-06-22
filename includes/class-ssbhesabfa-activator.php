@@ -32,6 +32,7 @@ class Ssbhesabfa_Activator {
         add_option('ssbhesabfa_contact_node_family', 'مشتریان فروشگاه آن‌لاین');
         add_option('ssbhesabfa_activation_date', date("Y-m-d"));
         add_option('ssbhesabfa_use_export_product_opening_quantity', false);
+        add_option('ssbhesabfa_business_expired', 0);
 
         self::ssbhesabfa_create_database_table();
 	}
