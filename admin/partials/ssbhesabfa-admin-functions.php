@@ -1207,9 +1207,9 @@ class Ssbhesabfa_Admin_Functions
             return 'inputDateError';
         }
 
-        if (!$this->isDateAfterActivation($from_date)) {
-            return 'activationDateError';
-        }
+//        if (!$this->isDateAfterActivation($from_date)) {
+//            return 'activationDateError';
+//        }
 
         if (!$this->isDateInFiscalYear($from_date)) {
             return 'fiscalYearError';
