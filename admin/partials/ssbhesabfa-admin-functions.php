@@ -1199,6 +1199,8 @@ class Ssbhesabfa_Admin_Functions
 
     public function syncOrders($from_date)
     {
+        self::logDebugStr("===== Sync Orders =====");
+
         if (!isset($from_date)) {
             return false;
         }
@@ -1217,24 +1219,37 @@ class Ssbhesabfa_Admin_Functions
 
         $orders = wc_get_orders(array(
             'date_created' => '>' . $from_date,
+            'orderby' => 'ID'
         ));
+
+        self::logDebugStr("Orders count: " . count($orders));
+
+        $statusesToSubmitInvoice = get_option('ssbhesabfa_invoice_status');
+        $statusesToSubmitInvoice = implode(',', $statusesToSubmitInvoice);
+        $statusesToSubmitReturnInvoice = get_option('ssbhesabfa_invoice_return_status');
+        $statusesToSubmitReturnInvoice = implode(',', $statusesToSubmitReturnInvoice);
+        $statusesToSubmitPayment = get_option('ssbhesabfa_payment_status');
+        $statusesToSubmitPayment = implode(',', $statusesToSubmitPayment);
 
         $id_orders = array();
         foreach ($orders as $order) {
             $id_order = $order->get_id();
             $id_obj = $this->getObjectId('order', $id_order);
+            $current_status = $order->get_status();
+
             if (!$id_obj) {
-                if ($this->setOrder($id_order)) {
-                    $this->setOrderPayment($id_order);
-                    array_push($id_orders, $id_order);
+                if (strpos($statusesToSubmitInvoice, $current_status) !== false) {
+                    if ($this->setOrder($id_order)) {
+                        array_push($id_orders, $id_order);
+
+                        if (strpos($statusesToSubmitPayment, $current_status) !== false)
+                            $this->setOrderPayment($id_order);
+                    }
                 }
             }
 
-            $current_status = $order->get_status();
-            foreach (get_option('ssbhesabfa_invoice_return_status') as $status) {
-                if ($status == $current_status) {
-                    $this->setOrder($id_order, 2, $this->getInvoiceCodeByOrderId($id_order));
-                }
+            if (strpos($statusesToSubmitReturnInvoice, $current_status) !== false) {
+                $this->setOrder($id_order, 2, $this->getInvoiceCodeByOrderId($id_order));
             }
         }
 
