@@ -4,7 +4,7 @@
  * The admin-specific functionality of the plugin.
  *
  * @class      Ssbhesabfa_Admin
- * @version    1.75.30
+ * @version    1.75.31
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin
@@ -769,6 +769,22 @@ class Ssbhesabfa_Admin {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=log&cleanLogResult=true');
             } else {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=log&cleanLogResult=false');
+            }
+            echo $redirect_url;
+
+            die(); // this is required to return a proper result
+        }
+    }
+
+    public function adminDeleteDuplicateProductsCallback() {
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->deleteDuplicateProducts();
+
+            if ($result) {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&cleanLogResult=true');
+            } else {
+                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&cleanLogResult=false');
             }
             echo $redirect_url;
 

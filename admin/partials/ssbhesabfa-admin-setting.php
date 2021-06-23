@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Setting
- * @version    1.75.30
+ * @version    1.75.31
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/setting
@@ -328,7 +328,7 @@ class Ssbhesabfa_Setting
     {
         $businessInfo = self::getSubscriptionInfo();
         $isBusinessInfo = false;
-        if($businessInfo["expireDate"] != '' && $businessInfo["expireDate"] != null) {
+        if ($businessInfo["expireDate"] != '' && $businessInfo["expireDate"] != null) {
             $isBusinessInfo = true;
             $expireDate = strtotime($businessInfo["expireDate"]);
             $expireDateStr = date("Y/m/d", $expireDate);
@@ -337,26 +337,26 @@ class Ssbhesabfa_Setting
         $ssbhesabf_setting_fields = self::ssbhesabfa_api_setting_fields();
         $Html_output = new Ssbhesabfa_Html_output();
         ?>
-            <div class="alert alert-warning hesabfa-f">
-                <strong>توجه</strong><br>
-                <ul class="mx-4" style="list-style-type:square">
-                    <li>
-                        برای اتصال به API حسابفا و فعال شدن این افزونه باید در اینجا
-                        کلید API و توکن ورود به کسب و کار خود را وارد کنید.
-                    </li>
-                    <li>
-                        اگر برای اتصال به API حسابفا از توکن ورود استفاده کنید
-                        نیازی به وارد کردن ایمیل و رمز عبور نیست.
-                    </li>
-                    <li>
-                        برای پیدا کردن توکن ورود و کلید API، در حسابفا به قسمت تنظیمات، تنظیمات API مراجعه کنید.
-                    </li>
-                    <li>
-                        اگر می خواهید کسب و کار دیگری را به افزونه متصل کنید، ابتدا باید یک بار افزونه را
-                        حذف و مجدد نصب کنید تا جدول ارتباطات کسب و کار قبلی با افزونه حذف گردد.
-                    </li>
-                </ul>
-            </div>
+        <div class="alert alert-warning hesabfa-f">
+            <strong>توجه</strong><br>
+            <ul class="mx-4" style="list-style-type:square">
+                <li>
+                    برای اتصال به API حسابفا و فعال شدن این افزونه باید در اینجا
+                    کلید API و توکن ورود به کسب و کار خود را وارد کنید.
+                </li>
+                <li>
+                    اگر برای اتصال به API حسابفا از توکن ورود استفاده کنید
+                    نیازی به وارد کردن ایمیل و رمز عبور نیست.
+                </li>
+                <li>
+                    برای پیدا کردن توکن ورود و کلید API، در حسابفا به قسمت تنظیمات، تنظیمات API مراجعه کنید.
+                </li>
+                <li>
+                    اگر می خواهید کسب و کار دیگری را به افزونه متصل کنید، ابتدا باید یک بار افزونه را
+                    حذف و مجدد نصب کنید تا جدول ارتباطات کسب و کار قبلی با افزونه حذف گردد.
+                </li>
+            </ul>
+        </div>
         <div class="card hesabfa-card hesabfa-f <?php echo $isBusinessInfo ? '' : 'd-none' ?>">
             <strong>اطلاعات کسب و کار</strong>
             <div class="row mt-2">
@@ -512,14 +512,18 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Export and add all online store products to Hesabfa', 'ssbhesabfa'); ?></p>
-                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="exportProductsProgress">
-                    <div class="progress-bar progress-bar-striped bg-success" id="exportProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="exportProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="exportProductsProgressBar"
+                         role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+                         aria-valuemax="100"></div>
                 </div>
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
                         <li>با انجام این عملیات محصولات لینک نشده از فروشگاه وارد حسابفا می شوند.</li>
-                        <li>اگر محصولات از قبل هم در فروشگاه تعریف شده اند و هم در حسابفا و به هم لینک نشده اند باید از گزینه
+                        <li>اگر محصولات از قبل هم در فروشگاه تعریف شده اند و هم در حسابفا و به هم لینک نشده اند باید از
+                            گزینه
                             همسان سازی دستی محصولات استفاده کنید.
                         </li>
                     </ul>
@@ -540,13 +544,18 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Export the products quantity and record the \'products opening quantity\' in the Hesabfa', 'ssbhesabfa'); ?></p>
-                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="exportProductsOpeningQuantityProgress">
-                    <div class="progress-bar progress-bar-striped bg-success" id="exportProductsOpeningQuantityProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="exportProductsOpeningQuantityProgress">
+                    <div class="progress-bar progress-bar-striped bg-success"
+                         id="exportProductsOpeningQuantityProgressBar" role="progressbar" style="width: 0%;"
+                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
-                        <li>با انجام این عملیات موجودی کنونی محصولات در فروشگاه بعنوان موجودی اول دوره محصولات در حسابفا ثبت می شوند.</li>
+                        <li>با انجام این عملیات موجودی کنونی محصولات در فروشگاه بعنوان موجودی اول دوره محصولات در حسابفا
+                            ثبت می شوند.
+                        </li>
                         <li>بطور کلی فقط یک بار باید از این گزینه استفاده کنید،
                             که این کار باید پس از خروج محصولات به حسابفا و یا پس از همسان سازی دستی تمام محصولات
                             انجام شود.
@@ -573,7 +582,8 @@ class Ssbhesabfa_Setting
                     <ul>
                         <li>با انجام این عملیات مشتریان لینک نشده از فروشگاه وارد حسابفا می شوند.</li>
                         <li>
-                            اگر یک مشتری بیش از یک بار وارد حسابفا شده است می توانید از گزینه ادغام تراکنش ها در حسابفا استفاده کنید.
+                            اگر یک مشتری بیش از یک بار وارد حسابفا شده است می توانید از گزینه ادغام تراکنش ها در حسابفا
+                            استفاده کنید.
                         </li>
                     </ul>
                 </div>
@@ -594,17 +604,23 @@ class Ssbhesabfa_Setting
                 <p class="hesabfa-p mt-2">
                     <?php echo __('Import and add all products from Hesabfa to online store', 'ssbhesabfa'); ?>
                 </p>
-                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="importProductsProgress">
-                    <div class="progress-bar progress-bar-striped bg-success" id="importProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="importProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="importProductsProgressBar"
+                         role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+                         aria-valuemax="100"></div>
                 </div>
                 <div class="p-2">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
                         <li>با انجام این عملیات محصولات لینک نشده از حسابفا وارد فروشگاه می شوند.</li>
-                        <li>اگر محصولات از قبل هم در فروشگاه تعریف شده اند و هم در حسابفا و به هم لینک نشده اند باید از گزینه
+                        <li>اگر محصولات از قبل هم در فروشگاه تعریف شده اند و هم در حسابفا و به هم لینک نشده اند باید از
+                            گزینه
                             همسان سازی دستی محصولات استفاده کنید.
                         </li>
-                        <li>محصولات در وضعیت خصوصی وارد فروشگاه می شوند و سپس هر زمان مایل بودید می توانید وضعیت را به منتشر شده تغییر دهید.</li>
+                        <li>محصولات در وضعیت خصوصی وارد فروشگاه می شوند و سپس هر زمان مایل بودید می توانید وضعیت را به
+                            منتشر شده تغییر دهید.
+                        </li>
                         <li>تمامی محصولات بعنوان محصول ساده (و نه متغیر) وارد فروشگاه می شوند.</li>
                     </ul>
                 </div>
@@ -706,7 +722,9 @@ class Ssbhesabfa_Setting
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
-                        <li>با انجام این عملیات کالاها، مشتریان و سفارشاتی که تا کنون در حسابفا ثبت نشده اند در حسابفا ثبت می شوند.</li>
+                        <li>با انجام این عملیات کالاها، مشتریان و سفارشاتی که تا کنون در حسابفا ثبت نشده اند در حسابفا
+                            ثبت می شوند.
+                        </li>
                         <li>توجه کنید که بصورت نرمال با فعالسازی افزونه و تکمیل تنظیمات API
                             این همسان سازی بصورت خودکار انجام می شود و این گزینه صرفاْ برای مواقعی است که به دلایل فنی
                             مثل قطع اتصال فروشگاه با حسابفا و یا خطا و باگ این همسان سازی صورت نگرفته است.
@@ -728,13 +746,18 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Sync quantity and price of products in hesabfa with online store.', 'ssbhesabfa'); ?></p>
-                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="syncProductsProgress">
-                    <div class="progress-bar progress-bar-striped bg-success" id="syncProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="syncProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="syncProductsProgressBar"
+                         role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+                         aria-valuemax="100"></div>
                 </div>
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
-                        <li>با انجام این عملیات موجودی و قیمت محصولات در فروشگاه، بر اساس قیمت و موجودی آنها در حسابفا تنظیم می شود.</li>
+                        <li>با انجام این عملیات موجودی و قیمت محصولات در فروشگاه، بر اساس قیمت و موجودی آنها در حسابفا
+                            تنظیم می شود.
+                        </li>
                         <li>این عملیات بر اساس تنظیمات صورت گرفته در تب محصولات انجام می شود.</li>
                     </ul>
                 </div>
@@ -758,7 +781,9 @@ class Ssbhesabfa_Setting
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
-                        <li>با انجام این عملیات سفارشات فروشگاه که در حسابفا ثبت نشده اند از تاریخ انتخاب شده بررسی و در حسابفا ثبت می شوند.</li>
+                        <li>با انجام این عملیات سفارشات فروشگاه که در حسابفا ثبت نشده اند از تاریخ انتخاب شده بررسی و در
+                            حسابفا ثبت می شوند.
+                        </li>
                         <li>توجه کنید که بصورت نرمال با فعالسازی افزونه و تکمیل تنظیمات API
                             این همسان سازی بصورت خودکار انجام می شود و این گزینه صرفاْ برای مواقعی است که به دلایل فنی
                             مثل قطع اتصال فروشگاه با حسابفا و یا خطا و باگ این همسان سازی صورت نگرفته است.
@@ -780,18 +805,36 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Update products in hesabfa based on products definition in store.', 'ssbhesabfa'); ?></p>
-                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver" id="updateProductsProgress">
-                    <div class="progress-bar progress-bar-striped bg-success" id="updateProductsProgressBar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="updateProductsProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="updateProductsProgressBar"
+                         role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+                         aria-valuemax="100"></div>
                 </div>
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
-                        <li>با انجام این عملیات ویژگی محصولات مثل نام و قیمت در حسابفا، بر اساس فروشگاه بروزرسانی می شود.</li>
+                        <li>با انجام این عملیات ویژگی محصولات مثل نام و قیمت در حسابفا، بر اساس فروشگاه بروزرسانی می
+                            شود.
+                        </li>
                         <li>در این عملیات موجودی کالا در حسابفا تغییری نمی کند و بروز رسانی نمی شود.</li>
                     </ul>
                 </div>
             </div>
         </form>
+
+        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_delete_duplicate_products" autocomplete="off"
+              action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=sync'); ?>"
+              method="post">
+            <div>
+                <label for="ssbhesabfa-delete-duplicate-products-submit"></label>
+                <div>
+                    <button class="button button-danger hesabfa-f" id="ssbhesabfa-delete-duplicate-products-submit"
+                            name="ssbhesabfa-delete-duplicate-products-submit"><?php echo __('Delete duplicated products', 'ssbhesabfa'); ?></button>
+                </div>
+            </div>
+        </form>
+
         <?php
     }
 
@@ -865,7 +908,7 @@ class Ssbhesabfa_Setting
 
                 //set the last log ID if is not set
                 $lastChanges = get_option('ssbhesabfa_last_log_check_id');
-                if(!$lastChange) $lastChanges = 0;
+                if (!$lastChange) $lastChanges = 0;
                 $changes = $ssbhesabfa_api->settingGetChanges($lastChanges);
                 if ($changes->Success) {
                     if (get_option('ssbhesabfa_last_log_check_id') == 0) {
@@ -921,7 +964,7 @@ class Ssbhesabfa_Setting
             } else {
                 update_option('ssbhesabfa_live_mode', 0);
 
-                if($response->ErrorCode === 108) {
+                if ($response->ErrorCode === 108) {
                     echo '<div class="error">';
                     echo '<p class="hesabfa-p">' . __('Cannot connect to Hesabfa. Business expired.', 'ssbhesabfa') . $response->ErrorMessage . '</p>';
                     echo '</div>';

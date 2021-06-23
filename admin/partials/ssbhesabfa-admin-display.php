@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Admin_Display
- * @version    1.75.30
+ * @version    1.75.31
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/display
@@ -178,14 +178,14 @@ class Ssbhesabfa_Admin_Display
     function hesabfa_plugin_repeated_products()
     {
         global $wpdb;
-        $rows = $wpdb->get_results("SELECT id_hesabfa FROM " . $wpdb->prefix . "ssbhesabfa GROUP BY id_hesabfa HAVING COUNT(id_hesabfa) > 1;");
+        $rows = $wpdb->get_results("SELECT id_hesabfa FROM " . $wpdb->prefix . "ssbhesabfa WHERE obj_type = 'product' GROUP BY id_hesabfa HAVING COUNT(id_hesabfa) > 1;");
         $ids = array();
 
         foreach ($rows as $row)
             $ids[] = $row->id_hesabfa;
 
         $idsStr = implode(',', $ids);
-        $rows = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "ssbhesabfa WHERE id_hesabfa IN ($idsStr) ORDER BY id_hesabfa");
+        $rows = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "ssbhesabfa WHERE obj_type = 'product' AND id_hesabfa IN ($idsStr) ORDER BY id_hesabfa");
         //Ssbhesabfa_Admin_Functions::logDebugObj($rows);
         $i = 0;
 

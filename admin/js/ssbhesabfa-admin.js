@@ -492,6 +492,35 @@ jQuery(function ($) {
         });
     }
 
+    $(function () {
+        // AJAX - delete duplicate Products
+        $('#ssbhesabfa_delete_duplicate_products').submit(function () {
+            // show processing status
+            $('#ssbhesabfa-delete-duplicate-products-submit').attr('disabled', 'disabled');
+            $('#ssbhesabfa-delete-duplicate-products-submit').removeClass('button-danger');
+            $('#ssbhesabfa-delete-duplicate-products-submit').html('<i class="ofwc-spinner"></i> Deleting, please wait...');
+            $('#ssbhesabfa-delete-duplicate-products-submit i.spinner').show();
+
+            var data = {
+                'action': 'adminDeleteDuplicateProducts'
+            };
+
+            // post it
+            $.post(ajaxurl, data, function (response) {
+                if ('failed' !== response) {
+                    var redirectUrl = response;
+                    top.location.replace(redirectUrl);
+                    return false;
+                } else {
+                    alert('Error deleting duplicate products.');
+                    return false;
+                }
+            });
+
+            return false;
+        });
+    });
+
     // change business warning
     var oldApiKey = '';
     $("#changeBusinessWarning").hide();

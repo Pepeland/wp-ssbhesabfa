@@ -4,7 +4,7 @@ Tags: accounting cloud hesabfa
 Requires at least: 5.2
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 1.75.30
+Stable tag: 1.75.31
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -200,6 +200,10 @@ For more information and a full guide to how to use Hesabfa and WooCommerce Plug
 
 = 1.75.30 - 22.06.2021 =
 * Remove plugin activation date error during sync orders.
+
+= 1.75.31 - 23.06.2021 =
+* check order and payment status when syncing orders.
+
 
 == Upgrade Notice ==
 Automatic updates should work smoothly, but we still recommend you back up your site.

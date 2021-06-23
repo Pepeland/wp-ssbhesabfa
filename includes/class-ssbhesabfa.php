@@ -10,7 +10,7 @@
  * version of the plugin.
  *
  * @class      Ssbhesabfa
- * @version    1.75.30
+ * @version    1.75.31
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/includes
@@ -63,7 +63,7 @@ class Ssbhesabfa
         if (defined('SSBHESABFA_VERSION')) {
             $this->version = SSBHESABFA_VERSION;
         } else {
-            $this->version = '1.75.30';
+            $this->version = '1.75.31';
         }
         $this->plugin_name = 'ssbhesabfa';
 
@@ -245,6 +245,7 @@ class Ssbhesabfa
              * @since	1.0.0
              */
             $this->loader->add_filter('wp_ajax_adminCleanLogFile', $plugin_admin, 'adminCleanLogFileCallback');
+            $this->loader->add_filter('wp_ajax_adminDeleteDuplicateProducts', $plugin_admin, 'adminDeleteDuplicateProductsCallback');
 
             $this->loader->add_filter('wp_ajax_adminSyncProductsManually', $plugin_admin, 'adminSyncProductsManuallyCallback', 10, 4);
 

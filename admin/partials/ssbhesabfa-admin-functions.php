@@ -2,7 +2,7 @@
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
- * @version    1.75.30
+ * @version    1.75.31
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/functions
@@ -600,6 +600,10 @@ class Ssbhesabfa_Admin_Functions
 
             if($itemCode == null)
             {
+                $pId = $product['product_id'];
+                $vId = $product['variation_id'];
+                self::logDebugStr("Item not found. productId: $pId, variationId: $vId, Order ID: $id_order");
+
                 $failed = true;
                 break;
             }
@@ -1217,10 +1221,15 @@ class Ssbhesabfa_Admin_Functions
             return 'fiscalYearError';
         }
 
-        $orders = wc_get_orders(array(
-            'date_created' => '>' . $from_date,
-            'orderby' => 'ID'
-        ));
+        global $wpdb;
+        $orders = $wpdb->get_results("SELECT ID FROM `" . $wpdb->prefix . "posts`
+                                WHERE post_type = 'shop_order' AND post_date >= '" . $from_date . "'
+                                ORDER BY ID ASC");
+
+//        $orders = wc_get_orders(array(
+//            'date_created' => '>' . $from_date,
+//            'orderby' => 'ID'
+//        ));
 
         self::logDebugStr("Orders count: " . count($orders));
 
@@ -1233,6 +1242,8 @@ class Ssbhesabfa_Admin_Functions
 
         $id_orders = array();
         foreach ($orders as $order) {
+            $order = new WC_Order($order->ID);
+
             $id_order = $order->get_id();
             $id_obj = $this->getObjectId('order', $id_order);
             $current_status = $order->get_status();
@@ -1409,6 +1420,13 @@ class Ssbhesabfa_Admin_Functions
             file_put_contents($filePath, "");
             return true;
         } else return false;
+    }
+
+    public function deleteDuplicateProducts()
+    {
+        global $wpdb;
+        $wpdb->delete($wpdb->prefix.'ssbhesabfa', array('id_ps' => 0, 'id_ps_attribute' => 0, 'obj_type' => 'product'));
+        return true;
     }
 
     public static function setItemChanges($item)
