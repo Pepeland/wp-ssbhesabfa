@@ -1,4 +1,5 @@
 <?php
+include_once (plugin_dir_path( __DIR__ ) . 'services/ssbhesabfaItemService.php');
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
@@ -106,7 +107,7 @@ class Ssbhesabfa_Admin_Functions
 
         $product = wc_get_product($id_product);
 
-        if(is_bool($product))
+        if (is_bool($product))
             return false;
 
         if ($product->is_type('variable')) {
@@ -142,64 +143,14 @@ class Ssbhesabfa_Admin_Functions
             if ($product->get_status() === "draft")
                 continue;
 
+            // Set base product
+            $items[] = ssbhesabfaItemService::mapProduct($product, $id_product, false);
+
+            // Set variations
             $variations = $this->getProductVariations($id_product);
-            if (!$variations) {
-                $code = $this->getItemCodeByProductId($id_product);
-
-                $price = $product->get_regular_price() ? $product->get_regular_price() : $product->get_price();
-
-                $hesabfaItem = array(
-                    'Code' => $code,
-                    'Name' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-                    'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-                    'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-                    'ItemType' => $product->is_virtual() == 1 ? 1 : 0,
-                    'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($product->get_sku()),
-                    'Tag' => json_encode(array('id_product' => $id_product, 'id_attribute' => 0)),
-//			    'Active' => $product->active ? true : false,
-                    'NodeFamily' => $this->getCategoryPath($categories[0]),
-                    'ProductCode' => $id_product,
-                    'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($price)
-                );
-
-
-//                if (!get_option('ssbhesabfa_item_update_price')) {
-//                    $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($product->get_regular_price());
-//                }
-
-                $items[] = $hesabfaItem;
-            } else {
+            if ($variations) {
                 foreach ($variations as $variation) {
-                    $id_attribute = $variation->get_id();
-                    $code = $this->getItemCodeByProductId($id_product, $id_attribute);
-
-                    $productName = $product->get_title();
-                    $variationName = $variation->get_attribute_summary();
-                    $fullName = Ssbhesabfa_Validation::itemNameValidation($productName . ' - ' . $variationName);
-                    $price = $variation->get_regular_price() ? $variation->get_regular_price() : $variation->get_price();
-
-                    $hesabfaItem = array(
-                        'Code' => $code,
-                        'Name' => $fullName,
-                        'PurchasesTitle' => $fullName,
-                        'SalesTitle' => $fullName,
-                        'ItemType' => $variation->is_virtual() == 1 ? 1 : 0,
-                        'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($variation->get_sku()),
-                        'Tag' => json_encode(array(
-                            'id_product' => $id_product,
-                            'id_attribute' => $id_attribute
-                        )),
-//					    'Active' => $variation->variation_is_active ? true : false,
-                        'NodeFamily' => $this->getCategoryPath($categories[0]),
-                        'ProductCode' => $id_product,
-                        'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($price)
-                    );
-
-//                    if (!get_option('ssbhesabfa_item_update_price')) {
-//                        $hesabfaItem['SellPrice'] = $this->getPriceInHesabfaDefaultCurrency($variation->get_regular_price());
-//                    }
-
-                    $items[] = $hesabfaItem;
+                    $items[] = ssbhesabfaItemService::mapProductVariation($product, $variation, $id_product, false);
                 }
             }
         }
@@ -472,8 +423,9 @@ class Ssbhesabfa_Admin_Functions
         }
     }
 
-    private function getCountriesAndStates() {
-        if(!isset(self::$countries)) {
+    private function getCountriesAndStates()
+    {
+        if (!isset(self::$countries)) {
             $countries_obj = new WC_Countries();
             self::$countries = $countries_obj->get_countries();
             self::$states = $countries_obj->get_states();
@@ -578,7 +530,7 @@ class Ssbhesabfa_Admin_Functions
         $notDefinedItems = array();
         $products = $order->get_items();
         foreach ($products as $product) {
-            if($product['product_id'] == 0) continue;
+            if ($product['product_id'] == 0) continue;
             $itemCode = $this->getItemCodeByProductId($product['product_id'], $product['variation_id']);
             if ($itemCode == null) {
                 $notDefinedItems[] = $product['product_id'];
@@ -598,8 +550,7 @@ class Ssbhesabfa_Admin_Functions
         foreach ($products as $key => $product) {
             $itemCode = $this->getItemCodeByProductId($product['product_id'], $product['variation_id']);
 
-            if($itemCode == null)
-            {
+            if ($itemCode == null) {
                 $pId = $product['product_id'];
                 $vId = $product['variation_id'];
                 self::logDebugStr("Item not found. productId: $pId, variationId: $vId, Order ID: $id_order");
@@ -622,7 +573,7 @@ class Ssbhesabfa_Admin_Functions
             $i++;
         }
 
-        if($failed) {
+        if ($failed) {
             self::logDebugStr("Cannot add/update Invoice. Item code is NULL. Check your invoice products and relations with Hesabfa. Order ID: $id_order");
             return false;
         }
@@ -707,7 +658,7 @@ class Ssbhesabfa_Admin_Functions
         $woocommerce_currency = get_woocommerce_currency();
         $hesabfa_currency = get_option('ssbhesabfa_hesabfa_default_currency');
 
-        if(!is_numeric($price)) {
+        if (!is_numeric($price)) {
             $price = intval($price);
         }
 
@@ -731,7 +682,7 @@ class Ssbhesabfa_Admin_Functions
         $woocommerce_currency = get_woocommerce_currency();
         $hesabfa_currency = get_option('ssbhesabfa_hesabfa_default_currency');
 
-        if(!is_numeric($price)) {
+        if (!is_numeric($price)) {
             $price = intval($price);
         }
 
@@ -782,7 +733,7 @@ class Ssbhesabfa_Admin_Functions
 
             $response = $hesabfa->invoiceGet($number);
             if ($response->Success) {
-                if($response->Result->Paid > 0) {
+                if ($response->Result->Paid > 0) {
                     // payment submited before
                 } else {
                     $response = $hesabfa->invoiceSavePayment($number, $bank_code, $date_obj->date('Y-m-d H:i:s'), $this->getPriceInHesabfaDefaultCurrency($order->get_total()), $transaction_id);
@@ -851,6 +802,8 @@ class Ssbhesabfa_Admin_Functions
     //Export
     public function exportProducts($batch, $totalBatch, $total)
     {
+        self::logDebugStr("===== Export Products =====");
+
         $result = array();
         $result["error"] = false;
         $rpp = 500;
@@ -871,44 +824,23 @@ class Ssbhesabfa_Admin_Functions
         foreach ($products as $item) {
             $id_product = $item->ID;
             $product = new WC_Product($id_product);
-            $variations = $this->getProductVariations($id_product);
 
-            if (!$variations) {
-                //do if product not exists in hesabfa
-                $id_obj = $this->getObjectId('product', $id_product, 0);
-                if (!$id_obj) {
-                    $categories = $product->get_category_ids();
-                    array_push($items, array(
-                        'Name' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-                        'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-                        'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($product->get_title()),
-                        'ItemType' => $product->is_virtual() == 1 ? 1 : 0,
-                        'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($product->get_sku()),
-                        'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($product->get_regular_price()),
-                        'Tag' => json_encode(array('id_product' => $id_product, 'id_attribute' => 0)),
-//					'Active' => $product->active ? true : false,
-                        'NodeFamily' => $this->getCategoryPath($categories[0]),
-                        'ProductCode' => $id_product,
-                    ));
-                }
-            } else {
+            // Set base product
+            $id_obj = $this->getObjectId('product', $id_product, 0);
+            if (!$id_obj) {
+                $hesabfaItem = ssbhesabfaItemService::mapProduct($product, $id_product);
+                array_push($items, $hesabfaItem);
+            }
+
+            // Set variations
+            $variations = $this->getProductVariations($id_product);
+            if ($variations) {
                 foreach ($variations as $variation) {
                     $id_attribute = $variation->get_id();
                     $id_obj = $this->getObjectId('product', $id_product, $id_attribute);
                     if (!$id_obj) {
-                        $categories = $variation->get_category_ids();
-                        array_push($items, array(
-                            'Name' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-                            'PurchasesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-                            'SalesTitle' => Ssbhesabfa_Validation::itemNameValidation($variation->get_name()),
-                            'ItemType' => $variation->is_virtual() == 1 ? 1 : 0,
-                            'Barcode' => Ssbhesabfa_Validation::itemBarcodeValidation($variation->get_sku()),
-                            'SellPrice' => $this->getPriceInHesabfaDefaultCurrency($variation->get_regular_price()),
-                            'Tag' => json_encode(array('id_product' => $id_product, 'id_attribute' => $id_attribute)),
-                            //					    'Active' => $variation->variation_is_active ? true : false,
-                            'NodeFamily' => $this->getCategoryPath($categories[0]),
-                            'ProductCode' => $id_product,
-                        ));
+                        $hesabfaItem = ssbhesabfaItemService::mapProductVariation($product, $variation, $id_product);
+                        array_push($items, $hesabfaItem);
                     }
                 }
             }
@@ -1425,7 +1357,7 @@ class Ssbhesabfa_Admin_Functions
     public function deleteDuplicateProducts()
     {
         global $wpdb;
-        $wpdb->delete($wpdb->prefix.'ssbhesabfa', array('id_ps' => 0, 'id_ps_attribute' => 0, 'obj_type' => 'product'));
+        $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id_ps' => 0, 'id_ps_attribute' => 0, 'obj_type' => 'product'));
         return true;
     }
 
@@ -1461,7 +1393,7 @@ class Ssbhesabfa_Admin_Functions
             $found = $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts`                                                                
                                 WHERE ID = $id_product AND post_status IN('publish','private')");
 
-            if(!$found) {
+            if (!$found) {
                 Ssbhesabfa_Admin_Functions::logDebugStr("product not found in woocommerce. product id: $id_product");
                 return false;
             }
