@@ -245,7 +245,6 @@ class Ssbhesabfa
              * @since	1.0.0
              */
             $this->loader->add_filter('wp_ajax_adminCleanLogFile', $plugin_admin, 'adminCleanLogFileCallback');
-            $this->loader->add_filter('wp_ajax_adminDeleteDuplicateProducts', $plugin_admin, 'adminDeleteDuplicateProductsCallback');
 
             $this->loader->add_filter('wp_ajax_adminSyncProductsManually', $plugin_admin, 'adminSyncProductsManuallyCallback', 10, 4);
 

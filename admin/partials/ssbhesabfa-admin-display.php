@@ -39,7 +39,7 @@ class Ssbhesabfa_Admin_Display
         add_menu_page("حسابفا", "حسابفا", "manage_options", "ssbhesabfa-option", array(__CLASS__, 'hesabfa_plugin_page'), $iconUrl, null);
         add_submenu_page("ssbhesabfa-option", "تنظیمات حسابفا", "تنظیمات حسابفا", "manage_options", 'ssbhesabfa-option', array(__CLASS__, 'hesabfa_plugin_page'));
         add_submenu_page("ssbhesabfa-option", "همسان سازی دستی کالاها", "همسان سازی دستی کالاها", "manage_options", 'hesabfa-sync-products-manually', array(__CLASS__, 'hesabfa_plugin_sync_products_manually'));
-        add_submenu_page("ssbhesabfa-option", "کدهای تکراری", "کدهای تکراری", "manage_options", 'hesabfa-repeated-products', array(__CLASS__, 'hesabfa_plugin_repeated_products'));
+        //add_submenu_page("ssbhesabfa-option", "کدهای تکراری", "کدهای تکراری", "manage_options", 'hesabfa-repeated-products', array(__CLASS__, 'hesabfa_plugin_repeated_products'));
     }
 
     function hesabfa_plugin_sync_products_manually()

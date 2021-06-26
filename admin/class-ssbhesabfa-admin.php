@@ -175,23 +175,22 @@ class Ssbhesabfa_Admin {
             $batch = wc_clean($_POST['batch']);
             $totalBatch = wc_clean($_POST['totalBatch']);
             $total = wc_clean($_POST['total']);
+            $updateCount = wc_clean($_POST['updateCount']);
 
             $func = new Ssbhesabfa_Admin_Functions();
-            $result = $func->exportProducts($batch, $totalBatch, $total);
-            $update_count = $result['updateCount'];
+            $result = $func->exportProducts($batch, $totalBatch, $total, $updateCount);
 
             if ($result['error']) {
                 if ($update_count === -1) {
-                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false&error=-1' . $update_count);
+                    $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false&error=-1');
                 } else {
                     $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=false');
                 }
-                echo json_encode($result);
             } else {
-                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=true&processed=' . $update_count);
-                echo json_encode($result);
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&productExportResult=true&processed=' . $result['updateCount']);
             }
 
+            echo json_encode($result);
             die(); // this is required to return a proper result
         }
     }
@@ -260,18 +259,21 @@ class Ssbhesabfa_Admin {
      */
     public function adminExportCustomersCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $func = new Ssbhesabfa_Admin_Functions();
-            $update_count = $func->exportCustomers();
 
-            if ($update_count === -1){
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=false&error=-1');
-            }
-            else if ($update_count === false) {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=false');
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+            $updateCount = wc_clean($_POST['updateCount']);
+
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->exportCustomers($batch, $totalBatch, $total, $updateCount);
+
+            if ($result["error"]) {
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=false');
             } else {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=true&processed=' . $update_count);
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=export&customerExportResult=true&processed=' . $result["updateCount"]);
             }
-            echo $redirect_url;
+            echo json_encode($result);
 
             die(); // this is required to return a proper result
         }
@@ -323,41 +325,32 @@ class Ssbhesabfa_Admin {
      */
     public function adminSyncOrdersCallback() {
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $errors = false;
 
-            if (isset($_POST["date"])) {
-                $from_date = wc_clean($_POST['date']);
-            } else {
-                $errors = true;
-            }
+            $batch = wc_clean($_POST['batch']);
+            $totalBatch = wc_clean($_POST['totalBatch']);
+            $total = wc_clean($_POST['total']);
+            $updateCount = wc_clean($_POST['updateCount']);
+            $from_date = wc_clean($_POST['date']);
 
-            // return
-            if (!$errors) {
-                $func = new Ssbhesabfa_Admin_Functions();
-                $syncOrders = $func->syncOrders($from_date);
+            $func = new Ssbhesabfa_Admin_Functions();
+            $result = $func->syncOrders($from_date, $batch, $totalBatch, $total, $updateCount);
 
-                switch ($syncOrders) {
-                    case false:
-                        $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=false');
-                        break;
+            if(!$result['error'])
+                $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=true&processed=' . $result["updateCount"]);
+            else {
+                switch ($result['error']) {
                     case 'fiscalYearError':
-                        $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=false&fiscal=true');
-                        break;
-                    case 'activationDateError':
-                        $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=false&activationDate=true');
+                        $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=false&fiscal=true');
                         break;
                     case 'inputDateError':
-                        $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=false');
-                        break;
-                    case 'zeroProduct':
-                        $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=true&processed=0');
+                        $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=false');
                         break;
                     default:
-                        $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=true&processed=' . count($syncOrders));
+                        $result["redirectUrl"] = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&orderSyncResult=true&processed=' . $updateCount);
                 }
-
-                echo $redirect_url;
             }
+
+            echo json_encode($result);
             die(); // this is required to return a proper result
         }
     }
@@ -403,7 +396,7 @@ class Ssbhesabfa_Admin {
 
 
     public function adminSyncProductsManuallyCallback() {
-        Ssbhesabfa_Admin_Functions::logDebugStr('--- syncProductsManually Callback ---');
+        Ssbhesabfa_Admin_Functions::logDebugStr('===== Sync Products Manually =====');
 
         if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
 
@@ -447,14 +440,13 @@ class Ssbhesabfa_Admin {
         {
             add_option('ssbhesabfa_sync_changes_last_date', new DateTime());
             $syncChangesLastDate = new DateTime();
-            Ssbhesabfa_Admin_Functions::logDebugStr('set last date');
         }
 
         $nowDateTime = new DateTime();
         $diff = $nowDateTime->diff($syncChangesLastDate);
 
         if($diff->i > 5) {
-            Ssbhesabfa_Admin_Functions::logDebugStr('*** Sync changes automatically ***');
+            Ssbhesabfa_Admin_Functions::logDebugStr('===== Sync Changes Automatically =====');
             update_option('ssbhesabfa_sync_changes_last_date', new DateTime());
             require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-ssbhesabfa-webhook.php';
             new Ssbhesabfa_Webhook();
@@ -547,7 +539,7 @@ class Ssbhesabfa_Admin {
     //Invoice
     public function ssbhesabfa_hook_order_status_change($id_order, $from, $to)
     {
-        Ssbhesabfa_Admin_Functions::logDebugStr("***** ssbhesabfa_hook_order_status_change *****");
+        Ssbhesabfa_Admin_Functions::logDebugStr("===== Order Status Hook =====");
 
         foreach (get_option('ssbhesabfa_invoice_status') as $status) {
             Ssbhesabfa_Admin_Functions::logDebugStr("status: $status");
@@ -646,8 +638,7 @@ class Ssbhesabfa_Admin {
     //ToDo: check why base product not deleted
     public function ssbhesabfa_hook_delete_product($id_product)
     {
-        //Ssbhesabfa_Admin_Functions::logDebugStr("*** ssbhesabfa_hook_delete_product ***");
-        //Ssbhesabfa_Admin_Functions::logDebugObj($id_product);
+        Ssbhesabfa_Admin_Functions::logDebugStr("===== Product Delete Hook =====");
 
         $func = new Ssbhesabfa_Admin_Functions();
         $hesabfaApi = new Ssbhesabfa_Api();
@@ -769,22 +760,6 @@ class Ssbhesabfa_Admin {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=log&cleanLogResult=true');
             } else {
                 $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=log&cleanLogResult=false');
-            }
-            echo $redirect_url;
-
-            die(); // this is required to return a proper result
-        }
-    }
-
-    public function adminDeleteDuplicateProductsCallback() {
-        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
-            $func = new Ssbhesabfa_Admin_Functions();
-            $result = $func->deleteDuplicateProducts();
-
-            if ($result) {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&cleanLogResult=true');
-            } else {
-                $redirect_url = admin_url('admin.php?page=ssbhesabfa-option&tab=sync&cleanLogResult=false');
             }
             echo $redirect_url;
 

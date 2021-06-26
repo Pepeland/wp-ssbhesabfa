@@ -577,6 +577,12 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Export and add all online store customers to Hesabfa.', 'ssbhesabfa'); ?></p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="exportCustomersProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="exportCustomersProgressBar"
+                         role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+                         aria-valuemax="100"></div>
+                </div>
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
@@ -666,15 +672,10 @@ class Ssbhesabfa_Setting
             echo '</div>';
         } elseif (!is_null($orderSyncResult) && $orderSyncResult === 'false') {
             $fiscal = (isset($_GET['fiscal'])) ? wc_clean($_GET['fiscal']) : false;
-            $activationDate = (isset($_GET['activationDate'])) ? wc_clean($_GET['activationDate']) : false;
 
             if ($fiscal === 'true') {
                 echo '<div class="error">';
                 echo '<p class="hesabfa-p">' . __('The date entered is not within the fiscal year.', 'ssbhesabfa');
-                echo '</div>';
-            } elseif ($activationDate === 'true') {
-                echo '<div class="error">';
-                echo '<p class="hesabfa-p">' . __('Invoices are not synced before installing the plugin.', 'ssbhesabfa');
                 echo '</div>';
             } else {
                 echo '<div class="error">';
@@ -707,7 +708,7 @@ class Ssbhesabfa_Setting
         </div>
 
         <br>
-        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_sync_changes" autocomplete="off"
+        <form class="card hesabfa-card hesabfa-f d-none" id="ssbhesabfa_sync_changes" autocomplete="off"
               action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=sync'); ?>"
               method="post">
             <div>
@@ -778,6 +779,12 @@ class Ssbhesabfa_Setting
                     </div>
                 </div>
                 <p class="hesabfa-p mt-2"><?php echo __('Sync/Add orders in online store with hesabfa from above date.', 'ssbhesabfa'); ?></p>
+                <div class="progress mt-1 mb-2" style="height: 5px; max-width: 400px; border: 1px solid silver"
+                     id="syncOrdersProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" id="syncOrdersProgressBar"
+                         role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+                         aria-valuemax="100"></div>
+                </div>
                 <div class="p-2 hesabfa-f">
                     <label class="fw-bold mb-2">نکات مهم:</label>
                     <ul>
@@ -819,18 +826,6 @@ class Ssbhesabfa_Setting
                         </li>
                         <li>در این عملیات موجودی کالا در حسابفا تغییری نمی کند و بروز رسانی نمی شود.</li>
                     </ul>
-                </div>
-            </div>
-        </form>
-
-        <form class="card hesabfa-card hesabfa-f" id="ssbhesabfa_delete_duplicate_products" autocomplete="off"
-              action="<?php echo admin_url('admin.php?page=ssbhesabfa-option&tab=sync'); ?>"
-              method="post">
-            <div>
-                <label for="ssbhesabfa-delete-duplicate-products-submit"></label>
-                <div>
-                    <button class="button button-danger hesabfa-f" id="ssbhesabfa-delete-duplicate-products-submit"
-                            name="ssbhesabfa-delete-duplicate-products-submit"><?php echo __('Delete duplicated products', 'ssbhesabfa'); ?></button>
                 </div>
             </div>
         </form>

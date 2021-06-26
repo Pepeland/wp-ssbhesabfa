@@ -1,5 +1,6 @@
 <?php
-include_once (plugin_dir_path( __DIR__ ) . 'services/ssbhesabfaItemService.php');
+include_once(plugin_dir_path(__DIR__) . 'services/ssbhesabfaItemService.php');
+include_once(plugin_dir_path(__DIR__) . 'services/ssbhesabfaCustomerService.php');
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
@@ -10,7 +11,6 @@ include_once (plugin_dir_path( __DIR__ ) . 'services/ssbhesabfaItemService.php')
  * @author     Saeed Sattar Beglou <saeed.sb@gmail.com>
  * @author     HamidReza Gharahzadeh <hamidprime@gmail.com>
  */
-
 class Ssbhesabfa_Admin_Functions
 {
     public static $countries;
@@ -800,7 +800,7 @@ class Ssbhesabfa_Admin_Functions
     }
 
     //Export
-    public function exportProducts($batch, $totalBatch, $total)
+    public function exportProducts($batch, $totalBatch, $total, $updateCount)
     {
         self::logDebugStr("===== Export Products =====");
 
@@ -830,6 +830,7 @@ class Ssbhesabfa_Admin_Functions
             if (!$id_obj) {
                 $hesabfaItem = ssbhesabfaItemService::mapProduct($product, $id_product);
                 array_push($items, $hesabfaItem);
+                $updateCount++;
             }
 
             // Set variations
@@ -841,6 +842,7 @@ class Ssbhesabfa_Admin_Functions
                     if (!$id_obj) {
                         $hesabfaItem = ssbhesabfaItemService::mapProductVariation($product, $variation, $id_product);
                         array_push($items, $hesabfaItem);
+                        $updateCount++;
                     }
                 }
             }
@@ -861,7 +863,7 @@ class Ssbhesabfa_Admin_Functions
                         'id_ps' => (int)$json->id_product,
                         'id_ps_attribute' => (int)$json->id_attribute,
                     ));
-                    Ssbhesabfa_Admin_Functions::log(array("Item successfully added. Item Code: " . (string)$item->Code . ". Product ID: $json->id_product"));
+                    Ssbhesabfa_Admin_Functions::log(array("Item successfully added. Item Code: " . (string)$item->Code . ". Product ID: $json->id_product - $json->id_attribute"));
                 }
                 $count += count($response->Result);
             } else {
@@ -873,7 +875,7 @@ class Ssbhesabfa_Admin_Functions
         $result["batch"] = $batch;
         $result["totalBatch"] = $totalBatch;
         $result["total"] = $total;
-        $result["updateCount"] = $total;
+        $result["updateCount"] = $updateCount;
         return $result;
     }
 
@@ -1050,118 +1052,96 @@ class Ssbhesabfa_Admin_Functions
         return $result;
     }
 
-    public function exportCustomers()
+    public function exportCustomers($batch, $totalBatch, $total, $updateCount)
     {
+        self::logDebugStr("===== Export Customers =====");
+
+        $result = array();
+        $result["error"] = false;
+        $rpp = 500;
+        global $wpdb;
+
         $this->getCountriesAndStates();
 
-        $customers = get_users(array('fields' => array('ID')));
+        if ($batch == 1) {
+            $total = $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "users`");
+            $totalBatch = ceil($total / $rpp);
+        }
+
+        $offset = ($batch - 1) * $rpp;
+        $customers = $wpdb->get_results("SELECT ID FROM `" . $wpdb->prefix . "users` ORDER BY ID ASC LIMIT $offset,$rpp");
 
         $items = array();
-        $items[0] = array();
-        $i = 0;
-        $j = 0;
-
         foreach ($customers as $item) {
-            if ($i > 1000) {
-                $j++;
-                $items[$j] = array();
-                $i = 0;
-            }
-
             //do if customer not exists in hesabfa
             $id_customer = $item->ID;
             $id_obj = $this->getObjectId('customer', $id_customer);
             if (!$id_obj) {
                 $customer = new WC_Customer($id_customer);
 
-                $name = $customer->get_first_name() . ' ' . $customer->get_last_name();
-                if (empty($customer->get_first_name()) && empty($customer->get_last_name())) {
-                    $name = __('Not Define', 'ssbhesabfa');
-                }
-
-                $country_name = self::$countries[$customer->get_billing_country()];
-                $state_name = self::$states[$customer->get_billing_country()][$customer->get_billing_state()];
-
-                array_push($items[$j], array(
-                    'Name' => $name,
-                    'FirstName' => Ssbhesabfa_Validation::contactFirstNameValidation($customer->get_first_name()),
-                    'LastName' => Ssbhesabfa_Validation::contactLastNameValidation($customer->get_last_name()),
-                    'ContactType' => 1,
-                    'NodeFamily' => 'اشخاص :' . get_option('ssbhesabfa_contact_node_family'),
-                    'Address' => Ssbhesabfa_Validation::contactAddressValidation($customer->get_billing_address()),
-                    'City' => Ssbhesabfa_Validation::contactCityValidation($customer->get_billing_city()),
-                    'State' => Ssbhesabfa_Validation::contactStateValidation($state_name),
-                    'Country' => Ssbhesabfa_Validation::contactCountryValidation($country_name),
-                    'PostalCode' => Ssbhesabfa_Validation::contactPostalCodeValidation($customer->get_billing_postcode()),
-                    'Phone' => Ssbhesabfa_Validation::contactPhoneValidation($customer->get_billing_phone()),
-                    'Email' => Ssbhesabfa_Validation::contactEmailValidation($customer->get_email()),
-                    'Tag' => json_encode(array('id_customer' => $id_customer)),
-                    'Note' => __('Customer ID in OnlineStore: ', 'ssbhesabfa') . $id_customer,
-                ));
-                $i++;
+                $hesabfaCustomer = ssbhesabfaCustomerService::mapCustomer($customer, $id_customer, self::$countries, self::$states);
+                array_push($items, $hesabfaCustomer);
+                $updateCount++;
             }
         }
 
         if (!empty($items)) {
-            $count = 0;
             $hesabfa = new Ssbhesabfa_Api();
-            foreach ($items as $array) {
-                $response = $hesabfa->contactBatchSave($array);
+            $response = $hesabfa->contactBatchSave($items);
+            if ($response->Success) {
+                foreach ($response->Result as $item) {
+                    $json = json_decode($item->Tag);
 
-                if ($response->Success) {
-                    foreach ($response->Result as $item) {
-                        $json = json_decode($item->Tag);
+                    $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
+                        'id_hesabfa' => (int)$item->Code,
+                        'obj_type' => 'customer',
+                        'id_ps' => (int)$json->id_customer,
+                    ));
 
-                        global $wpdb;
-                        $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
-                            'id_hesabfa' => (int)$item->Code,
-                            'obj_type' => 'customer',
-                            'id_ps' => (int)$json->id_customer,
-                        ));
-
-                        Ssbhesabfa_Admin_Functions::log(array("Contact successfully added. Contact Code: " . $item->Code . ". Customer ID: " . (int)$json->id_customer));
-                    }
-                    $count += count($response->Result);
-                } else {
-                    Ssbhesabfa_Admin_Functions::log(array("Cannot add bulk contacts. Error Message: $response->ErrorMessage. Error Code: $response->ErrorCode."));
+                    Ssbhesabfa_Admin_Functions::log(array("Contact successfully added. Contact Code: " . $item->Code . ". Customer ID: " . (int)$json->id_customer));
                 }
+            } else {
+                Ssbhesabfa_Admin_Functions::log(array("Cannot add bulk contacts. Error Message: $response->ErrorMessage. Error Code: $response->ErrorCode."));
             }
-            return $count;
-        } else {
-            return 0;
         }
-        return false;
+
+        $result["batch"] = $batch;
+        $result["totalBatch"] = $totalBatch;
+        $result["total"] = $total;
+        $result["updateCount"] = $updateCount;
+
+        return $result;
     }
 
-    public function syncOrders($from_date)
+    public function syncOrders($from_date, $batch, $totalBatch, $total, $updateCount)
     {
         self::logDebugStr("===== Sync Orders =====");
 
-        if (!isset($from_date)) {
-            return false;
-        }
+        $result = array();
+        $result["error"] = false;
+        $rpp = 10;
+        global $wpdb;
 
-        if (empty($from_date)) {
-            return 'inputDateError';
+        if (!isset($from_date) || empty($from_date)) {
+            $result['error'] = 'inputDateError';
+            return $result;
         }
-
-//        if (!$this->isDateAfterActivation($from_date)) {
-//            return 'activationDateError';
-//        }
 
         if (!$this->isDateInFiscalYear($from_date)) {
-            return 'fiscalYearError';
+            $result['error'] = 'fiscalYearError';
+            return $result;
         }
 
-        global $wpdb;
+        if ($batch == 1) {
+            $total = $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts`
+                                WHERE post_type = 'shop_order' AND post_date >= '" . $from_date . "'");
+            $totalBatch = ceil($total / $rpp);
+        }
+
+        $offset = ($batch - 1) * $rpp;
         $orders = $wpdb->get_results("SELECT ID FROM `" . $wpdb->prefix . "posts`
                                 WHERE post_type = 'shop_order' AND post_date >= '" . $from_date . "'
-                                ORDER BY ID ASC");
-
-//        $orders = wc_get_orders(array(
-//            'date_created' => '>' . $from_date,
-//            'orderby' => 'ID'
-//        ));
+                                ORDER BY ID ASC LIMIT $offset,$rpp");
 
         self::logDebugStr("Orders count: " . count($orders));
 
@@ -1184,29 +1164,32 @@ class Ssbhesabfa_Admin_Functions
                 if (strpos($statusesToSubmitInvoice, $current_status) !== false) {
                     if ($this->setOrder($id_order)) {
                         array_push($id_orders, $id_order);
+                        $updateCount++;
 
                         if (strpos($statusesToSubmitPayment, $current_status) !== false)
                             $this->setOrderPayment($id_order);
+
+                        // set return invoice
+                        if (strpos($statusesToSubmitReturnInvoice, $current_status) !== false) {
+                            $this->setOrder($id_order, 2, $this->getInvoiceCodeByOrderId($id_order));
+                        }
                     }
                 }
             }
 
-            if (strpos($statusesToSubmitReturnInvoice, $current_status) !== false) {
-                $this->setOrder($id_order, 2, $this->getInvoiceCodeByOrderId($id_order));
-            }
         }
 
-        if (empty($id_orders)) {
-            return 'zeroProduct';
-        }
-
-        return $id_orders;
+        $result["batch"] = $batch;
+        $result["totalBatch"] = $totalBatch;
+        $result["total"] = $total;
+        $result["updateCount"] = $updateCount;
+        return $result;
     }
 
     public function syncProducts($batch, $totalBatch, $total)
     {
         try {
-            self::logDebugStr("=== sync products price and quantity from hesabfa to store: part $batch ===");
+            self::logDebugStr("===== Sync products price and quantity from hesabfa to store: part $batch =====");
             $result = array();
             $result["error"] = false;
 
@@ -1252,7 +1235,7 @@ class Ssbhesabfa_Admin_Functions
 
     public function syncProductsManually($data)
     {
-        self::logDebugStr('===== syncProductsManually =====');
+        self::logDebugStr('===== Sync Products Manually =====');
 
         // check if entered hesabfa codes exist in hesabfa
         $hesabfa_item_codes = array();
@@ -1317,7 +1300,7 @@ class Ssbhesabfa_Admin_Functions
 
     public function updateProductsInHesabfaBasedOnStore($batch, $totalBatch, $total)
     {
-        self::logDebugStr("===== updateProductsInHesabfaBasedOnStore =====");
+        self::logDebugStr("===== Update Products In Hesabfa Based On Store =====");
         $result = array();
         $result["error"] = false;
         $rpp = 500;
@@ -1352,13 +1335,6 @@ class Ssbhesabfa_Admin_Functions
             file_put_contents($filePath, "");
             return true;
         } else return false;
-    }
-
-    public function deleteDuplicateProducts()
-    {
-        global $wpdb;
-        $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id_ps' => 0, 'id_ps_attribute' => 0, 'obj_type' => 'product'));
-        return true;
     }
 
     public static function setItemChanges($item)
