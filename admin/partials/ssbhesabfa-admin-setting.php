@@ -850,9 +850,9 @@ class Ssbhesabfa_Setting
 
         $filters = array(array("Property" => "ItemType", "Operator" => "=", "Value" => 0));
 
-        $response = $hesabfa->itemGetItems(array('Take' => 5, 'Filters' => $filters));
+        $response = $hesabfa->itemGetItems(array('Take' => 1, 'Filters' => $filters));
         if ($response->Success) {
-            return $response->Result->TotalCount;
+            return $response->Result->FilteredCount;
         } else return 0;
     }
 
