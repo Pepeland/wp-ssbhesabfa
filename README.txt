@@ -4,7 +4,7 @@ Tags: accounting cloud hesabfa
 Requires at least: 5.2
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 1.77.32
+Stable tag: 1.77.33
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,9 @@ For more information and a full guide to how to use Hesabfa and WooCommerce Plug
 = 1.77.32 - 26.06.2021 =
 * add progress bar to export customers and export orders.
 * bug fix: export base product in variable product.
+
+= 1.77.33 - 27.06.2021 =
+* bug fix: import products bug fixed.
 
 == Upgrade Notice ==
 Automatic updates should work smoothly, but we still recommend you back up your site.
