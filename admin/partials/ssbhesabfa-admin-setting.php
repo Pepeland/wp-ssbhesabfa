@@ -847,7 +847,10 @@ class Ssbhesabfa_Setting
     public static function getProductCountsInHesabfa()
     {
         $hesabfa = new Ssbhesabfa_Api();
-        $response = $hesabfa->itemGetItems(array('Take' => 5));
+
+        $filters = array(array("Property" => "ItemType", "Operator" => "=", "Value" => 0));
+
+        $response = $hesabfa->itemGetItems(array('Take' => 5, 'Filters' => $filters));
         if ($response->Success) {
             return $response->Result->TotalCount;
         } else return 0;

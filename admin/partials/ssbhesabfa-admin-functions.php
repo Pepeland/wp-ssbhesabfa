@@ -881,12 +881,16 @@ class Ssbhesabfa_Admin_Functions
 
     public function importProducts($batch, $totalBatch, $total)
     {
+        self::logDebugStr("===== Import Products =====");
+
         $result = array();
         $result["error"] = false;
         $rpp = 500;
         global $wpdb;
         $hesabfa = new Ssbhesabfa_Api();
-        $filters = array(array("Property" => "Tag", "Operator" => "=", "Value" => ""));
+        $filters = array(
+            array("Property" => "Tag", "Operator" => "=", "Value" => ""),
+            array("Property" => "ItemType", "Operator" => "=", "Value" => 0));
 
         if ($batch == 1) {
             $total = 0;
@@ -895,7 +899,7 @@ class Ssbhesabfa_Admin_Functions
                 $total = $response->Result->FilteredCount;
                 $totalBatch = ceil($total / $rpp);
             } else {
-                Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for import. Error Message: (string)$response->ErrorMessage. Error Code: (string)$response->ErrorCode."));
+                Ssbhesabfa_Admin_Functions::log(array("Error while trying to get products for import. Error Message: $response->ErrorMessage. Error Code: $response->ErrorCode."));
                 $result["error"] = true;
                 return $result;
             };
@@ -1194,7 +1198,8 @@ class Ssbhesabfa_Admin_Functions
             $result["error"] = false;
 
             $hesabfa = new Ssbhesabfa_Api();
-            $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""));
+            $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""),
+                             array("Property" => "ItemType", "Operator" => "=", "Value" => 0));
             $rpp = 500;
 
             if ($batch == 1) {
