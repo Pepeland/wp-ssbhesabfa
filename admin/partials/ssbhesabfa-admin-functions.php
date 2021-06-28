@@ -4,7 +4,7 @@ include_once(plugin_dir_path(__DIR__) . 'services/ssbhesabfaCustomerService.php'
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
- * @version    1.77.33
+ * @version    1.77.34
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/functions
@@ -1230,7 +1230,7 @@ class Ssbhesabfa_Admin_Functions
             $hesabfa = new Ssbhesabfa_Api();
             $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""),
                              array("Property" => "ItemType", "Operator" => "=", "Value" => 0));
-            $rpp = 500;
+            $rpp = 50;
 
             if ($batch == 1) {
                 $total = 0;
