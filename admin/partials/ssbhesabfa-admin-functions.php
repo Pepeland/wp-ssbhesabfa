@@ -945,6 +945,36 @@ class Ssbhesabfa_Admin_Functions
                 $postId = $wpdb->insert_id;
                 $id_product_array[] = $postId;
 
+                $wpdb->insert($wpdb->prefix . 'postmeta', array(
+                    'post_id' => $postId,
+                    'meta_key' => "_manage_stock",
+                    'meta_value' => 'yes',
+                ));
+
+                $wpdb->insert($wpdb->prefix . 'postmeta', array(
+                    'post_id' => $postId,
+                    'meta_key' => "_sku",
+                    'meta_value' => $item->Barcode,
+                ));
+
+                $wpdb->insert($wpdb->prefix . 'postmeta', array(
+                    'post_id' => $postId,
+                    'meta_key' => "_regular_price",
+                    'meta_value' => $item->SellPrice,
+                ));
+
+                $wpdb->insert($wpdb->prefix . 'postmeta', array(
+                    'post_id' => $postId,
+                    'meta_key' => "_price",
+                    'meta_value' => $item->SellPrice,
+                ));
+
+                $wpdb->insert($wpdb->prefix . 'postmeta', array(
+                    'post_id' => $postId,
+                    'meta_key' => "_stock",
+                    'meta_value' => $item->Stock,
+                ));
+
                 // add product link to hesabfa
                 $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
                     'obj_type' => 'product',
