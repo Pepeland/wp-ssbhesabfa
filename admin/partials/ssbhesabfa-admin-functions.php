@@ -945,35 +945,14 @@ class Ssbhesabfa_Admin_Functions
                 $postId = $wpdb->insert_id;
                 $id_product_array[] = $postId;
 
-                $wpdb->insert($wpdb->prefix . 'postmeta', array(
-                    'post_id' => $postId,
-                    'meta_key' => "_manage_stock",
-                    'meta_value' => 'yes',
-                ));
+                update_post_meta($postId, '_manage_stock', 'yes');
+                update_post_meta($postId, '_sku', $item->Barcode);
+                update_post_meta($postId, '_regular_price', $item->SellPrice);
+                update_post_meta($postId, '_price', $item->SellPrice);
+                update_post_meta($postId, '_stock', $item->Stock);
 
-                $wpdb->insert($wpdb->prefix . 'postmeta', array(
-                    'post_id' => $postId,
-                    'meta_key' => "_sku",
-                    'meta_value' => $item->Barcode,
-                ));
-
-                $wpdb->insert($wpdb->prefix . 'postmeta', array(
-                    'post_id' => $postId,
-                    'meta_key' => "_regular_price",
-                    'meta_value' => $item->SellPrice,
-                ));
-
-                $wpdb->insert($wpdb->prefix . 'postmeta', array(
-                    'post_id' => $postId,
-                    'meta_key' => "_price",
-                    'meta_value' => $item->SellPrice,
-                ));
-
-                $wpdb->insert($wpdb->prefix . 'postmeta', array(
-                    'post_id' => $postId,
-                    'meta_key' => "_stock",
-                    'meta_value' => $item->Stock,
-                ));
+                $new_stock_status = ($item->Stock > 0) ? "instock" : "outofstock";
+                wc_update_product_stock_status($postId, $new_stock_status);
 
                 // add product link to hesabfa
                 $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
@@ -1230,7 +1209,7 @@ class Ssbhesabfa_Admin_Functions
             $hesabfa = new Ssbhesabfa_Api();
             $filters = array(array("Property" => "Tag", "Operator" => "!=", "Value" => ""),
                              array("Property" => "ItemType", "Operator" => "=", "Value" => 0));
-            $rpp = 50;
+            $rpp = 500;
 
             if ($batch == 1) {
                 $total = 0;
