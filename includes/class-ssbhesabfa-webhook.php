@@ -14,9 +14,13 @@ class Ssbhesabfa_Webhook
     public $itemsObjectId = array();
     public $contactsObjectId = array();
 
-    public function __construct()
+    public function __construct($result = null)
     {
         Ssbhesabfa_Admin_Functions::logDebugStr("===== Webhook Called =====");
+
+        if (isset($result) && is_object($result)) {
+            Ssbhesabfa_Admin_Functions::logDebugObj($result);
+        }
 
         $hesabfaApi = new Ssbhesabfa_Api();
         $lastChange = get_option('ssbhesabfa_last_log_check_id');
@@ -81,9 +85,9 @@ class Ssbhesabfa_Webhook
             }
         } else {
             Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot check last changes. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
-            if($changes->ErrorCode == 108) {
+            if ($changes->ErrorCode == 108) {
                 update_option('ssbhesabfa_business_expired', 1);
-                add_action('admin_notices', array( __CLASS__, 'ssbhesabfa_business_expired_notice' ));
+                add_action('admin_notices', array(__CLASS__, 'ssbhesabfa_business_expired_notice'));
             }
             return false;
         }
@@ -91,7 +95,8 @@ class Ssbhesabfa_Webhook
         return true;
     }
 
-    public function ssbhesabfa_business_expired_notice() {
+    public function ssbhesabfa_business_expired_notice()
+    {
         echo '<div class="error"><p>' . __('Cannot connect to Hesabfa. Business expired.', 'ssbhesabfa') . '</p></div>';
     }
 
@@ -258,9 +263,9 @@ class Ssbhesabfa_Webhook
             $found = $wpdb->get_var("SELECT COUNT(*) FROM `" . $wpdb->prefix . "posts`                                                                
                                 WHERE ID = $id_product AND post_status IN('publish','private')");
 
-            if(!$found) {
+            if (!$found) {
                 Ssbhesabfa_Admin_Functions::logDebugStr("product not found in woocommerce. product id: $id_product, code in Hesabfa: $item->Code");
-                $wpdb->delete($wpdb->prefix.'ssbhesabfa', array('id_hesabfa' => $item->Code, 'obj_type' => 'product'));
+                $wpdb->delete($wpdb->prefix . 'ssbhesabfa', array('id_hesabfa' => $item->Code, 'obj_type' => 'product'));
                 return false;
             }
 
