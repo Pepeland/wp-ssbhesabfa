@@ -651,48 +651,40 @@ class Ssbhesabfa_Admin_Functions
 
     public static function getPriceInHesabfaDefaultCurrency($price)
     {
-        if (!isset($price)) {
+        if (!isset($price))
             return false;
-        }
 
         $woocommerce_currency = get_woocommerce_currency();
         $hesabfa_currency = get_option('ssbhesabfa_hesabfa_default_currency');
 
-        if (!is_numeric($price)) {
+        if (!is_numeric($price))
             $price = intval($price);
-        }
 
-        if ($hesabfa_currency == 'IRR' && $woocommerce_currency == 'IRT') {
+        if ($hesabfa_currency == 'IRR' && $woocommerce_currency == 'IRT')
             $price *= 10;
-        }
 
-        if ($hesabfa_currency == 'IRT' && $woocommerce_currency == 'IRR') {
+        if ($hesabfa_currency == 'IRT' && $woocommerce_currency == 'IRR')
             $price /= 10;
-        }
 
         return $price;
     }
 
     public static function getPriceInWooCommerceDefaultCurrency($price)
     {
-        if (!isset($price)) {
+        if (!isset($price))
             return false;
-        }
 
         $woocommerce_currency = get_woocommerce_currency();
         $hesabfa_currency = get_option('ssbhesabfa_hesabfa_default_currency');
 
-        if (!is_numeric($price)) {
+        if (!is_numeric($price))
             $price = intval($price);
-        }
 
-        if ($hesabfa_currency == 'IRR' && $woocommerce_currency == 'IRT') {
+        if ($hesabfa_currency == 'IRR' && $woocommerce_currency == 'IRT')
             $price /= 10;
-        }
 
-        if ($hesabfa_currency == 'IRT' && $woocommerce_currency == 'IRR') {
+        if ($hesabfa_currency == 'IRT' && $woocommerce_currency == 'IRR')
             $price *= 10;
-        }
 
         return $price;
     }
@@ -944,11 +936,12 @@ class Ssbhesabfa_Admin_Functions
 
                 $postId = $wpdb->insert_id;
                 $id_product_array[] = $postId;
+                $price = self::getPriceInWooCommerceDefaultCurrency($item->SellPrice);
 
                 update_post_meta($postId, '_manage_stock', 'yes');
                 update_post_meta($postId, '_sku', $item->Barcode);
-                update_post_meta($postId, '_regular_price', $item->SellPrice);
-                update_post_meta($postId, '_price', $item->SellPrice);
+                update_post_meta($postId, '_regular_price', $price);
+                update_post_meta($postId, '_price', $price);
                 update_post_meta($postId, '_stock', $item->Stock);
 
                 $new_stock_status = ($item->Stock > 0) ? "instock" : "outofstock";
