@@ -4,7 +4,7 @@ include_once(plugin_dir_path(__DIR__) . 'services/ssbhesabfaCustomerService.php'
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
- * @version    1.77.35
+ * @version    1.77.36
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/functions
