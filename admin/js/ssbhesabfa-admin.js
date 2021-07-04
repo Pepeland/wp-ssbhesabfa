@@ -542,6 +542,61 @@ jQuery(function ($) {
         }
     });
 
+
+    $(function () {
+        // AJAX - clear all plugin data
+        $('#hesabfa-clear-plugin-data').click(function () {
+            if (confirm('هشدار: با انجام این عملیات کلیه اطلاعات افزونه شامل روابط بین کالاها، مشتریان و فاکتور ها و همینطور تنظیمات افزونه حذف می گردد.' +
+                'آیا از انجام این عملیات مطمئن هستید؟')) {
+                $('#hesabfa-clear-plugin-data').addClass('disabled');
+                $('#hesabfa-clear-plugin-data').html('حذف دیتای افزونه...');
+                var data = {
+                    'action': 'adminClearPluginData'
+                };
+                $.post(ajaxurl, data, function (response) {
+                    $('#hesabfa-clear-plugin-data').removeClass('disabled');
+                    $('#hesabfa-clear-plugin-data').html('حذف دیتای افزونه');
+                    if ('failed' !== response) {
+                        alert('دیتای افزونه با موفقیت حذف شد.');
+                        return false;
+                    } else {
+                        alert('خطا در هنگام حذف دیتای افزونه.');
+                        return false;
+                    }
+                });
+            } else {
+                // Do nothing!
+            }
+            return false;
+        });
+
+        $('#hesabfa-install-plugin-data').click(function () {
+            if (confirm('با انجام این عملیات جدول افزونه در دیتابیس وردپرس ایجاد' +
+                ' و تنظیمات پیش فرض افزونه تنظیم می گردد.' +
+                ' آیا از انجام این عملیات مطمئن هستید؟')) {
+                $('#hesabfa-install-plugin-data').addClass('disabled');
+                $('#hesabfa-install-plugin-data').html('نصب دیتای افزونه...');
+                var data = {
+                    'action': 'adminInstallPluginData'
+                };
+                $.post(ajaxurl, data, function (response) {
+                    $('#hesabfa-install-plugin-data').removeClass('disabled');
+                    $('#hesabfa-install-plugin-data').html('نصب دیتای افزونه');
+                    if ('failed' !== response) {
+                        alert('دیتای افزونه با موفقیت نصب شد.');
+                        return false;
+                    } else {
+                        alert('خطا در هنگام نصب دیتای افزونه.');
+                        return false;
+                    }
+                });
+            } else {
+                // Do nothing!
+            }
+            return false;
+        });
+    });
+
 });
 
 

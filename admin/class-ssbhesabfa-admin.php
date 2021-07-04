@@ -427,6 +427,40 @@ class Ssbhesabfa_Admin {
         }
     }
 
+    public function adminClearPluginDataCallback() {
+        Ssbhesabfa_Admin_Functions::logDebugStr('===== Clear Plugin Data =====');
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+
+            $hesabfaApi = new Ssbhesabfa_Api();
+            $result = $hesabfaApi->fixClearTags();
+            if (!$result->Success) {
+                Ssbhesabfa_Admin_Functions::log(array("ssbhesabfa - Cannot clear tags. Error Message: " . (string)$changes->ErrorMessage . ". Error Code: " . (string)$changes->ErrorCode));
+            }
+
+            global $wpdb;
+            $options = $wpdb->get_results("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '%ssbhesabfa%'");
+            foreach ($options as $option) {
+                delete_option($option->option_name);
+            }
+
+            $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ssbhesabfa");
+
+            die();
+        }
+    }
+
+    public function adminInstallPluginDataCallback() {
+        Ssbhesabfa_Admin_Functions::logDebugStr('===== Install Plugin Data =====');
+        if (is_admin() && (defined('DOING_AJAX') || DOING_AJAX)) {
+
+            // create table and settings
+            require_once plugin_dir_path( __DIR__ ) . 'includes/class-ssbhesabfa-activator.php';
+            Ssbhesabfa_Activator::activate();
+
+            die();
+        }
+    }
+
     //This functions related to set webhook
     public function ssbhesabfa_init_internal()
     {

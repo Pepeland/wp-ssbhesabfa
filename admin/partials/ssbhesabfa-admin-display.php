@@ -40,6 +40,7 @@ class Ssbhesabfa_Admin_Display
         add_submenu_page("ssbhesabfa-option", "تنظیمات حسابفا", "تنظیمات حسابفا", "manage_options", 'ssbhesabfa-option', array(__CLASS__, 'hesabfa_plugin_page'));
         add_submenu_page("ssbhesabfa-option", "همسان سازی دستی کالاها", "همسان سازی دستی کالاها", "manage_options", 'hesabfa-sync-products-manually', array(__CLASS__, 'hesabfa_plugin_sync_products_manually'));
         //add_submenu_page("ssbhesabfa-option", "کدهای تکراری", "کدهای تکراری", "manage_options", 'hesabfa-repeated-products', array(__CLASS__, 'hesabfa_plugin_repeated_products'));
+        add_submenu_page("ssbhesabfa-option", "ابزارها", "ابزارها", "manage_options", 'hesabfa-tools', array(__CLASS__, 'hesabfa_plugin_tools'));
     }
 
     function hesabfa_plugin_sync_products_manually()
@@ -216,6 +217,21 @@ class Ssbhesabfa_Admin_Display
                 <?php endforeach; ?>
                 </tbody>
             </table>
+        </div>
+        <?php
+    }
+
+    function hesabfa_plugin_tools() {
+        self::hesabfa_plugin_header();
+        ?>
+        <div class="hesabfa-f mt-4">
+            <h5 class="h5 hesabfa-tab-page-title">
+                ابزارهای افزونه حسابفا
+            </h5>
+
+            <a href="javascript:void(0);" class="btn btn-danger mt-2" id="hesabfa-clear-plugin-data" >حذف دیتای افزونه</a>
+            <br>
+            <a href="javascript:void(0);" class="btn btn-success mt-2" id="hesabfa-install-plugin-data">نصب دیتای افزونه</a>
         </div>
         <?php
     }
