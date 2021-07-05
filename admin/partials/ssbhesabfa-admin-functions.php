@@ -158,6 +158,8 @@ class Ssbhesabfa_Admin_Functions
         if (count($items) === 0)
             return false;
 
+        Ssbhesabfa_Admin_Functions::logDebugStr("Items length: " . count($items));
+
         if (!$this->saveItems($items)) {
             return false;
         }
@@ -938,6 +940,14 @@ class Ssbhesabfa_Admin_Functions
                 $id_product_array[] = $postId;
                 $price = self::getPriceInWooCommerceDefaultCurrency($item->SellPrice);
 
+                // add product link to hesabfa
+                $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
+                    'obj_type' => 'product',
+                    'id_hesabfa' => (int)$item->Code,
+                    'id_ps' => $postId,
+                    'id_ps_attribute' => 0,
+                ));
+
                 update_post_meta($postId, '_manage_stock', 'yes');
                 update_post_meta($postId, '_sku', $item->Barcode);
                 update_post_meta($postId, '_regular_price', $price);
@@ -946,14 +956,6 @@ class Ssbhesabfa_Admin_Functions
 
                 $new_stock_status = ($item->Stock > 0) ? "instock" : "outofstock";
                 wc_update_product_stock_status($postId, $new_stock_status);
-
-                // add product link to hesabfa
-                $wpdb->insert($wpdb->prefix . 'ssbhesabfa', array(
-                    'obj_type' => 'product',
-                    'id_hesabfa' => (int)$item->Code,
-                    'id_ps' => $postId,
-                    'id_ps_attribute' => 0,
-                ));
             }
 
             // set items (to set tag in hesabfa)
