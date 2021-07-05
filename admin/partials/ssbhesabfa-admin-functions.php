@@ -4,7 +4,7 @@ include_once(plugin_dir_path(__DIR__) . 'services/ssbhesabfaCustomerService.php'
 
 /**
  * @class      Ssbhesabfa_Admin_Functions
- * @version    1.77.36
+ * @version    1.77.37
  * @since      1.0.0
  * @package    ssbhesabfa
  * @subpackage ssbhesabfa/admin/functions
@@ -157,8 +157,6 @@ class Ssbhesabfa_Admin_Functions
 
         if (count($items) === 0)
             return false;
-
-        Ssbhesabfa_Admin_Functions::logDebugStr("Items length: " . count($items));
 
         if (!$this->saveItems($items)) {
             return false;
